@@ -210,9 +210,15 @@ def configure_msvc(env, manual_msvc_config):
     ## Compile/link flags
 
     if env["use_static_cpp"]:
-        env.AppendUnique(CCFLAGS=["/MT"])
+        if env["target"] == "debug":
+            env.AppendUnique(CCFLAGS=["/MTd"])
+        else:
+            env.AppendUnique(CCFLAGS=["/MT"])
     else:
-        env.AppendUnique(CCFLAGS=["/MD"])
+        if env["target"] == "debug":
+            env.AppendUnique(CCFLAGS=["/MDd"])
+        else:
+            env.AppendUnique(CCFLAGS=["/MD"])
 
     env.AppendUnique(CCFLAGS=["/Gd", "/GR", "/nologo"])
     # Force to use Unicode encoding
