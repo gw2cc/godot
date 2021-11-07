@@ -2,6 +2,7 @@
 
 Import("env")
 
+import os
 from platform_methods import run_in_subprocess
 import platform_x11_builders
 
@@ -13,12 +14,30 @@ common_x11 = [
     "joypad_linux.cpp",
     "power_x11.cpp",
     "detect_prime.cpp",
+    "godot_x11.cpp"
 ]
 
 if "udev" in env and env["udev"]:
     common_x11.append("libudev-so_wrap.c")
 
-prog = env.add_library("#bin/godot", ["godot_x11.cpp"] + common_x11 + env["LIBS"])
+x11_lib = env.add_library("x11", common_x11)
+
+
+# remove system libs
+godot_libs = [l for l in env['LIBS'] if not isinstance(l, str)]
+
+def merge_libs(env, target, source):
+    mri_script = f'create {target[0]}\n'
+    for s in source:
+        mri_script += f'addlib {s}\n'
+    mri_script += 'save\nend'
+
+    with os.popen('ar -M', mode='w') as p:
+        p.write(mri_script)
+        p.close()
+
+# merge everything together
+master_lib = env.Command(f'#bin/libgodot{env["LIBSUFFIX"]}',  godot_libs + [x11_lib], merge_libs)
 
 if env["debug_symbols"] and env["separate_debug_symbols"]:
-    env.AddPostAction(prog, run_in_subprocess(platform_x11_builders.make_debug_x11))
+    env.AddPostAction(master_lib, run_in_subprocess(platform_x11_builders.make_debug_x11))
