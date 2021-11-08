@@ -11,6 +11,7 @@ include_dirs = [
     "common/algorithms",
     "common/lexers",
     "common/simd",
+    "common/simd/arm",
     "include/embree3",
     "kernels/subdiv",
     "kernels/geometry",
@@ -32,16 +33,6 @@ cpp_files = [
     "common/lexers/stringstream.cpp",
     "common/lexers/tokenstream.cpp",
     "common/tasking/taskschedulerinternal.cpp",
-    "common/algorithms/parallel_for.cpp",
-    "common/algorithms/parallel_reduce.cpp",
-    "common/algorithms/parallel_prefix_sum.cpp",
-    "common/algorithms/parallel_for_for.cpp",
-    "common/algorithms/parallel_for_for_prefix_sum.cpp",
-    "common/algorithms/parallel_partition.cpp",
-    "common/algorithms/parallel_sort.cpp",
-    "common/algorithms/parallel_set.cpp",
-    "common/algorithms/parallel_map.cpp",
-    "common/algorithms/parallel_filter.cpp",
     "kernels/common/device.cpp",
     "kernels/common/stat.cpp",
     "kernels/common/acceln.cpp",
@@ -197,7 +188,7 @@ with open("CMakeLists.txt", "r") as cmake_file:
 with open(os.path.join(dest_dir, "include/embree3/rtcore_config.h"), "w") as config_file:
     config_file.write(
         f"""
-// Copyright 2009-2020 Intel Corporation
+// Copyright 2009-2021 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
 
 #pragma once
