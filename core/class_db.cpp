@@ -655,7 +655,7 @@ void ClassDB::bind_integer_constant(const StringName &p_class, const StringName 
 	String enum_name = p_enum;
 	if (enum_name != String()) {
 		if (enum_name.find(".") != -1) {
-			enum_name = enum_name.get_slicec('.', 1);
+			enum_name = enum_name.rsplit(".", true, 1)[1];
 		}
 
 		List<StringName> *constants_list = type->enum_map.getptr(enum_name);
