@@ -37,6 +37,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Linux dependencies
         shell: bash
@@ -113,11 +115,6 @@ jobs:
       #    echo -e "If a diff is shown, it means that your code/doc changes are incomplete and you should update the class reference with --doctool.\n\n"
       #    DRI_PRIME=0 xvfb-run ${{ matrix.bin }} --doctool . 2>&1 > /dev/null || true
       #    git diff --color --exit-code && ! git ls-files --others --exclude-standard | sed -e 's/^/New doc file missing in PR: /' | grep 'xml$'
-
-      - name: Prepare artifact
-        if: ${{ matrix.artifact }}
-        run: |
-          strip bin/libgodot.*
 
       - name: Upload artifact
         uses: ./.github/actions/upload-artifact
