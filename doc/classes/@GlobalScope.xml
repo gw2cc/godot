@@ -15,6 +15,8 @@
 		<member name="ARVRServer" type="ARVRServer" setter="" getter="">
 			The [ARVRServer] singleton.
 		</member>
+		<member name="AsyncResourceLoader" type="Node" setter="" getter="">
+		</member>
 		<member name="AudioServer" type="AudioServer" setter="" getter="">
 			The [AudioServer] singleton.
 		</member>
@@ -23,6 +25,8 @@
 		</member>
 		<member name="ClassDB" type="ClassDB" setter="" getter="">
 			The [ClassDB] singleton.
+		</member>
+		<member name="ContentService" type="Node" setter="" getter="">
 		</member>
 		<member name="Engine" type="Engine" setter="" getter="">
 			The [Engine] singleton.
@@ -52,9 +56,6 @@
 		</member>
 		<member name="Marshalls" type="Marshalls" setter="" getter="">
 			The [Marshalls] singleton.
-		</member>
-		<member name="NavigationMeshGenerator" type="EditorNavigationMeshGenerator" setter="" getter="">
-			The [EditorNavigationMeshGenerator] singleton.
 		</member>
 		<member name="OS" type="OS" setter="" getter="">
 			The [OS] singleton.
