@@ -26,6 +26,8 @@
 		<member name="ClassDB" type="ClassDB" setter="" getter="">
 			The [ClassDB] singleton.
 		</member>
+		<member name="ClientSession" type="ClientSession" setter="" getter="">
+		</member>
 		<member name="ContentService" type="Node" setter="" getter="">
 		</member>
 		<member name="Engine" type="Engine" setter="" getter="">
@@ -36,6 +38,8 @@
 		</member>
 		<member name="IP" type="IP" setter="" getter="">
 			The [IP] singleton.
+		</member>
+		<member name="Injector" type="Injector" setter="" getter="">
 		</member>
 		<member name="Input" type="Input" setter="" getter="">
 			The [Input] singleton.
@@ -59,6 +63,8 @@
 		</member>
 		<member name="OS" type="OS" setter="" getter="">
 			The [OS] singleton.
+		</member>
+		<member name="Overlay" type="Overlay" setter="" getter="">
 		</member>
 		<member name="Performance" type="Performance" setter="" getter="">
 			The [Performance] singleton.
