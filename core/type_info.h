@@ -260,7 +260,12 @@ struct GetTypeInfo<const T *, typename EnableIf<TypeInherits<Object, T>::value>:
 		static const Variant::Type VARIANT_TYPE = Variant::INT;                                                                                                                   \
 		static const GodotTypeInfo::Metadata METADATA = GodotTypeInfo::METADATA_NONE;                                                                                             \
 		static inline PropertyInfo get_class_info() {                                                                                                                             \
-			return PropertyInfo(Variant::INT, String(), PROPERTY_HINT_NONE, String(), PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_CLASS_IS_ENUM, String(#m_enum).replace("::", ".")); \
+			auto enum_name = String(#m_enum).replace("::", ".");                                                                                                                  \
+			if (enum_name.count(".") >= 2) {                                                                                                                                      \
+				auto splits = enum_name.rsplit(".", true, 2); \
+				enum_name = splits[1] + "." + splits[2];                                                                                                                    \
+			}                                                                                                                                                                     \
+			return PropertyInfo(Variant::INT, String(), PROPERTY_HINT_NONE, String(), PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_CLASS_IS_ENUM, enum_name);                          \
 		}                                                                                                                                                                         \
 	};
 
