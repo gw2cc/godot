@@ -54,6 +54,7 @@ public:
 	typedef FileAccess *(*CreateFunc)();
 	bool endian_swap;
 	bool real_is_double;
+	bool protected_file = false;  // PATCHED
 
 	virtual uint32_t _get_unix_permissions(const String &p_file) = 0;
 	virtual Error _set_unix_permissions(const String &p_file, uint32_t p_permissions) = 0;
@@ -148,6 +149,8 @@ public:
 	virtual bool file_exists(const String &p_name) = 0; ///< return true if a file exists
 
 	virtual Error reopen(const String &p_path, int p_mode_flags); ///< does not change the AccessType
+
+	virtual bool is_protected();  // PATCHED
 
 	static FileAccess *create(AccessType p_access); /// Create a file access (for the current platform) this is the only portable way of accessing files.
 	static FileAccess *create_for_path(const String &p_path);

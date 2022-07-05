@@ -85,6 +85,17 @@ Error ResourceSaver::save(const String &p_path, const RES &p_resource, uint32_t 
 	String extension = p_path.get_extension();
 	Error err = ERR_FILE_UNRECOGNIZED;
 
+	if (p_resource->get_source_path() != "") {
+		// PATCHED
+		FileAccess *fa = FileAccess::open(p_resource->get_source_path(), FileAccess::READ);
+		if (fa) {
+			bool protected_ = fa->is_protected();
+			memdelete(fa);
+			if (protected_)
+				return ERR_FILE_UNRECOGNIZED; // nice try
+		}
+	}
+
 	for (int i = 0; i < saver_count; i++) {
 		if (!saver[i]->recognize(p_resource)) {
 			continue;

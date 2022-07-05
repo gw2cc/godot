@@ -276,6 +276,9 @@ Error DirAccess::copy(String p_from, String p_to, int p_chmod_flags) {
 		return err;
 	}
 
+	if (fsrc->is_protected())
+		return ERR_FILE_NO_PERMISSION;
+
 	FileAccess *fdst = FileAccess::open(p_to, FileAccess::WRITE, &err);
 	if (err) {
 		fsrc->close();

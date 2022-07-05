@@ -1931,9 +1931,18 @@ Error _File::open(const String &p_path, ModeFlags p_mode_flags) {
 	close();
 	Error err;
 	f = FileAccess::open(p_path, p_mode_flags, &err);
-	if (f) {
-		f->set_endian_swap(eswap);
+	if(!f)
+		return err;
+
+	if (f->is_protected()) {
+		// PATCHED
+		memdelete(f);
+		f = nullptr;
+		err = ERR_FILE_NO_PERMISSION; // nice try
+		return err;
 	}
+
+	f->set_endian_swap(eswap);
 	return err;
 }
 
