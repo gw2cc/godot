@@ -555,6 +555,10 @@ void FileAccess::store_buffer(const uint8_t *p_src, uint64_t p_length) {
 	}
 }
 
+bool FileAccess::is_protected() {
+	return false;
+}
+
 Vector<uint8_t> FileAccess::get_file_as_array(const String &p_path, Error *r_error) {
 	FileAccess *f = FileAccess::open(p_path, READ, r_error);
 	if (!f) {
