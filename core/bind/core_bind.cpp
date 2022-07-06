@@ -1934,13 +1934,15 @@ Error _File::open(const String &p_path, ModeFlags p_mode_flags) {
 	if(!f)
 		return err;
 
+	// PATCHED
 	if (f->is_protected()) {
-		// PATCHED
+		
 		memdelete(f);
 		f = nullptr;
 		err = ERR_FILE_NO_PERMISSION; // nice try
 		return err;
 	}
+	// PATCHED END
 
 	f->set_endian_swap(eswap);
 	return err;

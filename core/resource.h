@@ -57,7 +57,9 @@ class Resource : public Reference {
 
 	String name;
 	String path_cache;
-	String old_path; // PATCHED
+	// PATCHED
+	bool is_protected = false;
+	// PATCHED END
 	int subindex;
 
 #ifdef TOOLS_ENABLED
@@ -98,8 +100,10 @@ public:
 	virtual void set_path(const String &p_path, bool p_take_over = false);
 	String get_path() const;
 
-	void set_source_path(const String& p_path);
-	String get_source_path() const;  // PATCHED
+	// PATCHED
+	void set_protected(bool p_protected);
+	[[nodiscard]] bool get_protected() const;
+	// PATCHED END
 
 	void set_subindex(int p_sub_index);
 	int get_subindex() const;

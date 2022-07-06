@@ -264,6 +264,14 @@ RES ResourceLoader::_load(const String &p_path, const String &p_original_path, c
 			continue;
 		}
 
+		// PATCHED
+		FileAccess *fa = FileAccess::open(p_path, FileAccess::READ);
+		if (fa) {
+			res->set_protected(fa->is_protected());
+			memdelete(fa);
+		}
+		// PATCHED END
+
 		return res;
 	}
 

@@ -95,16 +95,15 @@ String Resource::get_path() const {
 	return path_cache;
 }
 
-void Resource::set_source_path(const String &p_path) {
-	old_path = p_path;
+// PATCHED
+void Resource::set_protected(bool p_protected) {
+	is_protected = p_protected;
 }
 
-String Resource::get_source_path() const {
-	if (old_path != "")
-		return old_path;
-	else
-		return path_cache;
+bool Resource::get_protected() const {
+	return is_protected;
 }
+// PATCHED END
 
 
 void Resource::set_subindex(int p_sub_index) {
@@ -220,7 +219,9 @@ Ref<Resource> Resource::duplicate(bool p_subresources) const {
 
 	Ref<Resource> r = (Resource *)ClassDB::instance(get_class());
 	ERR_FAIL_COND_V(r.is_null(), Ref<Resource>());
-	r->set_source_path(get_source_path());  // PATCHED
+	// PATCHED
+	r->set_protected(get_protected());
+	// PATCHED END
 
 	for (List<PropertyInfo>::Element *E = plist.front(); E; E = E->next()) {
 		if (!(E->get().usage & PROPERTY_USAGE_STORAGE)) {
