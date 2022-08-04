@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import sys
 
 Import("env")
@@ -15,18 +16,24 @@ else:
     common_server.append("#platform/x11/crash_handler_x11.cpp")
     common_server.append("#platform/x11/power_x11.cpp")
 
+server_lib = env.add_library("server", common_server + ["godot_server.cpp"])
+
 # remove system libs
-godot_libs = [l for l in env['LIBS'] if not isinstance(l, str)]
+godot_libs = [l for l in env["LIBS"] if not isinstance(l, str)]
+
 
 def merge_libs(env, target, source):
-    mri_script = f'create {target[0]}\n'
+    mri_script = f"create {target[0]}\n"
     for s in source:
-        mri_script += f'addlib {s}\n'
-    mri_script += 'save\nend'
+        mri_script += f"addlib {s}\n"
+    mri_script += "save\nend"
 
-    with os.popen('ar -M', mode='w') as p:
+    with os.popen("ar -M", mode="w") as p:
         p.write(mri_script)
         p.close()
 
+
 # merge everything together
-prog = env.Command(f'#bin/libgodot_server{env["LIBSUFFIX"]}', ["godot_server.cpp"] + common_server + godot_libs, merge_libs)
+prog = env.Command(
+    f'#bin/libgodot_server{env["LIBSUFFIX"]}', [server_lib] + godot_libs, merge_libs
+)
