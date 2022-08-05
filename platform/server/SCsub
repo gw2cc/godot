@@ -35,5 +35,5 @@ def merge_libs(env, target, source):
 
 # merge everything together
 prog = env.Command(
-    f'#bin/libgodot_server{env["LIBSUFFIX"]}', [server_lib] + godot_libs, merge_libs
+    f'#bin/libgodot.server{env["LIBSUFFIX"]}', [server_lib] + godot_libs, merge_libs
 )
