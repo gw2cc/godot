@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -220,6 +220,7 @@ void AnimationBezierTrackEdit::_notification(int p_what) {
 		bezier_handle_icon = get_icon("KeyBezierHandle", "EditorIcons");
 		selected_icon = get_icon("KeyBezierSelected", "EditorIcons");
 		if (handle_mode_option->get_item_count() == 0) {
+			// TRANSLATORS: Adjective, refers to the mode for Bezier handles (Free, Balanced, Mirror).
 			handle_mode_option->add_icon_item(get_icon("BezierHandlesFree", "EditorIcons"), TTR("Free"), HANDLE_MODE_FREE);
 			handle_mode_option->add_icon_item(get_icon("BezierHandlesBalanced", "EditorIcons"), TTR("Balanced"), HANDLE_MODE_BALANCED);
 			handle_mode_option->add_icon_item(get_icon("BezierHandlesMirror", "EditorIcons"), TTR("Mirror"), HANDLE_MODE_MIRROR);

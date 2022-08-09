@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -59,4 +59,5 @@ extern void INVERT_G_TO_B(Basis const &inVal, btMatrix3x3 &outVal);
 extern void G_TO_B(Transform const &inVal, btTransform &outVal);
 
 extern void UNSCALE_BT_BASIS(btTransform &scaledBasis);
-#endif
+
+#endif // BULLET_TYPES_CONVERTER_H

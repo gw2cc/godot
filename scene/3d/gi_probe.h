@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef GIPROBE_H
-#define GIPROBE_H
+#ifndef GI_PROBE_H
+#define GI_PROBE_H
 
 #include "multimesh_instance.h"
 #include "scene/3d/visual_instance.h"
@@ -175,4 +175,4 @@ public:
 
 VARIANT_ENUM_CAST(GIProbe::Subdiv)
 
-#endif // GIPROBE_H
+#endif // GI_PROBE_H

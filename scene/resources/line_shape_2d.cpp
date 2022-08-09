@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -93,6 +93,10 @@ Rect2 LineShape2D::get_rect() const {
 	return rect;
 }
 
+real_t LineShape2D::get_enclosing_radius() const {
+	return d;
+}
+
 void LineShape2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_normal", "normal"), &LineShape2D::set_normal);
 	ClassDB::bind_method(D_METHOD("get_normal"), &LineShape2D::get_normal);
@@ -101,7 +105,7 @@ void LineShape2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_d"), &LineShape2D::get_d);
 
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "normal"), "set_normal", "get_normal");
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "d"), "set_d", "get_d");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "d", PROPERTY_HINT_RANGE, "0.01,1024,0.01,or_greater"), "set_d", "get_d");
 }
 
 LineShape2D::LineShape2D() :

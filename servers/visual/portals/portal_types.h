@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -39,6 +39,7 @@
 #include "core/math/vector3.h"
 #include "core/object_id.h"
 #include "core/rid.h"
+#include "portal_defines.h"
 
 // visual server scene instance.
 // we can't have a pointer to nested class outside of visual server scene...
@@ -54,7 +55,8 @@ typedef uint32_t RoomHandle;
 typedef uint32_t RoomGroupHandle;
 typedef uint32_t OcclusionHandle;
 typedef uint32_t RGhostHandle;
-typedef uint32_t OccluderHandle;
+typedef uint32_t OccluderInstanceHandle;
+typedef uint32_t OccluderResourceHandle;
 
 struct VSPortal {
 	enum ClipResult {
@@ -227,7 +229,7 @@ struct VSRoomGroup {
 	}
 
 	// used for calculating gameplay notifications
-	uint32_t last_gameplay_tick_hit = 0;
+	uint32_t last_room_tick_hit = 0;
 
 	ObjectID _godot_instance_ID = 0;
 
@@ -257,6 +259,7 @@ struct VSRoom {
 		_secondary_pvs_size = 0;
 		_priority = 0;
 		_contains_internal_rooms = false;
+		last_room_tick_hit = 0;
 	}
 
 	void cleanup_after_conversion() {
@@ -353,7 +356,7 @@ struct VSRoom {
 	uint16_t _secondary_pvs_size = 0;
 
 	// used for calculating gameplay notifications
-	uint32_t last_gameplay_tick_hit = 0;
+	uint32_t last_room_tick_hit = 0;
 
 	// convex hull of the room, either determined by geometry or manual bound
 	LocalVector<Plane, int32_t> _planes;
@@ -378,20 +381,43 @@ struct VSRoom {
 	LocalVector<uint32_t, int32_t> _roomgroup_ids;
 };
 
-struct VSOccluder {
+// Possibly shared data, in local space
+struct VSOccluder_Resource {
 	void create() {
 		type = OT_UNDEFINED;
-		room_id = -1;
-		dirty = false;
-		active = true;
+		revision = 0;
+		list_ids.clear();
 	}
 
 	// these should match the values in VisualServer::OccluderType
 	enum Type : uint32_t {
 		OT_UNDEFINED,
 		OT_SPHERE,
+		OT_MESH,
 		OT_NUM_TYPES,
 	} type;
+
+	// If the revision of the instance and the resource don't match,
+	// then the local versions have been updated and need transforming
+	// to world space in the instance (i.e. it is dirty)
+	uint32_t revision;
+
+	// ids of multiple objects in the appropriate occluder pool:
+	// local space for resources, and world space for occluder instances
+	LocalVector<uint32_t, int32_t> list_ids;
+};
+
+struct VSOccluder_Instance : public VSOccluder_Resource {
+	void create() {
+		VSOccluder_Resource::create();
+		room_id = -1;
+		active = true;
+		resource_pool_id = UINT32_MAX;
+	}
+
+	// Occluder instance can be bound to one resource (which will include data in local space)
+	// This should be set back to NULL if the resource is deleted
+	uint32_t resource_pool_id;
 
 	// which is the primary room this group of occluders is in
 	// (it may sprawl into multiple rooms)
@@ -406,14 +432,8 @@ struct VSOccluder {
 	// global xform
 	Transform xform;
 
-	// whether world space need calculating
-	bool dirty;
-
 	// controlled by the visible flag on the occluder
 	bool active;
-
-	// ids of multiple objects in the appropriate occluder pool
-	LocalVector<uint32_t, int32_t> list_ids;
 };
 
 namespace Occlusion {
@@ -443,16 +463,53 @@ struct Sphere {
 		return true;
 	}
 };
-} // namespace Occlusion
 
-struct VSOccluder_Sphere {
+struct Poly {
+	static const int MAX_POLY_VERTS = PortalDefines::OCCLUSION_POLY_MAX_VERTS;
 	void create() {
-		local.create();
-		world.create();
+		num_verts = 0;
+	}
+	void flip() {
+		for (int n = 0; n < num_verts / 2; n++) {
+			SWAP(verts[n], verts[num_verts - n - 1]);
+		}
 	}
 
-	Occlusion::Sphere local;
-	Occlusion::Sphere world;
+	int num_verts;
+	Vector3 verts[MAX_POLY_VERTS];
 };
 
-#endif
+struct PolyPlane : public Poly {
+	void flip() {
+		plane = -plane;
+		Poly::flip();
+	}
+	Plane plane;
+};
+
+} // namespace Occlusion
+
+struct VSOccluder_Sphere : public Occlusion::Sphere {
+};
+
+struct VSOccluder_Poly {
+	static const int MAX_POLY_HOLES = PortalDefines::OCCLUSION_POLY_MAX_HOLES;
+	void create() {
+		poly.create();
+		num_holes = 0;
+		two_way = false;
+		for (int n = 0; n < MAX_POLY_HOLES; n++) {
+			hole_pool_ids[n] = UINT32_MAX;
+		}
+	}
+	Occlusion::PolyPlane poly;
+	bool two_way;
+
+	int num_holes;
+	uint32_t hole_pool_ids[MAX_POLY_HOLES];
+};
+
+struct VSOccluder_Hole : public Occlusion::Poly {
+};
+
+#endif // PORTAL_TYPES_H

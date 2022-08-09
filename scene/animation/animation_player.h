@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -320,7 +320,6 @@ public:
 	void set_current_animation(const String &p_anim);
 	String get_assigned_animation() const;
 	void set_assigned_animation(const String &p_anim);
-	void stop_all();
 	void set_active(bool p_active);
 	bool is_active() const;
 	bool is_valid() const;
@@ -368,4 +367,4 @@ public:
 VARIANT_ENUM_CAST(AnimationPlayer::AnimationProcessMode);
 VARIANT_ENUM_CAST(AnimationPlayer::AnimationMethodCallMode);
 
-#endif
+#endif // ANIMATION_PLAYER_H

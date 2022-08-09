@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef FBX_PARSE_TOOLS_H
-#define FBX_PARSE_TOOLS_H
+#ifndef FBXPARSETOOLS_H
+#define FBXPARSETOOLS_H
 
 #include "core/error_macros.h"
 #include "core/ustring.h"
@@ -108,4 +108,4 @@ inline uint64_t strtoul10_64(const char *in, bool &errored, const char **out = n
 	return value;
 }
 
-#endif // FBX_PARSE_TOOLS_H
+#endif // FBXPARSETOOLS_H

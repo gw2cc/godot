@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef IMPORT_UTILS_FBX_IMPORTER_H
-#define IMPORT_UTILS_FBX_IMPORTER_H
+#ifndef IMPORT_UTILS_H
+#define IMPORT_UTILS_H
 
 #include "core/io/image_loader.h"
 
@@ -398,4 +398,4 @@ Transform get_unscaled_transform(const Transform &p_initial, real_t p_scale);
 /// The polygon must be at least size of 3 or bigger.
 Vector3 get_poly_normal(const std::vector<Vector3> &p_vertices);
 
-#endif // IMPORT_UTILS_FBX_IMPORTER_H
+#endif // IMPORT_UTILS_H

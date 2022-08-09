@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -160,7 +160,15 @@ void MultiMeshEditor::_populate() {
 	int instance_count = populate_amount->get_value();
 
 	multimesh->set_transform_format(MultiMesh::TRANSFORM_3D);
-	multimesh->set_color_format(MultiMesh::COLOR_NONE);
+
+	if (node->get_multimesh().is_null()) {
+		multimesh->set_color_format(MultiMesh::COLOR_NONE);
+		multimesh->set_custom_data_format(MultiMesh::CUSTOM_DATA_NONE);
+	} else {
+		multimesh->set_color_format(node->get_multimesh()->get_color_format());
+		multimesh->set_custom_data_format(node->get_multimesh()->get_custom_data_format());
+	}
+
 	multimesh->set_instance_count(instance_count);
 
 	float _tilt_random = populate_tilt_random->get_value();

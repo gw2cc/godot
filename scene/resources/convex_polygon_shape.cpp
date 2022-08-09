@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -53,6 +53,16 @@ Vector<Vector3> ConvexPolygonShape::get_debug_mesh_lines() {
 	return Vector<Vector3>();
 }
 
+real_t ConvexPolygonShape::get_enclosing_radius() const {
+	PoolVector<Vector3> data = get_points();
+	PoolVector<Vector3>::Read read = data.read();
+	real_t r = 0;
+	for (int i(0); i < data.size(); i++) {
+		r = MAX(read[i].length_squared(), r);
+	}
+	return Math::sqrt(r);
+}
+
 void ConvexPolygonShape::_update_shape() {
 	PhysicsServer::get_singleton()->shape_set_data(get_shape(), points);
 	Shape::_update_shape();
@@ -76,5 +86,5 @@ void ConvexPolygonShape::_bind_methods() {
 }
 
 ConvexPolygonShape::ConvexPolygonShape() :
-		Shape(PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_CONVEX_POLYGON)) {
+		Shape(RID_PRIME(PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_CONVEX_POLYGON))) {
 }

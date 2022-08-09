@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -117,19 +117,17 @@ void SoftBodyBullet::update_visual_server(SoftBodyVisualServerHandler *p_visual_
 }
 
 void SoftBodyBullet::set_soft_mesh(const Ref<Mesh> &p_mesh) {
-	if (p_mesh.is_null()) {
-		soft_mesh.unref();
-	} else {
-		soft_mesh = p_mesh;
-	}
+	destroy_soft_body();
+
+	soft_mesh = p_mesh;
 
 	if (soft_mesh.is_null()) {
-		destroy_soft_body();
 		return;
 	}
 
-	Array arrays = soft_mesh->surface_get_arrays(0);
 	ERR_FAIL_COND(!(soft_mesh->surface_get_format(0) & VS::ARRAY_FORMAT_INDEX));
+
+	Array arrays = soft_mesh->surface_get_arrays(0);
 	set_trimesh_body_shape(arrays[VS::ARRAY_INDEX], arrays[VS::ARRAY_VERTEX]);
 }
 

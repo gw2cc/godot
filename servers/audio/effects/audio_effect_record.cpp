@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -66,8 +66,6 @@ bool AudioEffectRecordInstance::process_silence() const {
 }
 
 void AudioEffectRecordInstance::_io_thread_process() {
-	thread_active = true;
-
 	while (is_recording) {
 		//Check: The current recording has been requested to stop
 		if (!base->recording_active) {
@@ -81,8 +79,6 @@ void AudioEffectRecordInstance::_io_thread_process() {
 			OS::get_singleton()->delay_usec(500);
 		}
 	}
-
-	thread_active = false;
 }
 
 void AudioEffectRecordInstance::_io_store_buffer() {
@@ -126,9 +122,7 @@ void AudioEffectRecordInstance::finish() {
 #ifdef NO_THREADS
 	AudioServer::get_singleton()->remove_update_callback(&AudioEffectRecordInstance::_update, this);
 #else
-	if (thread_active) {
-		io_thread.wait_to_finish();
-	}
+	io_thread.wait_to_finish();
 #endif
 }
 

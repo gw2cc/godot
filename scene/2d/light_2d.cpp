@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -79,6 +79,11 @@ Rect2 Light2D::get_anchorable_rect() const {
 
 	Size2 s = texture->get_size() * _scale;
 	return Rect2(texture_offset - s / 2.0, s);
+}
+
+void Light2D::owner_changed_notify() {
+	// For cases where owner changes _after_ entering tree (as example, editor editing).
+	_update_light_visibility();
 }
 
 void Light2D::_update_light_visibility() {
@@ -435,7 +440,7 @@ void Light2D::_bind_methods() {
 }
 
 Light2D::Light2D() {
-	canvas_light = VisualServer::get_singleton()->canvas_light_create();
+	canvas_light = RID_PRIME(VisualServer::get_singleton()->canvas_light_create());
 	enabled = true;
 	editor_only = false;
 	shadow = false;

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -71,6 +71,8 @@ public:
 	StringName tree_exiting;
 	StringName tree_exited;
 	StringName ready;
+	StringName child_entered_tree;
+	StringName child_exiting_tree;
 	StringName size_flags_changed;
 	StringName minimum_size_changed;
 	StringName sleeping_state_changed;
@@ -89,6 +91,8 @@ public:
 	StringName sort_children;
 
 	StringName finished;
+	StringName loop_finished;
+	StringName step_finished;
 	StringName emission_finished;
 	StringName animation_finished;
 	StringName animation_changed;

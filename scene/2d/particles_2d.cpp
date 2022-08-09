@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -140,6 +140,13 @@ void Particles2D::set_speed_scale(float p_scale) {
 	VS::get_singleton()->particles_set_speed_scale(particles, p_scale);
 }
 
+#ifdef TOOLS_ENABLED
+void Particles2D::set_show_visibility_rect(bool p_show_visibility_rect) {
+	show_visibility_rect = p_show_visibility_rect;
+	update();
+}
+#endif
+
 bool Particles2D::is_emitting() const {
 	return VS::get_singleton()->particles_get_emitting(particles);
 }
@@ -205,13 +212,22 @@ bool Particles2D::get_fractional_delta() const {
 
 String Particles2D::get_configuration_warning() const {
 	String warning = Node2D::get_configuration_warning();
+
 	if (OS::get_singleton()->get_current_video_driver() == OS::VIDEO_DRIVER_GLES2) {
 		if (warning != String()) {
 			warning += "\n\n";
 		}
-		warning += TTR("GPU-based particles are not supported by the GLES2 video driver.\nUse the CPUParticles2D node instead. You can use the \"Convert to CPUParticles\" option for this purpose.");
+		warning += "- " + TTR("GPU-based particles are not supported by the GLES2 video driver.\nUse the CPUParticles2D node instead. You can use the \"Convert to CPUParticles2D\" toolbar option for this purpose.");
 		return warning;
 	}
+
+#ifdef OSX_ENABLED
+	if (warning != String()) {
+		warning += "\n\n";
+	}
+
+	warning += "- " + TTR("On macOS, Particles2D rendering is much slower than CPUParticles2D due to transform feedback being implemented on the CPU instead of the GPU.\nConsider using CPUParticles2D instead when targeting macOS.\nYou can use the \"Convert to CPUParticles2D\" toolbar option for this purpose.");
+#endif
 
 	if (process_material.is_null()) {
 		if (warning != String()) {
@@ -287,7 +303,7 @@ void Particles2D::_notification(int p_what) {
 		VS::get_singleton()->canvas_item_add_particles(get_canvas_item(), particles, texture_rid, normal_rid);
 
 #ifdef TOOLS_ENABLED
-		if (Engine::get_singleton()->is_editor_hint() && (this == get_tree()->get_edited_scene_root() || get_tree()->get_edited_scene_root()->is_a_parent_of(this))) {
+		if (show_visibility_rect) {
 			draw_rect(visibility_rect, Color(0, 0.7, 0.9, 0.4), false);
 		}
 #endif
@@ -381,7 +397,7 @@ void Particles2D::_bind_methods() {
 }
 
 Particles2D::Particles2D() {
-	particles = VS::get_singleton()->particles_create();
+	particles = RID_PRIME(VS::get_singleton()->particles_create());
 
 	one_shot = false; // Needed so that set_emitting doesn't access uninitialized values
 	set_emitting(true);
@@ -397,6 +413,9 @@ Particles2D::Particles2D() {
 	set_use_local_coordinates(true);
 	set_draw_order(DRAW_ORDER_INDEX);
 	set_speed_scale(1);
+#ifdef TOOLS_ENABLED
+	show_visibility_rect = false;
+#endif
 }
 
 Particles2D::~Particles2D() {

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -32,6 +32,7 @@
 #define GLTF_BUFFER_VIEW_H
 
 #include "core/resource.h"
+
 #include "gltf_document.h"
 
 class GLTFBufferView : public Resource {
@@ -65,4 +66,5 @@ public:
 	void set_indices(bool p_indices);
 	// matrices need to be transformed to this
 };
+
 #endif // GLTF_BUFFER_VIEW_H

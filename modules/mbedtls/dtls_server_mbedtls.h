@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef MBED_DTLS_SERVER_H
-#define MBED_DTLS_SERVER_H
+#ifndef DTLS_SERVER_MBEDTLS_H
+#define DTLS_SERVER_MBEDTLS_H
 
 #include "core/io/dtls_server.h"
 #include "ssl_context_mbedtls.h"
@@ -54,4 +54,4 @@ public:
 	~DTLSServerMbedTLS();
 };
 
-#endif // MBED_DTLS_SERVER_H
+#endif // DTLS_SERVER_MBEDTLS_H

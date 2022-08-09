@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -38,6 +38,10 @@ Vector<Vector3> RayShape::get_debug_mesh_lines() {
 	points.push_back(Vector3(0, 0, get_length()));
 
 	return points;
+}
+
+real_t RayShape::get_enclosing_radius() const {
+	return length;
 }
 
 void RayShape::_update_shape() {
@@ -77,12 +81,12 @@ void RayShape::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_slips_on_slope", "active"), &RayShape::set_slips_on_slope);
 	ClassDB::bind_method(D_METHOD("get_slips_on_slope"), &RayShape::get_slips_on_slope);
 
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "length", PROPERTY_HINT_RANGE, "0,4096,0.01"), "set_length", "get_length");
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "length", PROPERTY_HINT_RANGE, "0.001,100,0.001,or_greater"), "set_length", "get_length");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "slips_on_slope"), "set_slips_on_slope", "get_slips_on_slope");
 }
 
 RayShape::RayShape() :
-		Shape(PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_RAY)) {
+		Shape(RID_PRIME(PhysicsServer::get_singleton()->shape_create(PhysicsServer::SHAPE_RAY))) {
 	length = 1.0;
 	slips_on_slope = false;
 

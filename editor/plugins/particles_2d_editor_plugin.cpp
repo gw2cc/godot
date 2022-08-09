@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -55,6 +55,28 @@ void Particles2DEditorPlugin::make_visible(bool p_visible) {
 void Particles2DEditorPlugin::_file_selected(const String &p_file) {
 	source_emission_file = p_file;
 	emission_mask->popup_centered_minsize();
+}
+
+void Particles2DEditorPlugin::_selection_changed() {
+	List<Node *> selected_nodes = editor->get_editor_selection()->get_selected_node_list();
+
+	if (selected_particles.empty() && selected_nodes.empty()) {
+		return;
+	}
+
+	for (int i = 0; i < selected_particles.size(); i++) {
+		selected_particles[i]->set_show_visibility_rect(false);
+	}
+
+	selected_particles.clear();
+
+	for (int i = 0; i < selected_nodes.size(); i++) {
+		Particles2D *selected_particle = Object::cast_to<Particles2D>(selected_nodes[i]);
+		if (selected_particle != nullptr) {
+			selected_particle->set_show_visibility_rect(true);
+			selected_particles.push_back(selected_particle);
+		}
+	}
 }
 
 void Particles2DEditorPlugin::_menu_callback(int p_idx) {
@@ -331,12 +353,14 @@ void Particles2DEditorPlugin::_notification(int p_what) {
 		menu->get_popup()->connect("id_pressed", this, "_menu_callback");
 		menu->set_icon(menu->get_popup()->get_icon("Particles2D", "EditorIcons"));
 		file->connect("file_selected", this, "_file_selected");
+		EditorNode::get_singleton()->get_editor_selection()->connect("selection_changed", this, "_selection_changed");
 	}
 }
 
 void Particles2DEditorPlugin::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_menu_callback"), &Particles2DEditorPlugin::_menu_callback);
 	ClassDB::bind_method(D_METHOD("_file_selected"), &Particles2DEditorPlugin::_file_selected);
+	ClassDB::bind_method(D_METHOD("_selection_changed"), &Particles2DEditorPlugin::_selection_changed);
 	ClassDB::bind_method(D_METHOD("_generate_visibility_rect"), &Particles2DEditorPlugin::_generate_visibility_rect);
 	ClassDB::bind_method(D_METHOD("_generate_emission_mask"), &Particles2DEditorPlugin::_generate_emission_mask);
 }

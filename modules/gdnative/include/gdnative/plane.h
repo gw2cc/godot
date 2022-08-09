@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef GODOT_PLANE_H
-#define GODOT_PLANE_H
+#ifndef GDNATIVE_PLANE_H
+#define GDNATIVE_PLANE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -100,4 +100,4 @@ void GDAPI godot_plane_set_d(godot_plane *p_self, const godot_real p_d);
 }
 #endif
 
-#endif // GODOT_PLANE_H
+#endif // GDNATIVE_PLANE_H

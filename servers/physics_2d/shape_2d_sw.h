@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef SHAPE_2D_2DSW_H
-#define SHAPE_2D_2DSW_H
+#ifndef SHAPE_2D_SW_H
+#define SHAPE_2D_SW_H
 
 #include "servers/physics_2d_server.h"
 #define _SEGMENT_IS_VALID_SUPPORT_THRESHOLD 0.99998
@@ -533,4 +533,4 @@ public:
 
 #undef DEFAULT_PROJECT_RANGE_CAST
 
-#endif // SHAPE_2D_2DSW_H
+#endif // SHAPE_2D_SW_H

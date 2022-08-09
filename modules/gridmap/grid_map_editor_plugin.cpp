@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -507,7 +507,9 @@ void GridMapEditor::_fill_selection() {
 
 void GridMapEditor::_clear_clipboard_data() {
 	for (List<ClipboardItem>::Element *E = clipboard_items.front(); E; E = E->next()) {
-		VisualServer::get_singleton()->free(E->get().instance);
+		if (E->get().instance.is_valid()) {
+			VisualServer::get_singleton()->free(E->get().instance);
+		}
 	}
 
 	clipboard_items.clear();
@@ -831,7 +833,7 @@ void GridMapEditor::_icon_size_changed(float p_value) {
 void GridMapEditor::update_palette() {
 	int selected = mesh_library_palette->get_current();
 
-	float min_size = EDITOR_DEF("editors/grid_map/preview_size", 64);
+	float min_size = EDITOR_GET("editors/grid_map/preview_size");
 	min_size *= EDSCALE;
 
 	mesh_library_palette->clear();
@@ -936,6 +938,7 @@ void GridMapEditor::edit(GridMap *p_gridmap) {
 	}
 
 	update_palette();
+	_update_cursor_instance();
 
 	set_process(true);
 
@@ -1033,7 +1036,7 @@ void GridMapEditor::_notification(int p_what) {
 			get_tree()->connect("node_removed", this, "_node_removed");
 			mesh_library_palette->connect("item_selected", this, "_item_selected_cbk");
 			for (int i = 0; i < 3; i++) {
-				grid[i] = VS::get_singleton()->mesh_create();
+				grid[i] = RID_PRIME(VS::get_singleton()->mesh_create());
 				grid_instance[i] = VS::get_singleton()->instance_create2(grid[i], get_tree()->get_root()->get_world()->get_scenario());
 				VS::get_singleton()->instance_set_layer_mask(grid_instance[i], 1 << SpatialEditorViewport::MISC_TOOL_LAYER);
 				selection_level_instance[i] = VisualServer::get_singleton()->instance_create2(selection_level_mesh[i], get_tree()->get_root()->get_world()->get_scenario());
@@ -1054,17 +1057,31 @@ void GridMapEditor::_notification(int p_what) {
 			_clear_clipboard_data();
 
 			for (int i = 0; i < 3; i++) {
-				VS::get_singleton()->free(grid_instance[i]);
-				VS::get_singleton()->free(grid[i]);
-				grid_instance[i] = RID();
-				grid[i] = RID();
-				VisualServer::get_singleton()->free(selection_level_instance[i]);
+				if (grid_instance[i].is_valid()) {
+					VS::get_singleton()->free(grid_instance[i]);
+					grid_instance[i] = RID();
+				}
+
+				if (grid[i].is_valid()) {
+					VS::get_singleton()->free(grid[i]);
+					grid[i] = RID();
+				}
+
+				if (selection_level_instance[i].is_valid()) {
+					VS::get_singleton()->free(selection_level_instance[i]);
+					selection_level_instance[i] = RID();
+				}
 			}
 
-			VisualServer::get_singleton()->free(selection_instance);
-			VisualServer::get_singleton()->free(paste_instance);
-			selection_instance = RID();
-			paste_instance = RID();
+			if (selection_instance.is_valid()) {
+				VS::get_singleton()->free(selection_instance);
+				selection_instance = RID();
+			}
+
+			if (paste_instance.is_valid()) {
+				VS::get_singleton()->free(paste_instance);
+				paste_instance = RID();
+			}
 		} break;
 
 		case NOTIFICATION_PROCESS: {
@@ -1124,8 +1141,8 @@ void GridMapEditor::_update_cursor_instance() {
 
 	if (cursor_instance.is_valid()) {
 		VisualServer::get_singleton()->free(cursor_instance);
+		cursor_instance = RID();
 	}
-	cursor_instance = RID();
 
 	if (selected_palette >= 0) {
 		if (node && !node->get_mesh_library().is_null()) {
@@ -1299,8 +1316,6 @@ GridMapEditor::GridMapEditor(EditorNode *p_editor) {
 	size_slider->connect("value_changed", this, "_icon_size_changed");
 	add_child(size_slider);
 
-	EDITOR_DEF("editors/grid_map/preview_size", 64);
-
 	display_mode = DISPLAY_THUMBNAIL;
 
 	mesh_library_palette = memnew(ItemList);
@@ -1327,8 +1342,8 @@ GridMapEditor::GridMapEditor(EditorNode *p_editor) {
 	lock_view = false;
 	cursor_rot = 0;
 
-	selection_mesh = VisualServer::get_singleton()->mesh_create();
-	paste_mesh = VisualServer::get_singleton()->mesh_create();
+	selection_mesh = RID_PRIME(VisualServer::get_singleton()->mesh_create());
+	paste_mesh = RID_PRIME(VisualServer::get_singleton()->mesh_create());
 
 	{
 		// Selection mesh create.
@@ -1438,7 +1453,7 @@ GridMapEditor::GridMapEditor(EditorNode *p_editor) {
 
 		for (int i = 0; i < 3; i++) {
 			d[VS::ARRAY_VERTEX] = square[i];
-			selection_level_mesh[i] = VS::get_singleton()->mesh_create();
+			selection_level_mesh[i] = RID_PRIME(VS::get_singleton()->mesh_create());
 			VisualServer::get_singleton()->mesh_add_surface_from_arrays(selection_level_mesh[i], VS::PRIMITIVE_LINES, d);
 			VisualServer::get_singleton()->mesh_surface_set_material(selection_level_mesh[i], 0, selection_floor_mat->get_rid());
 		}
@@ -1477,12 +1492,15 @@ GridMapEditor::~GridMapEditor() {
 		}
 	}
 
-	VisualServer::get_singleton()->free(selection_mesh);
+	if (selection_mesh.is_valid()) {
+		VisualServer::get_singleton()->free(selection_mesh);
+	}
 	if (selection_instance.is_valid()) {
 		VisualServer::get_singleton()->free(selection_instance);
 	}
-
-	VisualServer::get_singleton()->free(paste_mesh);
+	if (paste_mesh.is_valid()) {
+		VisualServer::get_singleton()->free(paste_mesh);
+	}
 	if (paste_instance.is_valid()) {
 		VisualServer::get_singleton()->free(paste_instance);
 	}
@@ -1492,10 +1510,10 @@ void GridMapEditorPlugin::_notification(int p_what) {
 	if (p_what == EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED) {
 		switch ((int)EditorSettings::get_singleton()->get("editors/grid_map/editor_side")) {
 			case 0: { // Left.
-				SpatialEditor::get_singleton()->get_palette_split()->move_child(grid_map_editor, 0);
+				SpatialEditor::get_singleton()->move_control_to_left_panel(grid_map_editor);
 			} break;
 			case 1: { // Right.
-				SpatialEditor::get_singleton()->get_palette_split()->move_child(grid_map_editor, 1);
+				SpatialEditor::get_singleton()->move_control_to_right_panel(grid_map_editor);
 			} break;
 		}
 	}
@@ -1531,10 +1549,10 @@ GridMapEditorPlugin::GridMapEditorPlugin(EditorNode *p_node) {
 	grid_map_editor = memnew(GridMapEditor(editor));
 	switch ((int)EditorSettings::get_singleton()->get("editors/grid_map/editor_side")) {
 		case 0: { // Left.
-			add_control_to_container(CONTAINER_SPATIAL_EDITOR_SIDE_LEFT, grid_map_editor);
+			SpatialEditor::get_singleton()->add_control_to_left_panel(grid_map_editor);
 		} break;
 		case 1: { // Right.
-			add_control_to_container(CONTAINER_SPATIAL_EDITOR_SIDE_RIGHT, grid_map_editor);
+			SpatialEditor::get_singleton()->add_control_to_right_panel(grid_map_editor);
 		} break;
 	}
 	grid_map_editor->hide();

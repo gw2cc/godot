@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -132,10 +132,33 @@ void gd_mono_debug_init() {
 	CharString da_args = OS::get_singleton()->get_environment("GODOT_MONO_DEBUGGER_AGENT").utf8();
 
 	if (da_args.length()) {
+		// Clear to avoid passing it to child processes
 		OS::get_singleton()->set_environment("GODOT_MONO_DEBUGGER_AGENT", String());
+	} else {
+		// Try with command line arguments. This is useful on platforms where it's difficult to pass
+		// environment variables. The command line arguments can be specified in the export options.
+
+		String da_cmdline_arg;
+		List<String> cmdline_args = OS::get_singleton()->get_cmdline_args();
+
+		for (List<String>::Element *E = cmdline_args.front(); E; E = E->next()) {
+			const String &arg = E->get();
+
+			if (arg.begins_with("--mono-debugger-agent=")) {
+				da_cmdline_arg = arg;
+				break;
+			}
+		}
+
+		if (da_cmdline_arg.length()) {
+			da_cmdline_arg.replace_first("--mono-debugger-agent=", "--debugger-agent=");
+			da_args = da_cmdline_arg.utf8();
+		}
 	}
 
 #ifdef TOOLS_ENABLED
+	// Define debugger_agent settings even if we end up ignoring the current values. This makes sure
+	// they show up in Editor Settings.
 	int da_port = GLOBAL_DEF("mono/debugger_agent/port", 23685);
 	bool da_suspend = GLOBAL_DEF("mono/debugger_agent/wait_for_debugger", false);
 	int da_timeout = GLOBAL_DEF("mono/debugger_agent/wait_timeout", 3000);
@@ -148,6 +171,8 @@ void gd_mono_debug_init() {
 	}
 
 	if (da_args.length() == 0) {
+		// Use project settings defaults for the editor player
+
 		da_args = String("--debugger-agent=transport=dt_socket,address=127.0.0.1:" + itos(da_port) +
 				",embedding=1,server=y,suspend=" + (da_suspend ? "y,timeout=" + itos(da_timeout) : "n"))
 						  .utf8();
@@ -499,7 +524,7 @@ void GDMono::_init_godot_api_hashes() {
 }
 
 void GDMono::_init_exception_policy() {
-	PropertyInfo exc_policy_prop = PropertyInfo(Variant::INT, "mono/unhandled_exception_policy", PROPERTY_HINT_ENUM,
+	PropertyInfo exc_policy_prop = PropertyInfo(Variant::INT, "mono/runtime/unhandled_exception_policy", PROPERTY_HINT_ENUM,
 			vformat("Terminate Application:%s,Log Error:%s", (int)POLICY_TERMINATE_APP, (int)POLICY_LOG_ERROR));
 	unhandled_exception_policy = (UnhandledExceptionPolicy)(int)GLOBAL_DEF(exc_policy_prop.name, (int)POLICY_TERMINATE_APP);
 	ProjectSettings::get_singleton()->set_custom_property_info(exc_policy_prop.name, exc_policy_prop);

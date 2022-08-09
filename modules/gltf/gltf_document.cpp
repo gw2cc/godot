@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -29,9 +29,7 @@
 /*************************************************************************/
 
 #include "gltf_document.h"
-#include "core/error_list.h"
-#include "core/error_macros.h"
-#include "core/variant.h"
+
 #include "gltf_accessor.h"
 #include "gltf_animation.h"
 #include "gltf_camera.h"
@@ -44,20 +42,25 @@
 #include "gltf_state.h"
 #include "gltf_texture.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "core/bind/core_bind.h"
+#include "core/bind/core_bind.h" // FIXME: Shouldn't use _Directory but DirAccess.
 #include "core/crypto/crypto_core.h"
-#include "core/error_macros.h"
 #include "core/io/json.h"
 #include "core/math/disjoint_set.h"
 #include "core/os/file_access.h"
 #include "core/variant.h"
 #include "core/version.h"
-#include "core/version_hash.gen.h"
 #include "drivers/png/png_driver_common.h"
-#include "editor/import/resource_importer_scene.h"
+#include "scene/2d/node_2d.h"
+#include "scene/3d/bone_attachment.h"
+#include "scene/3d/mesh_instance.h"
+#include "scene/3d/multimesh_instance.h"
+#include "scene/3d/spatial.h"
+#include "scene/animation/animation_player.h"
+#include "scene/main/node.h"
+#include "scene/resources/surface_tool.h"
+
+#include "modules/modules_enabled.gen.h" // For csg, gridmap, regex.
+
 #ifdef MODULE_CSG_ENABLED
 #include "modules/csg/csg_shape.h"
 #endif // MODULE_CSG_ENABLED
@@ -67,17 +70,28 @@
 #ifdef MODULE_REGEX_ENABLED
 #include "modules/regex/regex.h"
 #endif // MODULE_REGEX_ENABLED
-#include "scene/2d/node_2d.h"
-#include "scene/3d/bone_attachment.h"
-#include "scene/3d/camera.h"
-#include "scene/3d/mesh_instance.h"
-#include "scene/3d/multimesh_instance.h"
-#include "scene/3d/skeleton.h"
-#include "scene/3d/spatial.h"
-#include "scene/animation/animation_player.h"
-#include "scene/main/node.h"
-#include "scene/resources/surface_tool.h"
-#include <limits>
+
+Ref<ArrayMesh> _mesh_to_array_mesh(Ref<Mesh> p_mesh) {
+	Ref<ArrayMesh> array_mesh = p_mesh;
+	if (array_mesh.is_valid()) {
+		return array_mesh;
+	}
+	array_mesh.instance();
+	if (p_mesh.is_null()) {
+		return array_mesh;
+	}
+
+	for (int32_t surface_i = 0; surface_i < p_mesh->get_surface_count(); surface_i++) {
+		Mesh::PrimitiveType primitive_type = p_mesh->surface_get_primitive_type(surface_i);
+		Array arrays = p_mesh->surface_get_arrays(surface_i);
+		Ref<Material> mat = p_mesh->surface_get_material(surface_i);
+		int32_t mat_idx = array_mesh->get_surface_count();
+		array_mesh->add_surface_from_arrays(primitive_type, arrays);
+		array_mesh->surface_set_material(mat_idx, mat);
+	}
+
+	return array_mesh;
+}
 
 Error GLTFDocument::serialize(Ref<GLTFState> state, Node *p_root, const String &p_path) {
 	uint64_t begin_time = OS::get_singleton()->get_ticks_usec();
@@ -804,6 +818,7 @@ Error GLTFDocument::_parse_buffers(Ref<GLTFState> state, const String &p_base_pa
 					}
 					buffer_data = _parse_base64_uri(uri);
 				} else { // Relative path to an external image file.
+					uri = uri.http_unescape();
 					uri = p_base_path.plus_file(uri).replace("\\", "/"); // Fix for Windows.
 					buffer_data = FileAccess::get_file_as_array(uri);
 					ERR_FAIL_COND_V_MSG(buffer.size() == 0, ERR_PARSE_ERROR, "glTF: Couldn't load binary file as an array: " + uri);
@@ -2606,6 +2621,7 @@ Error GLTFDocument::_parse_meshes(Ref<GLTFState> state) {
 		return OK;
 	}
 
+	bool has_warned = false;
 	Array meshes = state->json["meshes"];
 	for (GLTFMeshIndex i = 0; i < meshes.size(); i++) {
 		print_verbose("glTF: Parsing mesh: " + itos(i));
@@ -2678,11 +2694,16 @@ Error GLTFDocument::_parse_meshes(Ref<GLTFState> state) {
 				array[Mesh::ARRAY_COLOR] = _decode_accessor_as_color(state, a["COLOR_0"], true);
 				has_vertex_color = true;
 			}
-			if (a.has("JOINTS_0") && !a.has("JOINTS_1")) {
+			if (a.has("JOINTS_0")) {
 				array[Mesh::ARRAY_BONES] = _decode_accessor_as_ints(state, a["JOINTS_0"], true);
 			}
-			ERR_CONTINUE(a.has("JOINTS_0") && a.has("JOINTS_1"));
-			if (a.has("WEIGHTS_0") && !a.has("WEIGHTS_1")) {
+			if (a.has("WEIGHTS_1") && a.has("JOINTS_1")) {
+				if (!has_warned) {
+					WARN_PRINT("glTF: Meshes use more than 4 bone joints");
+					has_warned = true;
+				}
+			}
+			if (a.has("WEIGHTS_0")) {
 				Vector<float> weights = _decode_accessor_as_floats(state, a["WEIGHTS_0"], true);
 				{ //gltf does not seem to normalize the weights for some reason..
 					int wc = weights.size();
@@ -2704,7 +2725,6 @@ Error GLTFDocument::_parse_meshes(Ref<GLTFState> state) {
 				}
 				array[Mesh::ARRAY_WEIGHTS] = weights;
 			}
-			ERR_CONTINUE(a.has("WEIGHTS_0") && a.has("WEIGHTS_1"));
 
 			if (p.has("indices")) {
 				Vector<int> indices = _decode_accessor_as_ints(state, p["indices"], false);
@@ -3009,9 +3029,9 @@ Error GLTFDocument::_parse_images(Ref<GLTFState> state, const String &p_base_pat
 
 		// We'll assume that we use either URI or bufferView, so let's warn the user
 		// if their image somehow uses both. And fail if it has neither.
-		ERR_CONTINUE_MSG(!d.has("uri") && !d.has("bufferView"), "Invalid image definition in glTF file, it should specific an 'uri' or 'bufferView'.");
+		ERR_CONTINUE_MSG(!d.has("uri") && !d.has("bufferView"), "Invalid image definition in glTF file, it should specify an 'uri' or 'bufferView'.");
 		if (d.has("uri") && d.has("bufferView")) {
-			WARN_PRINT("Invalid image definition in glTF file using both 'uri' and 'bufferView'. 'bufferView' will take precedence.");
+			WARN_PRINT("Invalid image definition in glTF file using both 'uri' and 'bufferView'. 'uri' will take precedence.");
 		}
 
 		String mimetype;
@@ -3049,6 +3069,7 @@ Error GLTFDocument::_parse_images(Ref<GLTFState> state, const String &p_base_pat
 					}
 				}
 			} else { // Relative path to an external image file.
+				uri = uri.http_unescape();
 				uri = p_base_path.plus_file(uri).replace("\\", "/"); // Fix for Windows.
 				// ResourceLoader will rely on the file extension to use the relevant loader.
 				// The spec says that if mimeType is defined, it should take precedence (e.g.
@@ -3389,30 +3410,33 @@ Error GLTFDocument::_serialize_materials(Ref<GLTFState> state) {
 			tex.instance();
 			{
 				Ref<Texture> normal_texture = material->get_texture(SpatialMaterial::TEXTURE_NORMAL);
-				// Code for uncompressing RG normal maps
-				Ref<Image> img = normal_texture->get_data();
-				Ref<ImageTexture> img_tex = img;
-				if (img_tex.is_valid()) {
-					img = img_tex->get_data();
-				}
-				img->decompress();
-				img->convert(Image::FORMAT_RGBA8);
-				img->lock();
-				for (int32_t y = 0; y < img->get_height(); y++) {
-					for (int32_t x = 0; x < img->get_width(); x++) {
-						Color c = img->get_pixel(x, y);
-						Vector2 red_green = Vector2(c.r, c.g);
-						red_green = red_green * Vector2(2.0f, 2.0f) - Vector2(1.0f, 1.0f);
-						float blue = 1.0f - red_green.dot(red_green);
-						blue = MAX(0.0f, blue);
-						c.b = Math::sqrt(blue);
-						img->set_pixel(x, y, c);
+				if (normal_texture.is_valid()) {
+					// Code for uncompressing RG normal maps
+					Ref<Image> img = normal_texture->get_data();
+					if (img.is_valid()) {
+						Ref<ImageTexture> img_tex = img;
+						if (img_tex.is_valid()) {
+							img = img_tex->get_data();
+						}
+						img->decompress();
+						img->convert(Image::FORMAT_RGBA8);
+						img->lock();
+						for (int32_t y = 0; y < img->get_height(); y++) {
+							for (int32_t x = 0; x < img->get_width(); x++) {
+								Color c = img->get_pixel(x, y);
+								Vector2 red_green = Vector2(c.r, c.g);
+								red_green = red_green * Vector2(2.0f, 2.0f) - Vector2(1.0f, 1.0f);
+								float blue = 1.0f - red_green.dot(red_green);
+								blue = MAX(0.0f, blue);
+								c.b = Math::sqrt(blue);
+								img->set_pixel(x, y, c);
+							}
+						}
+						img->unlock();
+						tex->create_from_image(img);
 					}
 				}
-				img->unlock();
-				tex->create_from_image(img);
 			}
-			Ref<Texture> normal_texture = material->get_texture(SpatialMaterial::TEXTURE_NORMAL);
 			GLTFTextureIndex gltf_texture_index = -1;
 			if (tex.is_valid() && tex->get_data().is_valid()) {
 				tex->set_name(material->get_name() + "_normal");
@@ -4606,7 +4630,7 @@ Error GLTFDocument::_parse_lights(Ref<GLTFState> state) {
 			light->outer_cone_angle = spot["outerConeAngle"];
 			ERR_CONTINUE_MSG(light->inner_cone_angle >= light->outer_cone_angle, "The inner angle must be smaller than the outer angle.");
 		} else if (type != "point" && type != "directional") {
-			ERR_CONTINUE_MSG(ERR_PARSE_ERROR, "Light type is unknown.");
+			ERR_CONTINUE_MSG(true, "Light type is unknown.");
 		}
 
 		state->lights.push_back(light);
@@ -5070,11 +5094,6 @@ GLTFMeshIndex GLTFDocument::_convert_mesh_to_gltf(Ref<GLTFState> state, MeshInst
 			Mesh::PrimitiveType primitive_type = godot_mesh->surface_get_primitive_type(surface_i);
 			Array arrays = godot_mesh->surface_get_arrays(surface_i);
 			Ref<Material> mat = godot_mesh->surface_get_material(surface_i);
-			Ref<ArrayMesh> godot_array_mesh = godot_mesh;
-			String surface_name;
-			if (godot_array_mesh.is_valid()) {
-				surface_name = godot_array_mesh->surface_get_name(surface_i);
-			}
 			if (p_mesh_instance->get_surface_material(surface_i).is_valid()) {
 				mat = p_mesh_instance->get_surface_material(surface_i);
 			}
@@ -5158,19 +5177,16 @@ Spatial *GLTFDocument::_generate_light(Ref<GLTFState> state, Node *scene_parent,
 	}
 
 	const float range = CLAMP(l->range, 0, 4096);
-	// Doubling the range will double the effective brightness, so we need double attenuation (half brightness).
-	// We want to have double intensity give double brightness, so we need half the attenuation.
-	const float attenuation = range / intensity;
 	if (l->type == "point") {
 		OmniLight *light = memnew(OmniLight);
-		light->set_param(OmniLight::PARAM_ATTENUATION, attenuation);
+		light->set_param(OmniLight::PARAM_ENERGY, intensity);
 		light->set_param(OmniLight::PARAM_RANGE, range);
 		light->set_color(l->color);
 		return light;
 	}
 	if (l->type == "spot") {
 		SpotLight *light = memnew(SpotLight);
-		light->set_param(SpotLight::PARAM_ATTENUATION, attenuation);
+		light->set_param(SpotLight::PARAM_ENERGY, intensity);
 		light->set_param(SpotLight::PARAM_RANGE, range);
 		light->set_param(SpotLight::PARAM_SPOT_ANGLE, Math::rad2deg(l->outer_cone_angle));
 		light->set_color(l->color);
@@ -5239,14 +5255,12 @@ GLTFLightIndex GLTFDocument::_convert_light(Ref<GLTFState> state, Light *p_light
 		l->type = "point";
 		OmniLight *light = cast_to<OmniLight>(p_light);
 		l->range = light->get_param(OmniLight::PARAM_RANGE);
-		float attenuation = p_light->get_param(OmniLight::PARAM_ATTENUATION);
-		l->intensity = l->range / attenuation;
+		l->intensity = light->get_param(OmniLight::PARAM_ENERGY);
 	} else if (cast_to<SpotLight>(p_light)) {
 		l->type = "spot";
 		SpotLight *light = cast_to<SpotLight>(p_light);
 		l->range = light->get_param(SpotLight::PARAM_RANGE);
-		float attenuation = light->get_param(SpotLight::PARAM_ATTENUATION);
-		l->intensity = l->range / attenuation;
+		l->intensity = light->get_param(SpotLight::PARAM_ENERGY);
 		l->outer_cone_angle = Math::deg2rad(light->get_param(SpotLight::PARAM_SPOT_ANGLE));
 
 		// This equation is the inverse of the import equation (which has a desmos link).
@@ -5424,21 +5438,19 @@ void GLTFDocument::_convert_grid_map_to_gltf(GridMap *p_grid_map, GLTFNodeIndex 
 		state->nodes.push_back(new_gltf_node);
 		Vector3 cell_location = cells[k];
 		int32_t cell = p_grid_map->get_cell_item(
-				Vector3(cell_location.x, cell_location.y, cell_location.z));
-		MeshInstance *import_mesh_node = memnew(MeshInstance);
-		import_mesh_node->set_mesh(p_grid_map->get_mesh_library()->get_item_mesh(cell));
+				cell_location.x, cell_location.y, cell_location.z);
 		Transform cell_xform;
 		cell_xform.basis.set_orthogonal_index(
 				p_grid_map->get_cell_item_orientation(
-						Vector3(cell_location.x, cell_location.y, cell_location.z)));
+						cell_location.x, cell_location.y, cell_location.z));
 		cell_xform.basis.scale(Vector3(p_grid_map->get_cell_scale(),
 				p_grid_map->get_cell_scale(),
 				p_grid_map->get_cell_scale()));
 		cell_xform.set_origin(p_grid_map->map_to_world(
-				Vector3(cell_location.x, cell_location.y, cell_location.z)));
+				cell_location.x, cell_location.y, cell_location.z));
 		Ref<GLTFMesh> gltf_mesh;
 		gltf_mesh.instance();
-		gltf_mesh = import_mesh_node;
+		gltf_mesh->set_mesh(_mesh_to_array_mesh(p_grid_map->get_mesh_library()->get_item_mesh(cell)));
 		new_gltf_node->mesh = state->meshes.size();
 		state->meshes.push_back(gltf_mesh);
 		new_gltf_node->xform = cell_xform * p_grid_map->get_transform();
@@ -5770,7 +5782,7 @@ struct EditorSceneImporterGLTFInterpolate<Quat> {
 template <class T>
 T GLTFDocument::_interpolate_track(const Vector<float> &p_times, const Vector<T> &p_values, const float p_time, const GLTFAnimation::Interpolation p_interp) {
 	ERR_FAIL_COND_V(!p_values.size(), T());
-	if (p_times.size() != p_values.size()) {
+	if (p_times.size() != (p_values.size() / (p_interp == GLTFAnimation::INTERP_CUBIC_SPLINE ? 3 : 1))) {
 		ERR_PRINT_ONCE("The interpolated values are not corresponding to its times.");
 		return p_values[0];
 	}
@@ -6066,7 +6078,10 @@ void GLTFDocument::_convert_mesh_instances(Ref<GLTFState> state) {
 			int bone_cnt = skeleton->get_bone_count();
 			ERR_FAIL_COND(bone_cnt != gltf_skeleton->joints.size());
 
-			ObjectID gltf_skin_key = skin->get_instance_id();
+			ObjectID gltf_skin_key = 0;
+			if (skin.is_valid()) {
+				gltf_skin_key = skin->get_instance_id();
+			}
 			ObjectID gltf_skel_key = godot_skeleton->get_instance_id();
 			GLTFSkinIndex skin_gltf_i = -1;
 			GLTFNodeIndex root_gltf_i = -1;
@@ -6587,103 +6602,110 @@ Error GLTFDocument::parse(Ref<GLTFState> state, String p_path, bool p_read_binar
 	state->major_version = version.get_slice(".", 0).to_int();
 	state->minor_version = version.get_slice(".", 1).to_int();
 
-	/* STEP 0 PARSE SCENE */
+	/* PARSE EXTENSIONS */
+
+	err = _parse_gltf_extensions(state);
+	if (err != OK) {
+		return Error::FAILED;
+	}
+
+	/* PARSE SCENE */
 	err = _parse_scenes(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 1 PARSE NODES */
+	/* PARSE NODES */
 	err = _parse_nodes(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 2 PARSE BUFFERS */
+	/* PARSE BUFFERS */
 	err = _parse_buffers(state, p_path.get_base_dir());
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 3 PARSE BUFFER VIEWS */
+	/* PARSE BUFFER VIEWS */
 	err = _parse_buffer_views(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 4 PARSE ACCESSORS */
+	/* PARSE ACCESSORS */
 	err = _parse_accessors(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 5 PARSE IMAGES */
+	/* PARSE IMAGES */
 	err = _parse_images(state, p_path.get_base_dir());
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 6 PARSE TEXTURES */
+	/* PARSE TEXTURES */
 	err = _parse_textures(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 7 PARSE TEXTURES */
+	/* PARSE TEXTURES */
 	err = _parse_materials(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 9 PARSE SKINS */
+	/* PARSE SKINS */
 	err = _parse_skins(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 10 DETERMINE SKELETONS */
+	/* DETERMINE SKELETONS */
 	err = _determine_skeletons(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 11 CREATE SKELETONS */
+	/* CREATE SKELETONS */
 	err = _create_skeletons(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 12 CREATE SKINS */
+	/* CREATE SKINS */
 	err = _create_skins(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 13 PARSE MESHES (we have enough info now) */
+	/* PARSE MESHES (we have enough info now) */
 	err = _parse_meshes(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 14 PARSE LIGHTS */
+	/* PARSE LIGHTS */
 	err = _parse_lights(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 15 PARSE CAMERAS */
+	/* PARSE CAMERAS */
 	err = _parse_cameras(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 16 PARSE ANIMATIONS */
+	/* PARSE ANIMATIONS */
 	err = _parse_animations(state);
 	if (err != OK) {
 		return Error::FAILED;
 	}
 
-	/* STEP 17 ASSIGN SCENE NAMES */
+	/* ASSIGN SCENE NAMES */
 	_assign_scene_names(state);
 
 	return OK;
@@ -6737,8 +6759,8 @@ Error GLTFDocument::_serialize_version(Ref<GLTFState> state) {
 	Dictionary asset;
 	asset["version"] = version;
 
-	String hash = VERSION_HASH;
-	asset["generator"] = String(VERSION_FULL_NAME) + String("@") + (hash.length() == 0 ? String("unknown") : hash);
+	String hash = String(VERSION_HASH);
+	asset["generator"] = String(VERSION_FULL_NAME) + String("@") + (hash.empty() ? String("unknown") : hash);
 	state->json["asset"] = asset;
 	ERR_FAIL_COND_V(!asset.has("version"), Error::FAILED);
 	ERR_FAIL_COND_V(!state->json.has("asset"), Error::FAILED);
@@ -6802,4 +6824,16 @@ Error GLTFDocument::_serialize_file(Ref<GLTFState> state, const String p_path) {
 		f->close();
 	}
 	return err;
+}
+
+Error GLTFDocument::_parse_gltf_extensions(Ref<GLTFState> state) {
+	ERR_FAIL_COND_V(!state.is_valid(), ERR_PARSE_ERROR);
+	if (state->json.has("extensionsRequired") && state->json["extensionsRequired"].get_type() == Variant::ARRAY) {
+		Array extensions_required = state->json["extensionsRequired"];
+		if (extensions_required.find("KHR_draco_mesh_compression") != -1) {
+			ERR_PRINT("glTF2 extension KHR_draco_mesh_compression is not supported.");
+			return ERR_UNAVAILABLE;
+		}
+	}
+	return OK;
 }

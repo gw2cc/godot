@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,16 +28,14 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#include "editor_scene_exporter_gltf_plugin.h"
-#include "core/object.h"
-#include "core/project_settings.h"
-#include "core/vector.h"
-#include "editor/editor_file_system.h"
-#include "scene/3d/mesh_instance.h"
-#include "scene/gui/check_box.h"
-#include "scene/main/node.h"
+#ifdef TOOLS_ENABLED
 
+#include "editor_scene_exporter_gltf_plugin.h"
+
+#include "editor/editor_file_dialog.h"
+#include "editor/editor_file_system.h"
 #include "editor/editor_node.h"
+#include "scene/main/node.h"
 
 String SceneExporterGLTFPlugin::get_name() const {
 	return "ConvertGLTF2";
@@ -90,6 +88,8 @@ void SceneExporterGLTFPlugin::convert_scene_to_gltf2(Variant p_null) {
 	if (filename.empty()) {
 		filename = root->get_name();
 	}
-	file_export_lib->set_current_file(filename + String(".gltf"));
+	file_export_lib->set_current_file(filename + ".gltf");
 	file_export_lib->popup_centered_ratio();
 }
+
+#endif // TOOLS_ENABLED

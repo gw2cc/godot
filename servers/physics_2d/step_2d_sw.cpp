@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -130,7 +130,7 @@ void Step2DSW::_check_suspend(Body2DSW *p_island, real_t p_delta) {
 
 void Step2DSW::step(Space2DSW *p_space, real_t p_delta, int p_iterations) {
 	p_space->lock(); // can't access space during this
-
+	p_space->set_step(p_delta);
 	p_space->setup(); //update inertias, etc
 
 	const SelfList<Body2DSW>::List *body_list = &p_space->get_active_body_list();
@@ -150,6 +150,9 @@ void Step2DSW::step(Space2DSW *p_space, real_t p_delta, int p_iterations) {
 	}
 
 	p_space->set_active_objects(active_count);
+
+	// Update the broadphase to register collision pairs.
+	p_space->update();
 
 	{ //profile
 		profile_endtime = OS::get_singleton()->get_ticks_usec();
@@ -294,7 +297,6 @@ void Step2DSW::step(Space2DSW *p_space, real_t p_delta, int p_iterations) {
 		//profile_begtime=profile_endtime;
 	}
 
-	p_space->update();
 	p_space->unlock();
 	_step++;
 }

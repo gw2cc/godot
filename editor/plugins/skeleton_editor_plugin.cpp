@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -77,7 +77,7 @@ void SkeletonEditor::create_physical_skeleton() {
 			if (!bones_infos[parent].physical_bone) {
 				bones_infos.write[parent].physical_bone = create_physical_bone(parent, bone_id, bones_infos);
 
-				ur->create_action(TTR("Create physical bones"));
+				ur->create_action(TTR("Create physical bones"), UndoRedo::MERGE_ALL);
 				ur->add_do_method(skeleton, "add_child", bones_infos[parent].physical_bone);
 				ur->add_do_reference(bones_infos[parent].physical_bone);
 				ur->add_undo_method(skeleton, "remove_child", bones_infos[parent].physical_bone);
@@ -97,7 +97,9 @@ void SkeletonEditor::create_physical_skeleton() {
 }
 
 PhysicalBone *SkeletonEditor::create_physical_bone(int bone_id, int bone_child_id, const Vector<BoneInfo> &bones_infos) {
-	real_t half_height(skeleton->get_bone_rest(bone_child_id).origin.length() * 0.5);
+	const Transform child_rest = skeleton->get_bone_rest(bone_child_id);
+
+	real_t half_height(child_rest.origin.length() * 0.5);
 	real_t radius(half_height * 0.2);
 
 	CapsuleShape *bone_shape_capsule = memnew(CapsuleShape);
@@ -108,11 +110,16 @@ PhysicalBone *SkeletonEditor::create_physical_bone(int bone_id, int bone_child_i
 	bone_shape->set_shape(bone_shape_capsule);
 
 	Transform capsule_transform;
-	capsule_transform.basis = Basis(Vector3(1, 0, 0), Vector3(0, 0, 1), Vector3(0, -1, 0));
 	bone_shape->set_transform(capsule_transform);
 
+	Vector3 up = Vector3(0, 1, 0);
+	if (up.cross(child_rest.origin).is_equal_approx(Vector3())) {
+		up = Vector3(0, 0, 1);
+	}
+
 	Transform body_transform;
-	body_transform.origin = Vector3(0, 0, -half_height);
+	body_transform.set_look_at(Vector3(0, 0, 0), child_rest.origin, up);
+	body_transform.origin = body_transform.basis.xform(Vector3(0, 0, -half_height));
 
 	Transform joint_transform;
 	joint_transform.origin = Vector3(0, 0, half_height);

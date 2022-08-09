@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -96,11 +96,13 @@ bool JoypadWindows::have_device(const GUID &p_guid) {
 
 // adapted from SDL2, works a lot better than the MSDN version
 bool JoypadWindows::is_xinput_device(const GUID *p_guid) {
-	static GUID IID_ValveStreamingGamepad = { MAKELONG(0x28DE, 0x11FF), 0x0000, 0x0000, { 0x00, 0x00, 0x50, 0x49, 0x44, 0x56, 0x49, 0x44 } };
+	static GUID IID_ValveStreamingGamepad = { MAKELONG(0x28DE, 0x11FF), 0x28DE, 0x0000, { 0x00, 0x00, 0x50, 0x49, 0x44, 0x56, 0x49, 0x44 } };
 	static GUID IID_X360WiredGamepad = { MAKELONG(0x045E, 0x02A1), 0x0000, 0x0000, { 0x00, 0x00, 0x50, 0x49, 0x44, 0x56, 0x49, 0x44 } };
 	static GUID IID_X360WirelessGamepad = { MAKELONG(0x045E, 0x028E), 0x0000, 0x0000, { 0x00, 0x00, 0x50, 0x49, 0x44, 0x56, 0x49, 0x44 } };
 
-	if (p_guid == &IID_ValveStreamingGamepad || p_guid == &IID_X360WiredGamepad || p_guid == &IID_X360WirelessGamepad)
+	if (memcmp(p_guid, &IID_ValveStreamingGamepad, sizeof(*p_guid)) == 0 ||
+			memcmp(p_guid, &IID_X360WiredGamepad, sizeof(*p_guid)) == 0 ||
+			memcmp(p_guid, &IID_X360WirelessGamepad, sizeof(*p_guid)) == 0)
 		return true;
 
 	PRAWINPUTDEVICELIST dev_list = NULL;
@@ -445,33 +447,27 @@ void JoypadWindows::post_hat(int p_device, DWORD p_dpad) {
 	input->joy_hat(p_device, dpad_val);
 };
 
-InputDefault::JoyAxis JoypadWindows::axis_correct(int p_val, bool p_xinput, bool p_trigger, bool p_negate) const {
-	InputDefault::JoyAxis jx;
+float JoypadWindows::axis_correct(int p_val, bool p_xinput, bool p_trigger, bool p_negate) const {
 	if (Math::abs(p_val) < MIN_JOY_AXIS) {
-		jx.min = p_trigger ? 0 : -1;
-		jx.value = 0.0f;
-		return jx;
+		return p_trigger ? -1.0f : 0.0f;
 	}
-	if (p_xinput) {
-		if (p_trigger) {
-			jx.min = 0;
-			jx.value = (float)p_val / MAX_TRIGGER;
-			return jx;
-		}
-		jx.min = -1;
-		if (p_val < 0) {
-			jx.value = (float)p_val / MAX_JOY_AXIS;
-		} else {
-			jx.value = (float)p_val / (MAX_JOY_AXIS - 1);
-		}
-		if (p_negate) {
-			jx.value = -jx.value;
-		}
-		return jx;
+	if (!p_xinput) {
+		return (float)p_val / MAX_JOY_AXIS;
 	}
-	jx.min = -1;
-	jx.value = (float)p_val / MAX_JOY_AXIS;
-	return jx;
+	if (p_trigger) {
+		// Convert to a value between -1.0f and 1.0f.
+		return 2.0f * p_val / MAX_TRIGGER - 1.0f;
+	}
+	float value;
+	if (p_val < 0) {
+		value = (float)p_val / MAX_JOY_AXIS;
+	} else {
+		value = (float)p_val / (MAX_JOY_AXIS - 1);
+	}
+	if (p_negate) {
+		value = -value;
+	}
+	return value;
 }
 
 void JoypadWindows::joypad_vibration_start_xinput(int p_device, float p_weak_magnitude, float p_strong_magnitude, float p_duration, uint64_t p_timestamp) {

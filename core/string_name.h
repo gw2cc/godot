@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -34,6 +34,8 @@
 #include "core/os/mutex.h"
 #include "core/safe_refcount.h"
 #include "core/ustring.h"
+
+#define UNIQUE_NODE_PREFIX "%"
 
 struct StaticCString {
 	const char *ptr;
@@ -92,6 +94,17 @@ public:
 	bool operator==(const String &p_name) const;
 	bool operator==(const char *p_name) const;
 	bool operator!=(const String &p_name) const;
+
+	_FORCE_INLINE_ bool is_node_unique_name() const {
+		if (!_data) {
+			return false;
+		}
+		if (_data->cname != nullptr) {
+			return (char32_t)_data->cname[0] == (char32_t)UNIQUE_NODE_PREFIX[0];
+		} else {
+			return (char32_t)_data->name[0] == (char32_t)UNIQUE_NODE_PREFIX[0];
+		}
+	}
 	_FORCE_INLINE_ bool operator<(const StringName &p_name) const {
 		return _data < p_name._data;
 	}

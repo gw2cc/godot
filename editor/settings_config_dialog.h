@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -80,9 +80,6 @@ class EditorSettingsDialog : public AcceptDialog {
 
 	void _tabs_tab_changed(int p_tab);
 	void _focus_current_search_box();
-
-	void _clear_shortcut_search_box();
-	void _clear_search_box();
 
 	void _filter_shortcuts(const String &p_filter);
 

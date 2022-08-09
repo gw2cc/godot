@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -599,6 +599,37 @@ bool Variant::can_convert_strict(Variant::Type p_type_from, Variant::Type p_type
 	}
 
 	return false;
+}
+
+bool Variant::deep_equal(const Variant &p_variant, int p_recursion_count) const {
+	ERR_FAIL_COND_V_MSG(p_recursion_count > MAX_RECURSION, true, "Max recursion reached");
+
+	// Containers must be handled with recursivity checks
+	switch (type) {
+		case Variant::Type::DICTIONARY: {
+			if (p_variant.type != Variant::Type::DICTIONARY) {
+				return false;
+			}
+
+			const Dictionary v1_as_d = Dictionary(*this);
+			const Dictionary v2_as_d = Dictionary(p_variant);
+
+			return v1_as_d.deep_equal(v2_as_d, p_recursion_count + 1);
+		} break;
+		case Variant::Type::ARRAY: {
+			if (p_variant.type != Variant::Type::ARRAY) {
+				return false;
+			}
+
+			const Array v1_as_a = Array(*this);
+			const Array v2_as_a = Array(p_variant);
+
+			return v1_as_a.deep_equal(v2_as_a, p_recursion_count + 1);
+		} break;
+		default: {
+			return *this == p_variant;
+		} break;
+	}
 }
 
 bool Variant::operator==(const Variant &p_variant) const {

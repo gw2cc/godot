@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -80,7 +80,7 @@ void EditorProfiler::add_frame_metric(const Metric &p_metric, bool p_final) {
 
 void EditorProfiler::clear() {
 	int metric_size = EditorSettings::get_singleton()->get("debugger/profiler_frame_history_size");
-	metric_size = CLAMP(metric_size, 60, 1024);
+	metric_size = CLAMP(metric_size, 60, 10000);
 	frame_metrics.clear();
 	frame_metrics.resize(metric_size);
 	last_metric = -1;
@@ -425,9 +425,12 @@ void EditorProfiler::_clear_pressed() {
 }
 
 void EditorProfiler::_notification(int p_what) {
-	if (p_what == NOTIFICATION_ENTER_TREE) {
-		activate->set_icon(get_icon("Play", "EditorIcons"));
-		clear_button->set_icon(get_icon("Clear", "EditorIcons"));
+	switch (p_what) {
+		case NOTIFICATION_ENTER_TREE:
+		case NOTIFICATION_THEME_CHANGED: {
+			activate->set_icon(get_icon("Play", "EditorIcons"));
+			clear_button->set_icon(get_icon("Clear", "EditorIcons"));
+		} break;
 	}
 }
 
@@ -753,7 +756,7 @@ EditorProfiler::EditorProfiler() {
 	h_split->add_child(graph);
 	graph->set_h_size_flags(SIZE_EXPAND_FILL);
 
-	int metric_size = CLAMP(int(EDITOR_DEF("debugger/profiler_frame_history_size", 600)), 60, 1024);
+	int metric_size = CLAMP(int(EDITOR_DEF("debugger/profiler_frame_history_size", 1800)), 60, 10000);
 	frame_metrics.resize(metric_size);
 	last_metric = -1;
 	hover_metric = -1;

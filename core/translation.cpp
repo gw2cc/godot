@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -870,9 +870,24 @@ void Translation::set_locale(const String &p_locale) {
 	}
 }
 
+void Translation::add_context_message(const StringName &p_src_text, const StringName &p_xlated_text, const StringName &p_context) {
+	if (p_context != StringName()) {
+		WARN_PRINT("Translation class doesn't handle context.");
+	}
+	add_message(p_src_text, p_xlated_text);
+}
+
+StringName Translation::get_context_message(const StringName &p_src_text, const StringName &p_context) const {
+	if (p_context != StringName()) {
+		WARN_PRINT("Translation class doesn't handle context.");
+	}
+	return get_message(p_src_text);
+}
+
 void Translation::add_message(const StringName &p_src_text, const StringName &p_xlated_text) {
 	translation_map[p_src_text] = p_xlated_text;
 }
+
 StringName Translation::get_message(const StringName &p_src_text) const {
 	if (get_script_instance()) {
 		return get_script_instance()->call("_get_message", p_src_text);
@@ -919,6 +934,32 @@ void Translation::_bind_methods() {
 
 Translation::Translation() :
 		locale("en") {
+}
+
+///////////////////////////////////////////////
+
+void ContextTranslation::add_context_message(const StringName &p_src_text, const StringName &p_xlated_text, const StringName &p_context) {
+	if (p_context == StringName()) {
+		add_message(p_src_text, p_xlated_text);
+	} else {
+		context_translation_map[p_context][p_src_text] = p_xlated_text;
+	}
+}
+
+StringName ContextTranslation::get_context_message(const StringName &p_src_text, const StringName &p_context) const {
+	if (p_context == StringName()) {
+		return get_message(p_src_text);
+	}
+
+	const Map<StringName, Map<StringName, StringName>>::Element *context = context_translation_map.find(p_context);
+	if (!context) {
+		return StringName();
+	}
+	const Map<StringName, StringName>::Element *message = context->get().find(p_src_text);
+	if (!message) {
+		return StringName();
+	}
+	return message->get();
 }
 
 ///////////////////////////////////////////////
@@ -1011,9 +1052,12 @@ Array TranslationServer::get_loaded_locales() const {
 		ERR_FAIL_COND_V(t.is_null(), Array());
 		String l = t->get_locale();
 
-		locales.push_back(l);
+		if (!locales.has(l)) {
+			locales.push_back(l);
+		}
 	}
 
+	locales.sort();
 	return locales;
 }
 
@@ -1199,9 +1243,9 @@ void TranslationServer::set_tool_translation(const Ref<Translation> &p_translati
 	tool_translation = p_translation;
 }
 
-StringName TranslationServer::tool_translate(const StringName &p_message) const {
+StringName TranslationServer::tool_translate(const StringName &p_message, const StringName &p_context) const {
 	if (tool_translation.is_valid()) {
-		StringName r = tool_translation->get_message(p_message);
+		StringName r = tool_translation->get_context_message(p_message, p_context);
 		if (r) {
 			return r;
 		}

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -148,7 +148,6 @@ class CustomPropertyEditor : public Popup {
 	void _drag_easing(const Ref<InputEvent> &p_ev);
 
 	void _node_path_selected(NodePath p_path);
-	void show_value_editors(int p_amount);
 	void config_value_editors(int p_amount, int p_columns, int p_label_w, const List<String> &p_strings);
 	void config_action_buttons(const List<String> &p_strings);
 
@@ -171,4 +170,4 @@ public:
 	CustomPropertyEditor();
 };
 
-#endif
+#endif // PROPERTY_EDITOR_H

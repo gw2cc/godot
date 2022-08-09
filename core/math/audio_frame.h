@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef AUDIOFRAME_H
-#define AUDIOFRAME_H
+#ifndef AUDIO_FRAME_H
+#define AUDIO_FRAME_H
 
 #include "core/math/vector2.h"
 #include "core/typedefs.h"
@@ -52,7 +52,7 @@ static const float AUDIO_MIN_PEAK_DB = -200.0f; // linear2db(AUDIO_PEAK_OFFSET)
 
 struct AudioFrame {
 	//left and right samples
-	float l, r;
+	float l = 0.f, r = 0.f;
 
 	_ALWAYS_INLINE_ const float &operator[](int idx) const { return idx == 0 ? l : r; }
 	_ALWAYS_INLINE_ float &operator[](int idx) { return idx == 0 ? l : r; }
@@ -141,4 +141,4 @@ struct AudioFrame {
 	_ALWAYS_INLINE_ AudioFrame() {}
 };
 
-#endif
+#endif // AUDIO_FRAME_H

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -34,7 +34,7 @@
 #include "core/os/os.h"
 #include "core/ustring.h"
 
-#include "modules/modules_enabled.gen.h"
+#include "modules/modules_enabled.gen.h" // For regex.
 #ifdef MODULE_REGEX_ENABLED
 #include "modules/regex/regex.h"
 #endif
@@ -555,6 +555,42 @@ bool test_28() {
 	OS::get_singleton()->print(output_format, format.c_str(), output.c_str(), success ? "OK" : "FAIL");
 	state = state && success;
 
+	// Negative int left padded with spaces.
+	format = "fish %5d frog";
+	args.clear();
+	args.push_back(-5);
+	output = format.sprintf(args, &error);
+	success = (output == String("fish    -5 frog") && !error);
+	OS::get_singleton()->print(output_format, format.c_str(), output.c_str(), success ? "OK" : "FAIL");
+	state = state && success;
+
+	// Negative int left padded with zeros.
+	format = "fish %05d frog";
+	args.clear();
+	args.push_back(-5);
+	output = format.sprintf(args, &error);
+	success = (output == String("fish -0005 frog") && !error);
+	OS::get_singleton()->print(output_format, format.c_str(), output.c_str(), success ? "OK" : "FAIL");
+	state = state && success;
+
+	// Negative int right padded with spaces.
+	format = "fish %-5d frog";
+	args.clear();
+	args.push_back(-5);
+	output = format.sprintf(args, &error);
+	success = (output == String("fish -5    frog") && !error);
+	OS::get_singleton()->print(output_format, format.c_str(), output.c_str(), success ? "OK" : "FAIL");
+	state = state && success;
+
+	// Negative int right padded with zeros. (0 ignored)
+	format = "fish %-05d frog";
+	args.clear();
+	args.push_back(-5);
+	output = format.sprintf(args, &error);
+	success = (output == String("fish -5    frog") && !error);
+	OS::get_singleton()->print(output_format, format.c_str(), output.c_str(), success ? "OK" : "FAIL");
+	state = state && success;
+
 	// Hex (lower)
 	format = "fish %x frog";
 	args.clear();
@@ -653,6 +689,15 @@ bool test_28() {
 	args.push_back(99.99);
 	output = format.sprintf(args, &error);
 	success = (output == String("fish 100 frog") && !error);
+	OS::get_singleton()->print(output_format, format.c_str(), output.c_str(), success ? "OK" : "FAIL");
+	state = state && success;
+
+	// Negative real right padded with zeros. (0 ignored)
+	format = "fish %-011f frog";
+	args.clear();
+	args.push_back(-99.99);
+	output = format.sprintf(args, &error);
+	success = (output == String("fish -99.990000  frog") && !error);
 	OS::get_singleton()->print(output_format, format.c_str(), output.c_str(), success ? "OK" : "FAIL");
 	state = state && success;
 

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -197,7 +197,7 @@ Transform2D Camera2D::get_camera_transform() {
 
 	Rect2 screen_rect(-screen_offset + ret_camera_pos, screen_size * zoom);
 
-	if (!limit_smoothing_enabled) {
+	if (!smoothing_enabled || !limit_smoothing_enabled) {
 		if (screen_rect.position.x < limit[MARGIN_LEFT]) {
 			screen_rect.position.x = limit[MARGIN_LEFT];
 		}
@@ -245,6 +245,7 @@ void Camera2D::_notification(int p_what) {
 
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
+			ERR_FAIL_COND(!is_inside_tree());
 			canvas = get_canvas();
 
 			_setup_viewport();
@@ -253,9 +254,8 @@ void Camera2D::_notification(int p_what) {
 			// if a camera enters the tree that is set to current,
 			// it should take over as the current camera, and mark
 			// all other cameras as non current
-			_set_current(current);
-
 			first = true;
+			_set_current(current);
 
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
@@ -436,7 +436,9 @@ void Camera2D::clear_current() {
 void Camera2D::set_limit(Margin p_margin, int p_limit) {
 	ERR_FAIL_INDEX((int)p_margin, 4);
 	limit[p_margin] = p_limit;
-	update();
+	Point2 old_smoothed_camera_pos = smoothed_camera_pos;
+	_update_scroll();
+	smoothed_camera_pos = old_smoothed_camera_pos;
 }
 
 int Camera2D::get_limit(Margin p_margin) const {
@@ -580,6 +582,10 @@ void Camera2D::set_custom_viewport(Node *p_viewport) {
 	if (is_inside_tree()) {
 		remove_from_group(group_name);
 		remove_from_group(canvas_group_name);
+	}
+
+	if (custom_viewport && !ObjectDB::get_instance(custom_viewport_id)) {
+		viewport = nullptr;
 	}
 
 	custom_viewport = Object::cast_to<Viewport>(p_viewport);

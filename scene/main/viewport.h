@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -49,6 +49,7 @@ class Label;
 class Timer;
 class Viewport;
 class CollisionObject;
+class SceneTreeTimer;
 
 class ViewportTexture : public Texture {
 	GDCLASS(ViewportTexture, Texture);
@@ -285,6 +286,7 @@ private:
 	bool use_debanding;
 	float sharpen_intensity;
 	bool hdr;
+	bool use_32_bpc_depth;
 
 	Ref<ViewportTexture> default_texture;
 	Set<ViewportTexture *> viewport_textures;
@@ -308,7 +310,7 @@ private:
 		bool drag_attempted;
 		Variant drag_data;
 		ObjectID drag_preview_id;
-		float tooltip_timer;
+		Ref<SceneTreeTimer> tooltip_timer;
 		float tooltip_delay;
 		List<Control *> modal_stack;
 		Transform2D focus_inv_xform;
@@ -320,6 +322,7 @@ private:
 		List<Control *> roots;
 		int canvas_sort_index; //for sorting items with canvas as root
 		bool dragging;
+		bool drag_successful;
 
 		GUI();
 	} gui;
@@ -337,6 +340,7 @@ private:
 	Control *_gui_find_control_at_pos(CanvasItem *p_node, const Point2 &p_global, const Transform2D &p_xform, Transform2D &r_inv_xform);
 
 	void _gui_input_event(Ref<InputEvent> p_event);
+	void _gui_cleanup_internal_state(Ref<InputEvent> p_event);
 
 	void update_worlds();
 
@@ -411,6 +415,7 @@ private:
 	void _canvas_layer_remove(CanvasLayer *p_canvas_layer);
 
 	void _drop_mouse_focus();
+	void _drop_mouse_over();
 	void _drop_physics_mouseover(bool p_paused_only = false);
 
 	void _update_canvas_items(Node *p_node);
@@ -516,10 +521,13 @@ public:
 	void set_hdr(bool p_hdr);
 	bool get_hdr() const;
 
+	void set_use_32_bpc_depth(bool p_enable);
+	bool is_using_32_bpc_depth() const;
+
 	Vector2 get_camera_coords(const Vector2 &p_viewport_coords) const;
 	Vector2 get_camera_rect_size() const;
 
-	void set_use_own_world(bool p_world);
+	void set_use_own_world(bool p_use_own_world);
 	bool is_using_own_world() const;
 
 	void input(const Ref<InputEvent> &p_event);
@@ -576,6 +584,7 @@ public:
 	bool is_handling_input_locally() const;
 
 	bool gui_is_dragging() const;
+	bool gui_is_drag_successful() const;
 
 	Viewport();
 	~Viewport();
@@ -589,4 +598,4 @@ VARIANT_ENUM_CAST(Viewport::DebugDraw);
 VARIANT_ENUM_CAST(Viewport::ClearMode);
 VARIANT_ENUM_CAST(Viewport::RenderInfo);
 
-#endif
+#endif // VIEWPORT_H

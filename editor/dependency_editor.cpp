@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -51,6 +51,9 @@ void DependencyEditor::_load_pressed(Object *p_item, int p_cell, int p_button) {
 	replacing = ti->get_text(1);
 
 	search->set_title(TTR("Search Replacement For:") + " " + replacing.get_file());
+
+	// Set directory to closest existing directory.
+	search->set_current_dir(replacing.get_base_dir());
 
 	search->clear_filters();
 	List<String> ext;
@@ -331,7 +334,7 @@ void DependencyEditorOwners::show(const String &p_path) {
 	_fill_owners(EditorFileSystem::get_singleton()->get_filesystem());
 	popup_centered_ratio();
 
-	set_title(TTR("Owners Of:") + " " + p_path.get_file());
+	set_title(vformat(TTR("Owners of: %s (Total: %d)"), p_path.get_file(), owners->get_item_count()));
 }
 
 DependencyEditorOwners::DependencyEditorOwners(EditorNode *p_editor) {

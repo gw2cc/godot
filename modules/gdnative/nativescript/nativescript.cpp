@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -1017,10 +1017,6 @@ void NativeScriptLanguage::_unload_stuff(bool p_reload) {
 NativeScriptLanguage::NativeScriptLanguage() {
 	NativeScriptLanguage::singleton = this;
 
-#ifdef DEBUG_ENABLED
-	profiling = false;
-#endif
-
 	_init_call_type = "nativescript_init";
 	_init_call_name = "nativescript_init";
 	_terminate_call_name = "nativescript_terminate";
@@ -1182,7 +1178,6 @@ void NativeScriptLanguage::profiling_start() {
 #endif
 
 	profile_data.clear();
-	profiling = true;
 #endif
 }
 
@@ -1191,8 +1186,6 @@ void NativeScriptLanguage::profiling_stop() {
 #ifndef NO_THREADS
 	MutexLock lock(mutex);
 #endif
-
-	profiling = false;
 #endif
 }
 

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef EDITORNETWORKPROFILER_H
-#define EDITORNETWORKPROFILER_H
+#ifndef EDITOR_NETWORK_PROFILER_H
+#define EDITOR_NETWORK_PROFILER_H
 
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
@@ -68,4 +68,4 @@ public:
 	EditorNetworkProfiler();
 };
 
-#endif //EDITORNETWORKPROFILER_H
+#endif // EDITOR_NETWORK_PROFILER_H

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -47,6 +47,7 @@
 #include "test_render.h"
 #include "test_shader_lang.h"
 #include "test_string.h"
+#include "test_theme.h"
 #include "test_transform.h"
 #include "test_xml_parser.h"
 
@@ -69,6 +70,7 @@ const char **tests_get_names() {
 		"ordered_hash_map",
 		"astar",
 		"xml_parser",
+		"theme",
 		nullptr
 	};
 
@@ -148,6 +150,10 @@ MainLoop *test_main(String p_test, const List<String> &p_args) {
 
 	if (p_test == "xml_parser") {
 		return TestXMLParser::test();
+	}
+
+	if (p_test == "theme") {
+		return TestTheme::test();
 	}
 
 	print_line("Unknown test: " + p_test);

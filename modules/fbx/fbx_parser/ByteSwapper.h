@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -33,7 +33,6 @@ Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
 Copyright (c) 2006-2020, assimp team
-
 
 All rights reserved.
 
@@ -70,10 +69,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ----------------------------------------------------------------------
 */
 
-/** @file Helper class tp perform various byte oder swappings
+/** @file Helper class to perform various byte order swappings
    (e.g. little to big endian) */
-#ifndef BYTE_SWAPPER_H
-#define BYTE_SWAPPER_H
+
+#ifndef BYTESWAPPER_H
+#define BYTESWAPPER_H
 
 #include <stdint.h>
 #include <algorithm>
@@ -280,4 +280,4 @@ struct Getter<SwapEndianess, T, false> {
 } // namespace Intern
 } // namespace FBXDocParser
 
-#endif // BYTE_SWAPPER_H
+#endif // BYTESWAPPER_H

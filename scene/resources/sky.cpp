@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -495,7 +495,7 @@ void ProceduralSky::_bind_methods() {
 
 ProceduralSky::ProceduralSky(bool p_desaturate) {
 	sky = VS::get_singleton()->sky_create();
-	texture = VS::get_singleton()->texture_create();
+	texture = RID_PRIME(VS::get_singleton()->texture_create());
 
 	update_queued = false;
 	sky_top_color = Color::hex(0xa5d6f1ff);

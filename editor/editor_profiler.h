@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef EDITORPROFILER_H
-#define EDITORPROFILER_H
+#ifndef EDITOR_PROFILER_H
+#define EDITOR_PROFILER_H
 
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
@@ -49,7 +49,7 @@ public:
 
 		int frame_number;
 		float frame_time;
-		float idle_time;
+		float process_time;
 		float physics_time;
 		float physics_frame_time;
 
@@ -170,4 +170,4 @@ public:
 	EditorProfiler();
 };
 
-#endif // EDITORPROFILER_H
+#endif // EDITOR_PROFILER_H

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef SCENE_MAIN_LOOP_H
-#define SCENE_MAIN_LOOP_H
+#ifndef SCENE_TREE_H
+#define SCENE_TREE_H
 
 #include "core/io/multiplayer_api.h"
 #include "core/os/main_loop.h"
@@ -41,6 +41,8 @@
 
 class PackedScene;
 class Node;
+class SceneTreeTween;
+class Spatial;
 class Viewport;
 class Material;
 class Mesh;
@@ -50,6 +52,7 @@ class SceneTreeTimer : public Reference {
 
 	float time_left;
 	bool process_pause;
+	bool ignore_time_scale = false;
 
 protected:
 	static void _bind_methods();
@@ -60,6 +63,9 @@ public:
 
 	void set_pause_mode_process(bool p_pause_mode_process);
 	bool is_pause_mode_process();
+
+	void set_ignore_time_scale(bool p_ignore);
+	bool is_ignore_time_scale();
 
 	void release_connections();
 
@@ -98,6 +104,11 @@ private:
 		Group() { changed = false; };
 	};
 
+	struct ClientPhysicsInterpolation {
+		SelfList<Spatial>::List _spatials_list;
+		void physics_process();
+	} _client_physics_interpolation;
+
 	Viewport *root;
 
 	uint64_t tree_version;
@@ -117,6 +128,7 @@ private:
 	bool _quit;
 	bool initialized;
 	bool input_handled;
+	bool _physics_interpolation_enabled;
 
 	Size2 last_screen_size;
 	StringName tree_changed_name;
@@ -158,7 +170,6 @@ private:
 	void _flush_ugc();
 
 	_FORCE_INLINE_ void _update_group_order(Group &g, bool p_use_priority = false);
-	void _update_listener();
 
 	Array _get_nodes_in_group(const StringName &p_group);
 
@@ -178,6 +189,7 @@ private:
 	//void _call_group(uint32_t p_call_flags,const StringName& p_group,const StringName& p_function,const Variant& p_arg1,const Variant& p_arg2);
 
 	List<Ref<SceneTreeTimer>> timers;
+	List<Ref<SceneTreeTween>> tweens;
 
 	///network///
 
@@ -198,6 +210,7 @@ private:
 	void node_added(Node *p_node);
 	void node_removed(Node *p_node);
 	void node_renamed(Node *p_node);
+	void process_tweens(float p_delta, bool p_physics_frame);
 
 	Group *add_to_group(const StringName &p_group, Node *p_node);
 	void remove_from_group(const StringName &p_group, Node *p_node);
@@ -293,11 +306,14 @@ public:
 	virtual void init();
 
 	virtual bool iteration(float p_time);
+	virtual void iteration_end();
 	virtual bool idle(float p_time);
 
 	virtual void finish();
 
+	bool is_auto_accept_quit() const;
 	void set_auto_accept_quit(bool p_enable);
+	bool is_quit_on_go_back() const;
 	void set_quit_on_go_back(bool p_enable);
 
 	void quit(int p_exit_code = -1);
@@ -315,9 +331,6 @@ public:
 
 	void set_pause(bool p_enabled);
 	bool is_paused() const;
-
-	void set_camera(const RID &p_camera);
-	RID get_camera() const;
 
 #ifdef DEBUG_ENABLED
 	void set_debug_collisions_hint(bool p_enabled);
@@ -380,6 +393,8 @@ public:
 	Error reload_current_scene();
 
 	Ref<SceneTreeTimer> create_timer(float p_delay_sec, bool p_process_pause = true);
+	Ref<SceneTreeTween> create_tween();
+	Array get_processed_tweens();
 
 	//used by Main::start, don't use otherwise
 	void add_current_scene(Node *p_current);
@@ -407,6 +422,12 @@ public:
 	void set_refuse_new_network_connections(bool p_refuse);
 	bool is_refusing_new_network_connections() const;
 
+	void set_physics_interpolation_enabled(bool p_enabled);
+	bool is_physics_interpolation_enabled() const;
+
+	void client_physics_interpolation_add_spatial(SelfList<Spatial> *p_elem);
+	void client_physics_interpolation_remove_spatial(SelfList<Spatial> *p_elem);
+
 	static void add_idle_callback(IdleCallback p_callback);
 	SceneTree();
 	~SceneTree();
@@ -416,4 +437,4 @@ VARIANT_ENUM_CAST(SceneTree::StretchMode);
 VARIANT_ENUM_CAST(SceneTree::StretchAspect);
 VARIANT_ENUM_CAST(SceneTree::GroupCallFlags);
 
-#endif
+#endif // SCENE_TREE_H

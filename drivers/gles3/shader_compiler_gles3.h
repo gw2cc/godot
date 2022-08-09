@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef SHADERCOMPILERGLES3_H
-#define SHADERCOMPILERGLES3_H
+#ifndef SHADER_COMPILER_GLES3_H
+#define SHADER_COMPILER_GLES3_H
 
 #include "core/pair.h"
 #include "servers/visual/shader_language.h"
@@ -100,4 +100,4 @@ public:
 	ShaderCompilerGLES3();
 };
 
-#endif // SHADERCOMPILERGLES3_H
+#endif // SHADER_COMPILER_GLES3_H

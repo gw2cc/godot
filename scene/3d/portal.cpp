@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -58,7 +58,7 @@ Portal::Portal() {
 	_use_default_margin = true;
 
 	// the visual server portal lifetime is linked to the lifetime of this object
-	_portal_rid = VisualServer::get_singleton()->portal_create();
+	_portal_rid = RID_PRIME(VisualServer::get_singleton()->portal_create());
 
 #ifdef TOOLS_ENABLED
 	_room_manager_godot_ID = 0;
@@ -551,7 +551,7 @@ void Portal::_sanitize_points() {
 	// may not be necessary, no idea how fast it is
 	_pts_local = Geometry::convex_hull_2d(raw);
 
-	// some pecularity of convex_hull_2d function, it duplicates the last point for some reason
+	// some peculiarity of convex_hull_2d function, it duplicates the last point for some reason
 	if (_pts_local.size() > 1) {
 		_pts_local.resize(_pts_local.size() - 1);
 	}

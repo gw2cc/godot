@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -175,7 +175,7 @@ void GIProbeData::_bind_methods() {
 }
 
 GIProbeData::GIProbeData() {
-	probe = VS::get_singleton()->gi_probe_create();
+	probe = RID_PRIME(VS::get_singleton()->gi_probe_create());
 }
 
 GIProbeData::~GIProbeData() {
@@ -522,7 +522,7 @@ GIProbe::GIProbe() {
 	interior = false;
 	compress = false;
 
-	gi_probe = VS::get_singleton()->gi_probe_create();
+	gi_probe = RID_PRIME(VS::get_singleton()->gi_probe_create());
 	set_disable_scale(true);
 }
 

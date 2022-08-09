@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -159,6 +159,7 @@ private:
 	LineEdit *vmem_total;
 
 	Tree *stack_dump;
+	LineEdit *search;
 	EditorInspector *inspector;
 
 	Ref<TCP_Server> server;
@@ -243,7 +244,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	void start();
+	void start(int p_port = -1, const IP_Address &p_bind_address = IP_Address("*"));
 	void pause();
 	void unpause();
 	void stop();

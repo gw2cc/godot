@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -64,6 +64,7 @@ public:
 	void set_item_id(int p_idx, int p_id);
 	void set_item_metadata(int p_idx, const Variant &p_metadata);
 	void set_item_disabled(int p_idx, bool p_disabled);
+	void set_item_tooltip(int p_idx, const String &p_tooltip);
 
 	String get_item_text(int p_idx) const;
 	Ref<Texture> get_item_icon(int p_idx) const;
@@ -71,6 +72,7 @@ public:
 	int get_item_index(int p_id) const;
 	Variant get_item_metadata(int p_idx) const;
 	bool is_item_disabled(int p_idx) const;
+	String get_item_tooltip(int p_idx) const;
 
 	int get_item_count() const;
 
@@ -93,4 +95,4 @@ public:
 	~OptionButton();
 };
 
-#endif
+#endif // OPTION_BUTTON_H

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -32,10 +32,15 @@
 #define EDITOR_RUN_NATIVE_H
 
 #include "scene/gui/box_container.h"
+#include "scene/gui/dialogs.h"
 #include "scene/gui/menu_button.h"
+#include "scene/gui/rich_text_label.h"
 
 class EditorRunNative : public HBoxContainer {
 	GDCLASS(EditorRunNative, HBoxContainer);
+
+	RichTextLabel *result_dialog_log;
+	AcceptDialog *result_dialog;
 
 	Map<int, MenuButton *> menus;
 	bool first;
@@ -43,6 +48,7 @@ class EditorRunNative : public HBoxContainer {
 	bool deploy_debug_remote;
 	bool debug_collisions;
 	bool debug_navigation;
+	bool debug_shader_fallbacks;
 
 	int resume_idx;
 	int resume_platform;
@@ -65,6 +71,9 @@ public:
 
 	void set_debug_navigation(bool p_debug);
 	bool get_debug_navigation() const;
+
+	void set_debug_shader_fallbacks(bool p_debug);
+	bool get_debug_shader_fallbacks() const;
 
 	void resume_run_native();
 

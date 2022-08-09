@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef PATH_UTILS_H
-#define PATH_UTILS_H
+#ifndef MONO_PATH_UTILS_H
+#define MONO_PATH_UTILS_H
 
 #include "core/string_builder.h"
 #include "core/ustring.h"
@@ -61,4 +61,4 @@ String relative_to(const String &p_path, const String &p_relative_to);
 
 } // namespace path
 
-#endif // PATH_UTILS_H
+#endif // MONO_PATH_UTILS_H

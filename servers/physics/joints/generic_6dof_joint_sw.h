@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -311,12 +311,12 @@ public:
 		m_angularLimits[2].m_hiLimit = angularUpper.z;
 	}
 
-	//! Retrieves the angular limit informacion
+	//! Retrieves the angular limit information
 	G6DOFRotationalLimitMotorSW *getRotationalLimitMotor(int index) {
 		return &m_angularLimits[index];
 	}
 
-	//! Retrieves the limit informacion
+	//! Retrieves the limit information
 	G6DOFTranslationalLimitMotorSW *getTranslationalLimitMotor() {
 		return &m_linearLimits;
 	}

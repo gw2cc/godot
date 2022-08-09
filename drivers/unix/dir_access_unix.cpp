@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -48,10 +48,6 @@
 #ifdef HAVE_MNTENT
 #include <mntent.h>
 #endif
-
-DirAccess *DirAccessUnix::create_fs() {
-	return memnew(DirAccessUnix);
-}
 
 Error DirAccessUnix::list_dir_begin() {
 	list_dir_end(); //close any previous dir opening!
@@ -194,6 +190,8 @@ static bool _filter_drive(struct mntent *mnt) {
 #endif
 
 static void _get_drives(List<String> *list) {
+	list->push_back("/");
+
 #if defined(HAVE_MNTENT) && defined(X11_ENABLED)
 	// Check /etc/mtab for the list of mounted partitions
 	FILE *mtab = setmntent("/etc/mtab", "r");
@@ -260,6 +258,20 @@ String DirAccessUnix::get_drive(int p_drive) {
 	ERR_FAIL_INDEX_V(p_drive, list.size(), "");
 
 	return list[p_drive];
+}
+
+int DirAccessUnix::get_current_drive() {
+	int drive = 0;
+	int max_length = -1;
+	const String path = get_current_dir().to_lower();
+	for (int i = 0; i < get_drive_count(); i++) {
+		const String d = get_drive(i).to_lower();
+		if (max_length < d.length() && path.begins_with(d)) {
+			max_length = d.length();
+			drive = i;
+		}
+	}
+	return drive;
 }
 
 bool DirAccessUnix::drives_are_shortcuts() {
@@ -467,4 +479,4 @@ DirAccessUnix::~DirAccessUnix() {
 	list_dir_end();
 }
 
-#endif //posix_enabled
+#endif // UNIX_ENABLED || LIBC_FILEIO_ENABLED

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -67,7 +67,7 @@ float AnimationNodeAnimation::process(float p_time, bool p_seek) {
 	AnimationPlayer *ap = state->player;
 	ERR_FAIL_COND_V(!ap, 0);
 
-	float time = get_parameter(this->time);
+	const float current_time = get_parameter(this->time);
 
 	if (!ap->has_animation(animation)) {
 		AnimationNodeBlendTree *tree = Object::cast_to<AnimationNodeBlendTree>(parent);
@@ -84,6 +84,7 @@ float AnimationNodeAnimation::process(float p_time, bool p_seek) {
 
 	Ref<Animation> anim = ap->get_animation(animation);
 
+	float time = current_time;
 	float step;
 
 	if (p_seek) {
@@ -103,6 +104,7 @@ float AnimationNodeAnimation::process(float p_time, bool p_seek) {
 
 	} else if (time > anim_size) {
 		time = anim_size;
+		step = anim_size - current_time;
 	}
 
 	blend_animation(animation, time, step, p_seek, 1.0);
@@ -319,10 +321,12 @@ void AnimationNodeOneShot::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_use_sync", "enable"), &AnimationNodeOneShot::set_use_sync);
 	ClassDB::bind_method(D_METHOD("is_using_sync"), &AnimationNodeOneShot::is_using_sync);
 
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "mix_mode", PROPERTY_HINT_ENUM, "Blend,Add"), "set_mix_mode", "get_mix_mode");
+
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "fadein_time", PROPERTY_HINT_RANGE, "0,60,0.01,or_greater"), "set_fadein_time", "get_fadein_time");
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "fadeout_time", PROPERTY_HINT_RANGE, "0,60,0.01,or_greater"), "set_fadeout_time", "get_fadeout_time");
 
-	ADD_GROUP("autorestart_", "Auto Restart");
+	ADD_GROUP("Auto Restart", "autorestart_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "autorestart"), "set_autorestart", "has_autorestart");
 
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "autorestart_delay", PROPERTY_HINT_RANGE, "0,60,0.01,or_greater"), "set_autorestart_delay", "get_autorestart_delay");
@@ -348,7 +352,7 @@ AnimationNodeOneShot::AnimationNodeOneShot() {
 	mix = MIX_MODE_BLEND;
 	sync = false;
 
-	active = "active";
+	active = PNAME("active");
 	prev_active = "prev_active";
 	time = "time";
 	remaining = "remaining";
@@ -395,7 +399,7 @@ void AnimationNodeAdd2::_bind_methods() {
 }
 
 AnimationNodeAdd2::AnimationNodeAdd2() {
-	add_amount = "add_amount";
+	add_amount = PNAME("add_amount");
 	add_input("in");
 	add_input("add");
 	sync = false;
@@ -442,7 +446,7 @@ void AnimationNodeAdd3::_bind_methods() {
 }
 
 AnimationNodeAdd3::AnimationNodeAdd3() {
-	add_amount = "add_amount";
+	add_amount = PNAME("add_amount");
 	add_input("-add");
 	add_input("in");
 	add_input("+add");
@@ -488,7 +492,7 @@ void AnimationNodeBlend2::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "sync"), "set_use_sync", "is_using_sync");
 }
 AnimationNodeBlend2::AnimationNodeBlend2() {
-	blend_amount = "blend_amount";
+	blend_amount = PNAME("blend_amount");
 	add_input("in");
 	add_input("blend");
 	sync = false;
@@ -531,7 +535,7 @@ void AnimationNodeBlend3::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "sync"), "set_use_sync", "is_using_sync");
 }
 AnimationNodeBlend3::AnimationNodeBlend3() {
-	blend_amount = "blend_amount";
+	blend_amount = PNAME("blend_amount");
 	add_input("-blend");
 	add_input("in");
 	add_input("+blend");
@@ -563,7 +567,7 @@ float AnimationNodeTimeScale::process(float p_time, bool p_seek) {
 void AnimationNodeTimeScale::_bind_methods() {
 }
 AnimationNodeTimeScale::AnimationNodeTimeScale() {
-	scale = "scale";
+	scale = PNAME("scale");
 	add_input("in");
 }
 
@@ -599,7 +603,7 @@ void AnimationNodeTimeSeek::_bind_methods() {
 
 AnimationNodeTimeSeek::AnimationNodeTimeSeek() {
 	add_input("in");
-	seek_pos = "seek_position";
+	seek_pos = PNAME("seek_position");
 }
 
 /////////////////////////////////////////////////
@@ -792,7 +796,7 @@ AnimationNodeTransition::AnimationNodeTransition() {
 	prev_xfading = "prev_xfading";
 	prev = "prev";
 	time = "time";
-	current = "current";
+	current = PNAME("current");
 	prev_current = "prev_current";
 	xfade = 0.0;
 

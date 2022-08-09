@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -88,6 +88,30 @@ void Array::clear() {
 	_p->array.clear();
 }
 
+bool Array::deep_equal(const Array &p_array, int p_recursion_count) const {
+	// Cheap checks
+	ERR_FAIL_COND_V_MSG(p_recursion_count > MAX_RECURSION, true, "Max recursion reached");
+	if (_p == p_array._p) {
+		return true;
+	}
+	const Vector<Variant> &a1 = _p->array;
+	const Vector<Variant> &a2 = p_array._p->array;
+	const int size = a1.size();
+	if (size != a2.size()) {
+		return false;
+	}
+
+	// Heavy O(n) check
+	p_recursion_count++;
+	for (int i = 0; i < size; i++) {
+		if (!a1[i].deep_equal(a2[i], p_recursion_count)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 bool Array::operator==(const Array &p_array) const {
 	return _p == p_array._p;
 }
@@ -117,6 +141,10 @@ Error Array::resize(int p_new_size) {
 
 void Array::insert(int p_pos, const Variant &p_value) {
 	_p->array.insert(p_pos, p_value);
+}
+
+void Array::fill(const Variant &p_value) {
+	_p->array.fill(p_value);
 }
 
 void Array::erase(const Variant &p_value) {
@@ -450,7 +478,7 @@ Variant Array::max() const {
 }
 
 const void *Array::id() const {
-	return _p->array.ptr();
+	return _p;
 }
 
 Array::Array(const Array &p_from) {

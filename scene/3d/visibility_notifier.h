@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -42,10 +42,20 @@ class VisibilityNotifier : public CullInstance {
 	Set<Camera *> cameras;
 
 	AABB aabb;
+	Vector3 _world_aabb_center;
 
 	// if using rooms and portals
 	RID _cull_instance_rid;
 	bool _in_gameplay;
+
+	bool _max_distance_active;
+	real_t _max_distance;
+	real_t _max_distance_squared;
+
+	// This is a first number of frames where distance objects
+	// are forced seen as visible, to make sure their animations
+	// and physics positions etc are something reasonable.
+	uint32_t _max_distance_leadin_counter;
 
 protected:
 	virtual void _screen_enter() {}
@@ -63,6 +73,21 @@ public:
 	void set_aabb(const AABB &p_aabb);
 	AABB get_aabb() const;
 	bool is_on_screen() const;
+
+	// This is only currently kept up to date if max_distance is active
+	const Vector3 &get_world_aabb_center() const { return _world_aabb_center; }
+
+	void set_max_distance(real_t p_max_distance);
+	real_t get_max_distance() const { return _max_distance; }
+	real_t get_max_distance_squared() const { return _max_distance_squared; }
+	bool is_max_distance_active() const { return _max_distance_active; }
+	bool inside_max_distance_leadin() {
+		if (!_max_distance_leadin_counter) {
+			return false;
+		}
+		_max_distance_leadin_counter--;
+		return true;
+	}
 
 	VisibilityNotifier();
 	~VisibilityNotifier();

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef AUDIO_STREAM_STB_VORBIS_H
-#define AUDIO_STREAM_STB_VORBIS_H
+#ifndef AUDIO_STREAM_OGG_VORBIS_H
+#define AUDIO_STREAM_OGG_VORBIS_H
 
 #include "core/io/resource_loader.h"
 #include "servers/audio/audio_stream.h"
@@ -109,4 +109,4 @@ public:
 	virtual ~AudioStreamOGGVorbis();
 };
 
-#endif
+#endif // AUDIO_STREAM_OGG_VORBIS_H

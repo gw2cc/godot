@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -70,10 +70,15 @@ protected:
 };
 
 void ImportDefaultsEditor::_notification(int p_what) {
-	if (p_what == NOTIFICATION_PREDELETE) {
-		if (inspector) {
+	switch (p_what) {
+		case NOTIFICATION_ENTER_TREE:
+		case EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED: {
+			inspector->set_property_name_style(EditorPropertyNameProcessor::get_settings_style());
+		} break;
+
+		case NOTIFICATION_PREDELETE: {
 			inspector->edit(nullptr);
-		}
+		} break;
 	}
 }
 
@@ -99,8 +104,8 @@ void ImportDefaultsEditor::_save() {
 		} else {
 			ProjectSettings::get_singleton()->set("importer_defaults/" + settings->importer->get_importer_name(), Variant());
 		}
-
-		emit_signal("project_settings_changed");
+		// Calling ProjectSettings::set() causes the signal "project_settings_changed" to be sent to ProjectSettings.
+		// ProjectSettingsEditor subscribes to this and can reads the settings updated here.
 	}
 }
 

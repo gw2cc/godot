@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -114,7 +114,7 @@ public:
 	virtual String get_line() const;
 	virtual String get_token() const;
 	virtual Vector<String> get_csv_line(const String &p_delim = ",") const;
-	virtual String get_as_utf8_string() const;
+	virtual String get_as_utf8_string(bool p_skip_cr = true) const; // Skip CR by default for compat.
 
 	/**< use this for files WRITTEN in _big_ endian machines (ie, amiga/mac)
 	 * It's not about the current CPU type but file formats.
@@ -190,6 +190,10 @@ struct FileAccessRef {
 	FileAccess *f;
 	operator FileAccess *() { return f; }
 	FileAccessRef(FileAccess *fa) { f = fa; }
+	FileAccessRef(FileAccessRef &&other) {
+		f = other.f;
+		other.f = nullptr;
+	}
 	~FileAccessRef() {
 		if (f) {
 			memdelete(f);
@@ -197,4 +201,4 @@ struct FileAccessRef {
 	}
 };
 
-#endif
+#endif // FILE_ACCESS_H

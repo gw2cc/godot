@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -39,6 +39,7 @@ class InputDefault : public Input {
 
 	int mouse_button_mask;
 
+	Set<int> physical_keys_pressed;
 	Set<int> keys_pressed;
 	Set<int> joy_buttons_pressed;
 	Map<int, float> _joy_axis;
@@ -131,11 +132,6 @@ public:
 		JOYPADS_MAX = 16,
 	};
 
-	struct JoyAxis {
-		int min;
-		float value;
-	};
-
 private:
 	enum JoyType {
 		TYPE_BUTTON,
@@ -201,7 +197,6 @@ private:
 	JoystickList _get_output_axis(String output);
 	void _button_event(int p_device, int p_index, bool p_pressed);
 	void _axis_event(int p_device, int p_axis, float p_value);
-	float _handle_deadzone(int p_device, int p_axis, float p_value);
 
 	void _parse_input_event_impl(const Ref<InputEvent> &p_event, bool p_is_emulated);
 
@@ -221,6 +216,7 @@ protected:
 
 public:
 	virtual bool is_key_pressed(int p_scancode) const;
+	virtual bool is_physical_key_pressed(int p_scancode) const;
 	virtual bool is_mouse_button_pressed(int p_button) const;
 	virtual bool is_joy_button_pressed(int p_device, int p_button) const;
 	virtual bool is_action_pressed(const StringName &p_action, bool p_exact = false) const;
@@ -236,7 +232,6 @@ public:
 	virtual float get_joy_vibration_duration(int p_device);
 	virtual uint64_t get_joy_vibration_timestamp(int p_device);
 	void joy_connection_changed(int p_idx, bool p_connected, String p_name, String p_guid = "");
-	void parse_joypad_mapping(String p_mapping, bool p_update_existing);
 
 	virtual Vector3 get_gravity() const;
 	virtual Vector3 get_accelerometer() const;
@@ -284,7 +279,7 @@ public:
 
 	void parse_mapping(String p_mapping);
 	void joy_button(int p_device, int p_button, bool p_pressed);
-	void joy_axis(int p_device, int p_axis, const JoyAxis &p_value);
+	void joy_axis(int p_device, int p_axis, float p_value);
 	void joy_hat(int p_device, int p_val);
 
 	virtual void add_joy_mapping(String p_mapping, bool p_update_existing = false);
@@ -306,6 +301,7 @@ public:
 	virtual void flush_buffered_events();
 	virtual bool is_using_input_buffering();
 	virtual void set_use_input_buffering(bool p_enable);
+	virtual bool is_using_accumulated_input();
 	virtual void set_use_accumulated_input(bool p_enable);
 
 	virtual void release_pressed_events();

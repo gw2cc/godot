@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -107,8 +107,6 @@ void VisualServerViewport::_draw_viewport(Viewport *p_viewport, ARVRInterface::E
 	}
 
 	if (!p_viewport->hide_canvas) {
-		int i = 0;
-
 		Map<Viewport::CanvasKey, Viewport::CanvasData *> canvas_map;
 
 		Rect2 clip_rect(0, 0, p_viewport->size.x, p_viewport->size.y);
@@ -116,8 +114,6 @@ void VisualServerViewport::_draw_viewport(Viewport *p_viewport, ARVRInterface::E
 		RasterizerCanvas::Light *lights_with_shadow = nullptr;
 		RasterizerCanvas::Light *lights_with_mask = nullptr;
 		Rect2 shadow_rect;
-
-		int light_count = 0;
 
 		for (Map<RID, Viewport::CanvasData>::Element *E = p_viewport->canvas_map.front(); E; E = E->next()) {
 			VisualServerCanvas::Canvas *canvas = static_cast<VisualServerCanvas::Canvas *>(E->get().canvas);
@@ -164,8 +160,6 @@ void VisualServerViewport::_draw_viewport(Viewport *p_viewport, ARVRInterface::E
 							cl->mask_next_ptr = lights_with_mask;
 							lights_with_mask = cl;
 						}
-
-						light_count++;
 					}
 
 					VSG::canvas_render->light_internal_update(cl->light_internal, cl);
@@ -235,7 +229,6 @@ void VisualServerViewport::_draw_viewport(Viewport *p_viewport, ARVRInterface::E
 			}
 
 			VSG::canvas->render_canvas(canvas, xform, canvas_lights, lights_with_mask, clip_rect, canvas_layer_id);
-			i++;
 
 			if (scenario_draw_canvas_bg && E->key().get_layer() >= scenario_canvas_max_layer) {
 				if (!can_draw_3d) {
@@ -288,6 +281,17 @@ void VisualServerViewport::draw_viewports() {
 
 		ERR_CONTINUE(!vp->render_target.is_valid());
 
+		if (vp->use_arvr) {
+			// In ARVR mode it is our interface that controls our size
+			if (arvr_interface.is_valid()) {
+				// override our size, make sure it matches our required size
+				vp->size = arvr_interface->get_render_targetsize();
+			} else {
+				// reset this, we can't render the output without a valid interface (this will likely be so when we're in the editor)
+				vp->size = Vector2(0, 0);
+			}
+		}
+
 		bool visible = vp->viewport_to_screen_rect != Rect2() || vp->update_mode == VS::VIEWPORT_UPDATE_ALWAYS || vp->update_mode == VS::VIEWPORT_UPDATE_ONCE || (vp->update_mode == VS::VIEWPORT_UPDATE_WHEN_VISIBLE && VSG::storage->render_target_was_used(vp->render_target));
 		visible = visible && vp->size.x > 1 && vp->size.y > 1;
 
@@ -298,8 +302,6 @@ void VisualServerViewport::draw_viewports() {
 		VSG::storage->render_target_clear_used(vp->render_target);
 
 		if (vp->use_arvr && arvr_interface.is_valid()) {
-			// override our size, make sure it matches our required size
-			vp->size = arvr_interface->get_render_targetsize();
 			VSG::storage->render_target_set_size(vp->render_target, vp->size.x, vp->size.y);
 
 			// render mono or left eye first
@@ -657,6 +659,13 @@ void VisualServerViewport::viewport_set_hdr(RID p_viewport, bool p_enabled) {
 	ERR_FAIL_COND(!viewport);
 
 	VSG::storage->render_target_set_flag(viewport->render_target, RasterizerStorage::RENDER_TARGET_HDR, p_enabled);
+}
+
+void VisualServerViewport::viewport_set_use_32_bpc_depth(RID p_viewport, bool p_enabled) {
+	Viewport *viewport = viewport_owner.getornull(p_viewport);
+	ERR_FAIL_COND(!viewport);
+
+	VSG::storage->render_target_set_flag(viewport->render_target, RasterizerStorage::RENDER_TARGET_USE_32_BPC_DEPTH, p_enabled);
 }
 
 void VisualServerViewport::viewport_set_usage(RID p_viewport, VS::ViewportUsage p_usage) {

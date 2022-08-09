@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -184,6 +184,14 @@ godot_variant GDAPI godot_dictionary_get_with_default(const godot_dictionary *p_
 	memnew_placement(dest, Variant(self->get(*key, *def)));
 
 	return raw_dest;
+}
+
+// GDNative core 1.3
+
+void GDAPI godot_dictionary_merge(godot_dictionary *p_self, const godot_dictionary *p_dictionary, const godot_bool p_overwrite) {
+	Dictionary *self = (Dictionary *)p_self;
+	const Dictionary *dictionary = (const Dictionary *)p_dictionary;
+	self->merge(*dictionary, p_overwrite);
 }
 
 #ifdef __cplusplus

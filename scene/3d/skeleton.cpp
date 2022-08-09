@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -158,13 +158,13 @@ bool Skeleton::_get(const StringName &p_path, Variant &r_ret) const {
 }
 void Skeleton::_get_property_list(List<PropertyInfo> *p_list) const {
 	for (int i = 0; i < bones.size(); i++) {
-		String prep = "bones/" + itos(i) + "/";
-		p_list->push_back(PropertyInfo(Variant::STRING, prep + "name"));
-		p_list->push_back(PropertyInfo(Variant::INT, prep + "parent", PROPERTY_HINT_RANGE, "-1," + itos(bones.size() - 1) + ",1"));
-		p_list->push_back(PropertyInfo(Variant::TRANSFORM, prep + "rest"));
-		p_list->push_back(PropertyInfo(Variant::BOOL, prep + "enabled"));
-		p_list->push_back(PropertyInfo(Variant::TRANSFORM, prep + "pose", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR));
-		p_list->push_back(PropertyInfo(Variant::ARRAY, prep + "bound_children"));
+		const String prep = vformat("%s/%d/", PNAME("bones"), i);
+		p_list->push_back(PropertyInfo(Variant::STRING, prep + PNAME("name")));
+		p_list->push_back(PropertyInfo(Variant::INT, prep + PNAME("parent"), PROPERTY_HINT_RANGE, "-1," + itos(bones.size() - 1) + ",1"));
+		p_list->push_back(PropertyInfo(Variant::TRANSFORM, prep + PNAME("rest")));
+		p_list->push_back(PropertyInfo(Variant::BOOL, prep + PNAME("enabled")));
+		p_list->push_back(PropertyInfo(Variant::TRANSFORM, prep + PNAME("pose"), PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR));
+		p_list->push_back(PropertyInfo(Variant::ARRAY, prep + PNAME("bound_children")));
 	}
 }
 
@@ -813,7 +813,7 @@ Ref<SkinReference> Skeleton::register_skin(const Ref<Skin> &p_skin) {
 
 	skin_ref->skeleton_node = this;
 	skin_ref->bind_count = 0;
-	skin_ref->skeleton = VisualServer::get_singleton()->skeleton_create();
+	skin_ref->skeleton = RID_PRIME(VisualServer::get_singleton()->skeleton_create());
 	skin_ref->skeleton_node = this;
 	skin_ref->skin = skin;
 

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -143,7 +143,7 @@ void OccluderPolygon2D::_bind_methods() {
 }
 
 OccluderPolygon2D::OccluderPolygon2D() {
-	occ_polygon = VS::get_singleton()->canvas_occluder_polygon_create();
+	occ_polygon = RID_PRIME(VS::get_singleton()->canvas_occluder_polygon_create());
 	closed = true;
 	cull = CULL_DISABLED;
 	rect_cache_dirty = true;
@@ -277,7 +277,7 @@ void LightOccluder2D::_bind_methods() {
 }
 
 LightOccluder2D::LightOccluder2D() {
-	occluder = VS::get_singleton()->canvas_light_occluder_create();
+	occluder = RID_PRIME(VS::get_singleton()->canvas_light_occluder_create());
 	mask = 1;
 	set_notify_transform(true);
 }

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -293,7 +293,7 @@ Skeleton2D::Skeleton2D() {
 	bone_setup_dirty = true;
 	transform_dirty = true;
 
-	skeleton = VS::get_singleton()->skeleton_create();
+	skeleton = RID_PRIME(VS::get_singleton()->skeleton_create());
 	set_notify_transform(true);
 }
 

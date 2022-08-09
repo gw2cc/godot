@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -378,7 +378,7 @@ uint64_t FileAccess::get_buffer(uint8_t *p_dst, uint64_t p_length) const {
 	return i;
 }
 
-String FileAccess::get_as_utf8_string() const {
+String FileAccess::get_as_utf8_string(bool p_skip_cr) const {
 	PoolVector<uint8_t> sourcef;
 	uint64_t len = get_len();
 	sourcef.resize(len + 1);
@@ -389,7 +389,7 @@ String FileAccess::get_as_utf8_string() const {
 	w[len] = 0;
 
 	String s;
-	if (s.parse_utf8((const char *)w.ptr())) {
+	if (s.parse_utf8((const char *)w.ptr(), -1, p_skip_cr)) {
 		return String();
 	}
 	return s;

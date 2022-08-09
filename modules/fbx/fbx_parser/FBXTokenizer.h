@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -33,7 +33,6 @@ Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
 Copyright (c) 2006-2019, assimp team
-
 
 All rights reserved.
 
@@ -73,8 +72,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** @file  FBXTokenizer.h
  *  @brief FBX lexer
  */
-#ifndef FBX_TOKENIZER_H
-#define FBX_TOKENIZER_H
+
+#ifndef FBXTOKENIZER_H
+#define FBXTOKENIZER_H
 
 #include "FBXParseTools.h"
 #include "core/ustring.h"
@@ -201,4 +201,4 @@ void TokenizeBinary(TokenList &output_tokens, const char *input, size_t length);
 
 } // namespace FBXDocParser
 
-#endif // FBX_TOKENIZER_H
+#endif // FBXTOKENIZER_H

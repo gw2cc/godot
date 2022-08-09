@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -167,6 +167,12 @@ void AudioStreamPlayer::_notification(int p_what) {
 }
 
 void AudioStreamPlayer::set_stream(Ref<AudioStream> p_stream) {
+	// Instancing audio streams can cause large memory allocations, do it prior to AudioServer::lock.
+	Ref<AudioStreamPlayback> pre_instanced_playback;
+	if (p_stream.is_valid()) {
+		pre_instanced_playback = p_stream->instance_playback();
+	}
+
 	AudioServer::get_singleton()->lock();
 
 	if (active.is_set() && stream_playback.is_valid() && !stream_paused) {
@@ -203,7 +209,7 @@ void AudioStreamPlayer::set_stream(Ref<AudioStream> p_stream) {
 
 	if (p_stream.is_valid()) {
 		stream = p_stream;
-		stream_playback = p_stream->instance_playback();
+		stream_playback = pre_instanced_playback;
 	}
 
 	AudioServer::get_singleton()->unlock();

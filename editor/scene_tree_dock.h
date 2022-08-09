@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -34,9 +34,9 @@
 #include "editor/connections_dialog.h"
 #include "editor/create_dialog.h"
 #include "editor/editor_data.h"
+#include "editor/editor_quick_open.h"
 #include "editor/editor_sub_scene.h"
 #include "editor/groups_editor.h"
-#include "editor/quick_open.h"
 #include "editor/rename_dialog.h"
 #include "editor/reparent_dialog.h"
 #include "editor/script_create_dialog.h"
@@ -50,13 +50,14 @@
 #include "scene/gui/tree.h"
 #include "scene_tree_editor.h"
 
+#include "modules/modules_enabled.gen.h" // For regex.
+
 class EditorNode;
 
 class SceneTreeDock : public VBoxContainer {
 	GDCLASS(SceneTreeDock, VBoxContainer);
 
 	enum Tool {
-
 		TOOL_NEW,
 		TOOL_INSTANCE,
 		TOOL_EXPAND_COLLAPSE,
@@ -91,12 +92,12 @@ class SceneTreeDock : public VBoxContainer {
 		TOOL_SCENE_CLEAR_INHERITANCE,
 		TOOL_SCENE_CLEAR_INHERITANCE_CONFIRM,
 		TOOL_SCENE_OPEN_INHERITED,
+		TOOL_TOGGLE_SCENE_UNIQUE_NAME,
 
 		TOOL_CREATE_2D_SCENE,
 		TOOL_CREATE_3D_SCENE,
 		TOOL_CREATE_USER_INTERFACE,
 		TOOL_CREATE_FAVORITE,
-
 	};
 
 	enum {
@@ -105,7 +106,6 @@ class SceneTreeDock : public VBoxContainer {
 
 	Vector<ObjectID> subresources;
 
-	bool restore_script_editor_on_drag;
 	bool reset_create_dialog = false;
 
 	int current_option;
@@ -170,7 +170,9 @@ class SceneTreeDock : public VBoxContainer {
 	void _do_create(Node *p_parent);
 	Node *scene_root;
 	Node *edited_scene;
+	Node *pending_click_select;
 	EditorNode *editor;
+	bool tree_clicked;
 
 	VBoxContainer *create_root_dialog;
 	String selected_favorite_root;
@@ -194,6 +196,8 @@ class SceneTreeDock : public VBoxContainer {
 	void _node_replace_owner(Node *p_base, Node *p_node, Node *p_root, ReplaceOwnerMode p_mode = MODE_BIDI);
 	void _load_request(const String &p_path);
 	void _script_open_request(const Ref<Script> &p_script);
+	void _push_item(Object *p_object);
+	void _handle_select(Node *p_node);
 
 	bool _cyclical_dependency_exists(const String &p_target_scene_path, Node *p_desired_node);
 	bool _track_inherit(const String &p_target_scene_path, Node *p_desired_node);
@@ -241,8 +245,6 @@ class SceneTreeDock : public VBoxContainer {
 
 	void _perform_instance_scenes(const Vector<String> &p_files, Node *parent, int p_pos);
 	void _replace_with_branch_scene(const String &p_file, Node *base);
-
-	void _file_selected(String p_file);
 
 	void _remote_tree_selected();
 	void _local_tree_selected();

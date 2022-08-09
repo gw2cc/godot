@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -35,6 +35,7 @@
 #include "editor_file_system.h"
 #include "editor_log.h"
 #include "editor_node.h"
+#include "editor_property_name_processor.h"
 #include "editor_scale.h"
 #include "editor_settings.h"
 #include "scene/gui/margin_container.h"
@@ -200,6 +201,9 @@ void EditorSettingsDialog::_update_shortcuts() {
 
 	Map<String, TreeItem *> sections;
 
+	const EditorPropertyNameProcessor::Style name_style = EditorPropertyNameProcessor::get_settings_style();
+	const EditorPropertyNameProcessor::Style tooltip_style = EditorPropertyNameProcessor::get_tooltip_style(name_style);
+
 	for (List<String>::Element *E = slist.front(); E; E = E->next()) {
 		Ref<ShortCut> sc = EditorSettings::get_singleton()->get_shortcut(E->get());
 		if (!sc->has_meta("original")) {
@@ -217,8 +221,11 @@ void EditorSettingsDialog::_update_shortcuts() {
 		} else {
 			section = shortcuts->create_item(root);
 
-			String item_name = section_name.capitalize();
+			const String item_name = EditorPropertyNameProcessor::get_singleton()->process_name(section_name, name_style);
+			const String tooltip = EditorPropertyNameProcessor::get_singleton()->process_name(section_name, tooltip_style);
+
 			section->set_text(0, item_name);
+			section->set_tooltip(0, tooltip);
 
 			if (collapsed.has(item_name)) {
 				section->set_collapsed(collapsed[item_name]);

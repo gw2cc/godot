@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -738,7 +738,7 @@ Physics2DServer::~Physics2DServer() {
 Vector<Physics2DServerManager::ClassInfo> Physics2DServerManager::physics_2d_servers;
 int Physics2DServerManager::default_server_id = -1;
 int Physics2DServerManager::default_server_priority = -1;
-const String Physics2DServerManager::setting_property_name("physics/2d/physics_engine");
+const String Physics2DServerManager::setting_property_name(PNAME("physics/2d/physics_engine"));
 
 void Physics2DServerManager::on_servers_changed() {
 	String physics_servers("DEFAULT");

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -66,6 +66,7 @@ void joypad::free() {
 	if (ff_device) {
 		FFDeviceReleaseEffect(ff_device, ff_object);
 		FFReleaseDevice(ff_device);
+		ff_device = nullptr;
 		memfree(ff_axes);
 		memfree(ff_directions);
 	}
@@ -250,7 +251,7 @@ void JoypadOSX::_device_added(IOReturn p_res, IOHIDDeviceRef p_device) {
 	if (is_joypad(p_device)) {
 		configure_joypad(p_device, &new_joypad);
 #if MAC_OS_X_VERSION_MIN_REQUIRED < 1060
-		if (IOHIDDeviceGetService != NULL) {
+		if (IOHIDDeviceGetService) {
 #endif
 			const io_service_t ioservice = IOHIDDeviceGetService(p_device);
 			if ((ioservice) && (FFIsForceFeedback(ioservice) == FF_OK) && new_joypad.config_force_feedback(ioservice)) {
@@ -355,6 +356,7 @@ bool JoypadOSX::configure_joypad(IOHIDDeviceRef p_device_ref, joypad *p_joy) {
 	{                                   \
 		if (ret != FF_OK) {             \
 			FFReleaseDevice(ff_device); \
+			ff_device = nullptr;        \
 			return false;               \
 		}                               \
 	}
@@ -374,6 +376,7 @@ bool joypad::config_force_feedback(io_service_t p_service) {
 		return true;
 	}
 	FFReleaseDevice(ff_device);
+	ff_device = nullptr;
 	return false;
 }
 #undef FF_ERR
@@ -453,20 +456,9 @@ void JoypadOSX::poll_joypads() const {
 	}
 }
 
-static const InputDefault::JoyAxis axis_correct(int p_value, int p_min, int p_max) {
-	InputDefault::JoyAxis jx;
-	if (p_min < 0) {
-		jx.min = -1;
-		if (p_value < 0) {
-			jx.value = (float)-p_value / p_min;
-		} else
-			jx.value = (float)p_value / p_max;
-	}
-	if (p_min == 0) {
-		jx.min = 0;
-		jx.value = 0.0f + (float)p_value / p_max;
-	}
-	return jx;
+static float axis_correct(int p_value, int p_min, int p_max) {
+	// Convert to a value between -1.0f and 1.0f.
+	return 2.0f * (p_value - p_min) / (p_max - p_min) - 1.0f;
 }
 
 void JoypadOSX::process_joypads() {
@@ -608,7 +600,7 @@ JoypadOSX::JoypadOSX() {
 
 	if (array) {
 		hid_manager = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
-		if (hid_manager != NULL) {
+		if (hid_manager) {
 			config_hid_manager(array);
 		}
 		CFRelease(array);

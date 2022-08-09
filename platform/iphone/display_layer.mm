@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -53,6 +53,7 @@ bool gles3_available = true;
 	GLint backingHeight;
 
 	EAGLContext *context;
+	EAGLContext *context_offscreen;
 	GLuint viewRenderbuffer, viewFramebuffer;
 	GLuint depthRenderbuffer;
 }
@@ -75,6 +76,9 @@ bool gles3_available = true;
 			gles3_available = false;
 			fallback_gl2 = true;
 			NSLog(@"Failed to create OpenGL ES 3.0 context. Falling back to OpenGL ES 2.0");
+		} else {
+			context_offscreen = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3];
+			OSIPhone::get_singleton()->set_offscreen_gl_context(context_offscreen);
 		}
 	}
 
@@ -129,6 +133,9 @@ bool gles3_available = true;
 
 	if (context) {
 		context = nil;
+	}
+	if (context_offscreen) {
+		context_offscreen = nil;
 	}
 }
 

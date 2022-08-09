@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -32,6 +32,7 @@
 #define GLTF_SKELETON_H
 
 #include "core/resource.h"
+
 #include "gltf_document.h"
 
 class GLTFSkeleton : public Resource {
@@ -68,34 +69,15 @@ public:
 
 	Skeleton *get_godot_skeleton();
 
-	// Skeleton *get_godot_skeleton() {
-	// 	return this->godot_skeleton;
-	// }
-	// void set_godot_skeleton(Skeleton p_*godot_skeleton) {
-	// 	this->godot_skeleton = p_godot_skeleton;
-	// }
-
 	Array get_unique_names();
 	void set_unique_names(Array p_unique_names);
 
-	//Map<int32_t, GLTFNodeIndex> get_godot_bone_node() {
-	//	return this->godot_bone_node;
-	//}
-	//void set_godot_bone_node(Map<int32_t, GLTFNodeIndex> p_godot_bone_node) {
-	//	this->godot_bone_node = p_godot_bone_node;
-	//}
 	Dictionary get_godot_bone_node();
 	void set_godot_bone_node(Dictionary p_indict);
-
-	//Dictionary get_godot_bone_node() {
-	//	return VariantConversion::to_dict(this->godot_bone_node);
-	//}
-	//void set_godot_bone_node(Dictionary p_indict) {
-	//	VariantConversion::set_from_dict(this->godot_bone_node, p_indict);
-	//}
 
 	BoneAttachment *get_bone_attachment(int idx);
 
 	int32_t get_bone_attachment_count();
 };
+
 #endif // GLTF_SKELETON_H

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -117,6 +117,7 @@ private:
 
 	bool locked;
 
+	real_t step;
 	int island_count;
 	int active_objects;
 	int collision_pairs;
@@ -131,6 +132,9 @@ private:
 public:
 	_FORCE_INLINE_ void set_self(const RID &p_self) { self = p_self; }
 	_FORCE_INLINE_ RID get_self() const { return self; }
+
+	_FORCE_INLINE_ void set_step(const real_t &p_step) { step = p_step; }
+	_FORCE_INLINE_ real_t get_step() const { return step; }
 
 	void set_default_area(Area2DSW *p_area) { area = p_area; }
 	Area2DSW *get_default_area() const { return area; }

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,11 +28,11 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef AUDIOEFFECTEQ_H
-#define AUDIOEFFECTEQ_H
+#ifndef AUDIO_EFFECT_EQ_H
+#define AUDIO_EFFECT_EQ_H
 
 #include "servers/audio/audio_effect.h"
-#include "servers/audio/effects/eq.h"
+#include "servers/audio/effects/eq_filter.h"
 
 class AudioEffectEQ;
 
@@ -98,4 +98,4 @@ public:
 			AudioEffectEQ(EQ::PRESET_21_BANDS) {}
 };
 
-#endif // AUDIOEFFECTEQ_H
+#endif // AUDIO_EFFECT_EQ_H

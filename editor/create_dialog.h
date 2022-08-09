@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -76,8 +76,6 @@ class CreateDialog : public ConfirmationDialog {
 	void _confirmed();
 	void _text_changed(const String &p_newtext);
 
-	Ref<Texture> _get_editor_icon(const String &p_type) const;
-
 	void add_type(const String &p_type, HashMap<String, TreeItem *> &p_types, TreeItem *p_root, TreeItem **to_select);
 
 	void select_type(const String &p_type);
@@ -110,4 +108,4 @@ public:
 	CreateDialog();
 };
 
-#endif
+#endif // CREATE_DIALOG_H

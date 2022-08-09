@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -84,6 +84,7 @@ void _err_print_error(const char *p_function, const char *p_file, int p_line, co
 void _err_print_error(const char *p_function, const char *p_file, int p_line, const String &p_error, const String &p_message, ErrorHandlerType p_type = ERR_HANDLER_ERROR);
 void _err_print_index_error(const char *p_function, const char *p_file, int p_line, int64_t p_index, int64_t p_size, const char *p_index_str, const char *p_size_str, const char *p_message = "", bool fatal = false);
 void _err_print_index_error(const char *p_function, const char *p_file, int p_line, int64_t p_index, int64_t p_size, const char *p_index_str, const char *p_size_str, const String &p_message, bool fatal = false);
+void _err_flush_stdout();
 
 #ifndef _STR
 #define _STR(m_x) #m_x
@@ -202,6 +203,7 @@ void _err_print_index_error(const char *p_function, const char *p_file, int p_li
 #define CRASH_BAD_INDEX(m_index, m_size)                                                                                  \
 	if (unlikely((m_index) < 0 || (m_index) >= (m_size))) {                                                               \
 		_err_print_index_error(FUNCTION_STR, __FILE__, __LINE__, m_index, m_size, _STR(m_index), _STR(m_size), "", true); \
+		_err_flush_stdout();                                                                                              \
 		GENERATE_TRAP                                                                                                     \
 	} else                                                                                                                \
 		((void)0)
@@ -215,6 +217,7 @@ void _err_print_index_error(const char *p_function, const char *p_file, int p_li
 #define CRASH_BAD_INDEX_MSG(m_index, m_size, m_msg)                                                                          \
 	if (unlikely((m_index) < 0 || (m_index) >= (m_size))) {                                                                  \
 		_err_print_index_error(FUNCTION_STR, __FILE__, __LINE__, m_index, m_size, _STR(m_index), _STR(m_size), m_msg, true); \
+		_err_flush_stdout();                                                                                                 \
 		GENERATE_TRAP                                                                                                        \
 	} else                                                                                                                   \
 		((void)0)
@@ -228,6 +231,7 @@ void _err_print_index_error(const char *p_function, const char *p_file, int p_li
 #define CRASH_BAD_UNSIGNED_INDEX(m_index, m_size)                                                                         \
 	if (unlikely((m_index) >= (m_size))) {                                                                                \
 		_err_print_index_error(FUNCTION_STR, __FILE__, __LINE__, m_index, m_size, _STR(m_index), _STR(m_size), "", true); \
+		_err_flush_stdout();                                                                                              \
 		GENERATE_TRAP                                                                                                     \
 	} else                                                                                                                \
 		((void)0)
@@ -299,6 +303,7 @@ void _err_print_index_error(const char *p_function, const char *p_file, int p_li
 #define CRASH_COND(m_cond)                                                                                    \
 	if (unlikely(m_cond)) {                                                                                   \
 		_err_print_error(FUNCTION_STR, __FILE__, __LINE__, "FATAL: Condition \"" _STR(m_cond) "\" is true."); \
+		_err_flush_stdout();                                                                                  \
 		GENERATE_TRAP                                                                                         \
 	} else                                                                                                    \
 		((void)0)
@@ -310,6 +315,7 @@ void _err_print_index_error(const char *p_function, const char *p_file, int p_li
 #define CRASH_COND_MSG(m_cond, m_msg)                                                                                \
 	if (unlikely(m_cond)) {                                                                                          \
 		_err_print_error(FUNCTION_STR, __FILE__, __LINE__, "FATAL: Condition \"" _STR(m_cond) "\" is true.", m_msg); \
+		_err_flush_stdout();                                                                                         \
 		GENERATE_TRAP                                                                                                \
 	} else                                                                                                           \
 		((void)0)
@@ -421,6 +427,7 @@ void _err_print_index_error(const char *p_function, const char *p_file, int p_li
 #define CRASH_NOW()                                                                  \
 	if (true) {                                                                      \
 		_err_print_error(FUNCTION_STR, __FILE__, __LINE__, "FATAL: Method failed."); \
+		_err_flush_stdout();                                                         \
 		GENERATE_TRAP                                                                \
 	} else                                                                           \
 		((void)0)
@@ -432,6 +439,7 @@ void _err_print_index_error(const char *p_function, const char *p_file, int p_li
 #define CRASH_NOW_MSG(m_msg)                                                                \
 	if (true) {                                                                             \
 		_err_print_error(FUNCTION_STR, __FILE__, __LINE__, "FATAL: Method failed.", m_msg); \
+		_err_flush_stdout();                                                                \
 		GENERATE_TRAP                                                                       \
 	} else                                                                                  \
 		((void)0)
@@ -515,6 +523,7 @@ void _err_print_index_error(const char *p_function, const char *p_file, int p_li
 #define DEV_ASSERT(m_cond)                                                                                              \
 	if (unlikely(!(m_cond))) {                                                                                          \
 		_err_print_error(FUNCTION_STR, __FILE__, __LINE__, "FATAL: DEV_ASSERT failed  \"" _STR(m_cond) "\" is false."); \
+		_err_flush_stdout();                                                                                            \
 		GENERATE_TRAP                                                                                                   \
 	} else                                                                                                              \
 		((void)0)
@@ -544,4 +553,5 @@ void _err_print_index_error(const char *p_function, const char *p_file, int p_li
 		((void)0)
 #else
 #define DEV_CHECK_ONCE(m_cond)
-#endif
+
+#endif // ERROR_MACROS_H

@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef THREAD_LOCAL_H
-#define THREAD_LOCAL_H
+#ifndef MONO_THREAD_LOCAL_H
+#define MONO_THREAD_LOCAL_H
 
 #ifdef HAVE_CXX11_THREAD_LOCAL
 #define _THREAD_LOCAL_(m_t) thread_local m_t
@@ -171,4 +171,4 @@ private:
 		return;                                           \
 	FlagScopeGuard _recursion_guard_(_recursion_flag_);
 
-#endif // THREAD_LOCAL_H
+#endif // MONO_THREAD_LOCAL_H

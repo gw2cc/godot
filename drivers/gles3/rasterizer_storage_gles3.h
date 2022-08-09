@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -28,13 +28,14 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef RASTERIZERSTORAGEGLES3_H
-#define RASTERIZERSTORAGEGLES3_H
+#ifndef RASTERIZER_STORAGE_GLES3_H
+#define RASTERIZER_STORAGE_GLES3_H
 
 #include "core/self_list.h"
 #include "drivers/gles_common/rasterizer_asserts.h"
 #include "servers/visual/rasterizer.h"
 #include "servers/visual/shader_language.h"
+#include "shader_cache_gles3.h"
 #include "shader_compiler_gles3.h"
 #include "shader_gles3.h"
 
@@ -44,11 +45,8 @@
 #include "shaders/cubemap_filter.glsl.gen.h"
 #include "shaders/particles.glsl.gen.h"
 
-// WebGL 2.0 has no MapBufferRange/UnmapBuffer, but offers a non-ES style BufferSubData API instead.
-#ifdef __EMSCRIPTEN__
-void glGetBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, GLvoid *data);
-#endif
-
+template <class K>
+class ThreadedCallableQueue;
 class RasterizerCanvasGLES3;
 class RasterizerSceneGLES3;
 
@@ -113,12 +111,20 @@ public:
 		// in some cases the legacy render didn't orphan. We will mark these
 		// so the user can switch orphaning off for them.
 		bool should_orphan;
+
+		bool program_binary_supported;
+		bool parallel_shader_compile_supported;
+		bool async_compilation_enabled;
+		bool shader_cache_enabled;
 	} config;
 
 	mutable struct Shaders {
 		CopyShaderGLES3 copy;
 
 		ShaderCompilerGLES3 compiler;
+		ShaderCacheGLES3 *cache;
+		ThreadedCallableQueue<GLuint> *cache_write_queue;
+		ThreadedCallableQueue<GLuint> *compile_queue;
 
 		CubemapFilterShaderGLES3 cubemap_filter;
 
@@ -136,6 +142,7 @@ public:
 		GLuint black_tex;
 		GLuint normal_tex;
 		GLuint aniso_tex;
+		GLuint depth_tex;
 
 		GLuint white_tex_3d;
 		GLuint white_tex_array;
@@ -158,6 +165,8 @@ public:
 			uint32_t material_switch_count;
 			uint32_t surface_switch_count;
 			uint32_t shader_rebind_count;
+			uint32_t shader_compiles_started_count;
+			uint32_t shader_compiles_in_progress_count;
 			uint32_t vertices_count;
 			uint32_t _2d_item_count;
 			uint32_t _2d_draw_call_count;
@@ -168,6 +177,8 @@ public:
 				material_switch_count = 0;
 				surface_switch_count = 0;
 				shader_rebind_count = 0;
+				shader_compiles_started_count = 0;
+				shader_compiles_in_progress_count = 0;
 				vertices_count = 0;
 				_2d_item_count = 0;
 				_2d_draw_call_count = 0;
@@ -547,6 +558,9 @@ public:
 	virtual void shader_get_custom_defines(RID p_shader, Vector<String> *p_defines) const;
 	virtual void shader_remove_custom_define(RID p_shader, const String &p_define);
 
+	virtual void set_shader_async_hidden_forbidden(bool p_forbidden);
+	virtual bool is_shader_async_hidden_forbidden();
+
 	void _update_shader(Shader *p_shader) const;
 
 	void update_dirty_shaders();
@@ -802,6 +816,8 @@ public:
 		bool dirty_aabb;
 		bool dirty_data;
 
+		MMInterpolator interpolator;
+
 		MultiMesh() :
 				size(0),
 				transform_format(VS::MULTIMESH_TRANSFORM_2D),
@@ -825,30 +841,31 @@ public:
 
 	void update_dirty_multimeshes();
 
-	virtual RID multimesh_create();
+	virtual RID _multimesh_create();
 
-	virtual void multimesh_allocate(RID p_multimesh, int p_instances, VS::MultimeshTransformFormat p_transform_format, VS::MultimeshColorFormat p_color_format, VS::MultimeshCustomDataFormat p_data_format = VS::MULTIMESH_CUSTOM_DATA_NONE);
-	virtual int multimesh_get_instance_count(RID p_multimesh) const;
+	virtual void _multimesh_allocate(RID p_multimesh, int p_instances, VS::MultimeshTransformFormat p_transform_format, VS::MultimeshColorFormat p_color_format, VS::MultimeshCustomDataFormat p_data_format = VS::MULTIMESH_CUSTOM_DATA_NONE);
+	virtual int _multimesh_get_instance_count(RID p_multimesh) const;
 
-	virtual void multimesh_set_mesh(RID p_multimesh, RID p_mesh);
-	virtual void multimesh_instance_set_transform(RID p_multimesh, int p_index, const Transform &p_transform);
-	virtual void multimesh_instance_set_transform_2d(RID p_multimesh, int p_index, const Transform2D &p_transform);
-	virtual void multimesh_instance_set_color(RID p_multimesh, int p_index, const Color &p_color);
-	virtual void multimesh_instance_set_custom_data(RID p_multimesh, int p_index, const Color &p_custom_data);
+	virtual void _multimesh_set_mesh(RID p_multimesh, RID p_mesh);
+	virtual void _multimesh_instance_set_transform(RID p_multimesh, int p_index, const Transform &p_transform);
+	virtual void _multimesh_instance_set_transform_2d(RID p_multimesh, int p_index, const Transform2D &p_transform);
+	virtual void _multimesh_instance_set_color(RID p_multimesh, int p_index, const Color &p_color);
+	virtual void _multimesh_instance_set_custom_data(RID p_multimesh, int p_index, const Color &p_custom_data);
 
-	virtual RID multimesh_get_mesh(RID p_multimesh) const;
+	virtual RID _multimesh_get_mesh(RID p_multimesh) const;
 
-	virtual Transform multimesh_instance_get_transform(RID p_multimesh, int p_index) const;
-	virtual Transform2D multimesh_instance_get_transform_2d(RID p_multimesh, int p_index) const;
-	virtual Color multimesh_instance_get_color(RID p_multimesh, int p_index) const;
-	virtual Color multimesh_instance_get_custom_data(RID p_multimesh, int p_index) const;
+	virtual Transform _multimesh_instance_get_transform(RID p_multimesh, int p_index) const;
+	virtual Transform2D _multimesh_instance_get_transform_2d(RID p_multimesh, int p_index) const;
+	virtual Color _multimesh_instance_get_color(RID p_multimesh, int p_index) const;
+	virtual Color _multimesh_instance_get_custom_data(RID p_multimesh, int p_index) const;
 
-	virtual void multimesh_set_as_bulk_array(RID p_multimesh, const PoolVector<float> &p_array);
+	virtual void _multimesh_set_as_bulk_array(RID p_multimesh, const PoolVector<float> &p_array);
 
-	virtual void multimesh_set_visible_instances(RID p_multimesh, int p_visible);
-	virtual int multimesh_get_visible_instances(RID p_multimesh) const;
+	virtual void _multimesh_set_visible_instances(RID p_multimesh, int p_visible);
+	virtual int _multimesh_get_visible_instances(RID p_multimesh) const;
 
-	virtual AABB multimesh_get_aabb(RID p_multimesh) const;
+	virtual AABB _multimesh_get_aabb(RID p_multimesh) const;
+	virtual MMInterpolator *_multimesh_get_interpolator(RID p_multimesh) const;
 
 	/* IMMEDIATE API */
 
@@ -1369,7 +1386,6 @@ public:
 			GLuint fbo;
 			GLuint color;
 			GLuint depth;
-			RID texture;
 
 			External() :
 					fbo(0),
@@ -1496,35 +1512,38 @@ public:
 	virtual String get_video_adapter_name() const;
 	virtual String get_video_adapter_vendor() const;
 
-	void buffer_orphan_and_upload(unsigned int p_buffer_size, unsigned int p_offset, unsigned int p_data_size, const void *p_data, GLenum p_target = GL_ARRAY_BUFFER, GLenum p_usage = GL_DYNAMIC_DRAW, bool p_optional_orphan = false) const;
-	bool safe_buffer_sub_data(unsigned int p_total_buffer_size, GLenum p_target, unsigned int p_offset, unsigned int p_data_size, const void *p_data, unsigned int &r_offset_after) const;
+	// NOTE : THESE SIZES ARE IN BYTES. BUFFER SIZES MAY NOT BE SPECIFIED IN BYTES SO REMEMBER TO CONVERT THEM WHEN CALLING.
+	void buffer_orphan_and_upload(unsigned int p_buffer_size_bytes, unsigned int p_offset_bytes, unsigned int p_data_size_bytes, const void *p_data, GLenum p_target = GL_ARRAY_BUFFER, GLenum p_usage = GL_DYNAMIC_DRAW, bool p_optional_orphan = false) const;
+	bool safe_buffer_sub_data(unsigned int p_total_buffer_size_bytes, GLenum p_target, unsigned int p_offset_bytes, unsigned int p_data_size_bytes, const void *p_data, unsigned int &r_offset_after_bytes) const;
 
 	RasterizerStorageGLES3();
+	~RasterizerStorageGLES3();
 };
 
-inline bool RasterizerStorageGLES3::safe_buffer_sub_data(unsigned int p_total_buffer_size, GLenum p_target, unsigned int p_offset, unsigned int p_data_size, const void *p_data, unsigned int &r_offset_after) const {
-	r_offset_after = p_offset + p_data_size;
+inline bool RasterizerStorageGLES3::safe_buffer_sub_data(unsigned int p_total_buffer_size_bytes, GLenum p_target, unsigned int p_offset_bytes, unsigned int p_data_size_bytes, const void *p_data, unsigned int &r_offset_after_bytes) const {
+	r_offset_after_bytes = p_offset_bytes + p_data_size_bytes;
 #ifdef DEBUG_ENABLED
 	// we are trying to write across the edge of the buffer
-	if (r_offset_after > p_total_buffer_size) {
+	if (r_offset_after_bytes > p_total_buffer_size_bytes) {
 		return false;
 	}
 #endif
-	glBufferSubData(p_target, p_offset, p_data_size, p_data);
+	glBufferSubData(p_target, p_offset_bytes, p_data_size_bytes, p_data);
 	return true;
 }
 
 // standardize the orphan / upload in one place so it can be changed per platform as necessary, and avoid future
 // bugs causing pipeline stalls
-inline void RasterizerStorageGLES3::buffer_orphan_and_upload(unsigned int p_buffer_size, unsigned int p_offset, unsigned int p_data_size, const void *p_data, GLenum p_target, GLenum p_usage, bool p_optional_orphan) const {
+// NOTE : THESE SIZES ARE IN BYTES. BUFFER SIZES MAY NOT BE SPECIFIED IN BYTES SO REMEMBER TO CONVERT THEM WHEN CALLING.
+inline void RasterizerStorageGLES3::buffer_orphan_and_upload(unsigned int p_buffer_size_bytes, unsigned int p_offset_bytes, unsigned int p_data_size_bytes, const void *p_data, GLenum p_target, GLenum p_usage, bool p_optional_orphan) const {
 	// Orphan the buffer to avoid CPU/GPU sync points caused by glBufferSubData
 	// Was previously #ifndef GLES_OVER_GL however this causes stalls on desktop mac also (and possibly other)
 	if (!p_optional_orphan || (config.should_orphan)) {
-		glBufferData(p_target, p_buffer_size, nullptr, p_usage);
+		glBufferData(p_target, p_buffer_size_bytes, nullptr, p_usage);
 #ifdef RASTERIZER_EXTRA_CHECKS
 		// fill with garbage off the end of the array
-		if (p_buffer_size) {
-			unsigned int start = p_offset + p_data_size;
+		if (p_buffer_size_bytes) {
+			unsigned int start = p_offset_bytes + p_data_size_bytes;
 			unsigned int end = start + 1024;
 			if (end < p_buffer_size) {
 				uint8_t *garbage = (uint8_t *)alloca(1024);
@@ -1536,8 +1555,8 @@ inline void RasterizerStorageGLES3::buffer_orphan_and_upload(unsigned int p_buff
 		}
 #endif
 	}
-	DEV_ASSERT((p_offset + p_data_size) <= p_buffer_size);
-	glBufferSubData(p_target, p_offset, p_data_size, p_data);
+	ERR_FAIL_COND((p_offset_bytes + p_data_size_bytes) > p_buffer_size_bytes);
+	glBufferSubData(p_target, p_offset_bytes, p_data_size_bytes, p_data);
 }
 
-#endif // RASTERIZERSTORAGEGLES3_H
+#endif // RASTERIZER_STORAGE_GLES3_H

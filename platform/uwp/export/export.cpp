@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -1265,10 +1265,10 @@ public:
 		while (ret == UNZ_OK) {
 			// get file name
 			unz_file_info info;
-			char fname[16834];
-			ret = unzGetCurrentFileInfo(pkg, &info, fname, 16834, nullptr, 0, nullptr, 0);
+			char fname[16384];
+			ret = unzGetCurrentFileInfo(pkg, &info, fname, 16384, nullptr, 0, nullptr, 0);
 
-			String path = fname;
+			String path = String::utf8(fname);
 
 			if (path.ends_with("/")) {
 				// Ignore directories
@@ -1359,7 +1359,7 @@ public:
 		EditorNode::progress_add_task("project_files", "Project Files", 100);
 		packager.set_progress_task("project_files");
 
-		err = export_project_files(p_preset, save_appx_file, &packager);
+		err = export_project_files(p_preset, save_appx_file, &packager, copy_shared_objects);
 
 		EditorNode::progress_end_task("project_files");
 
@@ -1432,6 +1432,10 @@ public:
 	}
 
 	virtual void resolve_platform_feature_priorities(const Ref<EditorExportPreset> &p_preset, Set<String> &p_features) {
+	}
+
+	static Error copy_shared_objects(void *p_userdata, const SharedObject &p_so) {
+		return save_appx_file(p_userdata, p_so.path, FileAccess::get_file_as_array(p_so.path), 0, 1);
 	}
 
 	EditorExportPlatformUWP() {

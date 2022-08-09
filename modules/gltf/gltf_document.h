@@ -5,8 +5,8 @@
 /*                           GODOT ENGINE                                */
 /*                      https://godotengine.org                          */
 /*************************************************************************/
-/* Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.                 */
-/* Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).   */
+/* Copyright (c) 2007-2022 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2022 Godot Engine contributors (cf. AUTHORS.md).   */
 /*                                                                       */
 /* Permission is hereby granted, free of charge, to any person obtaining */
 /* a copy of this software and associated documentation files (the       */
@@ -31,10 +31,8 @@
 #ifndef GLTF_DOCUMENT_H
 #define GLTF_DOCUMENT_H
 
-#include "editor/import/resource_importer_scene.h"
-#include "gltf_animation.h"
-#include "scene/2d/node_2d.h"
 #include "scene/3d/bone_attachment.h"
+#include "scene/3d/camera.h"
 #include "scene/3d/light.h"
 #include "scene/3d/mesh_instance.h"
 #include "scene/3d/skeleton.h"
@@ -43,14 +41,23 @@
 #include "scene/resources/material.h"
 #include "scene/resources/texture.h"
 
+#include "gltf_animation.h"
+
+#include "modules/modules_enabled.gen.h" // For csg, gridmap.
+
 class GLTFState;
 class GLTFSkin;
 class GLTFNode;
 class GLTFSpecGloss;
 class GLTFSkeleton;
-class CSGShape;
-class GridMap;
 class MultiMeshInstance;
+
+#ifdef MODULE_CSG_ENABLED
+class CSGShape;
+#endif // MODULE_CSG_ENABLED
+#ifdef MODULE_GRIDMAP_ENABLED
+class GridMap;
+#endif // MODULE_GRIDMAP_ENABLED
 
 using GLTFAccessorIndex = int;
 using GLTFAnimationIndex = int;
@@ -247,8 +254,6 @@ private:
 	Error _reparent_non_joint_skeleton_subtrees(
 			Ref<GLTFState> state, Ref<GLTFSkeleton> skeleton,
 			const Vector<GLTFNodeIndex> &non_joints);
-	Error _reparent_to_fake_joint(Ref<GLTFState> state, Ref<GLTFSkeleton> skeleton,
-			const GLTFNodeIndex node_index);
 	Error _determine_skeleton_roots(Ref<GLTFState> state,
 			const GLTFSkeletonIndex skel_i);
 	Error _create_skeletons(Ref<GLTFState> state);
@@ -367,6 +372,8 @@ private:
 public:
 	String _sanitize_scene_name(Ref<GLTFState> state, const String &p_name);
 	String _legacy_validate_node_name(const String &p_name);
+
+	Error _parse_gltf_extensions(Ref<GLTFState> state);
 
 	void _process_mesh_instances(Ref<GLTFState> state, Node *scene_root);
 	void _generate_scene_node(Ref<GLTFState> state, Node *scene_parent,
