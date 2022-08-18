@@ -412,7 +412,6 @@ protected:
 	virtual void finalize_core();
 
 	void process_events();
-	void process_key_events();
 
 	String _quote_command_line_argument(const String &p_text) const;
 
@@ -593,7 +592,7 @@ public:
 	virtual void initialize_debugging();
 
 	void force_process_input();
-
+	void process_key_events();
 	virtual Error move_to_trash(const String &p_path);
 
 	virtual void process_and_drop_events();
