@@ -2891,6 +2891,9 @@ Error OS_Windows::execute(const String &p_path, const List<String> &p_arguments,
 		inherit_handles = true;
 	}
 	DWORD creaton_flags = NORMAL_PRIORITY_CLASS;
+#ifdef WINDOWS_SUBSYSTEM_CONSOLE
+	creaton_flags |= CREATE_NEW_CONSOLE;
+#endif
 	if (p_open_console) {
 		creaton_flags |= CREATE_NEW_CONSOLE;
 	} else {
