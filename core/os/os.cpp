@@ -119,7 +119,7 @@ static std::string format_log(const char *p_format, MainLoop* ml) {
 	ss << std::put_time(std::localtime(&ts), "%H:%M:%S") << ' ';
 
 	if (SceneTree* tree = Object::cast_to<SceneTree>(ml))
-		ss << '[' << tree->get_frame() << "] ";
+		ss << '(' << std::setw(6) << tree->get_frame() << ") ";
 
 	ss << p_format;
 	return ss.str();

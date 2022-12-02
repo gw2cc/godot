@@ -140,6 +140,29 @@ const char *GDScriptFunctions::get_func_name(Function p_func) {
 	return _names[p_func];
 }
 
+static String format_log(String msg) {
+	ScriptLanguage *lang = GDScriptLanguage::get_singleton();
+
+	if (lang->debug_get_stack_level_count() > 0) {
+		String src = lang->debug_get_stack_level_source(0);
+		Vector<String> dirs = src.split("/");
+
+		for (std::size_t i = 0; i < dirs.size()-1; i++) {
+			if (dirs[i] == "plugins" || dirs[i] == "bots") {
+				String name = dirs[i + 1];
+
+				Vector<String> name_splitted = name.split(".");
+				if (name_splitted.size() == 2)
+						name = name_splitted[0];
+
+				msg = "[" + name + "] " + msg;
+				break;
+			}
+		}
+	}
+	return msg;
+}
+
 void GDScriptFunctions::call(Function p_func, const Variant **p_args, int p_arg_count, Variant &r_ret, Variant::CallError &r_error) {
 	r_error.error = Variant::CallError::CALL_OK;
 #ifdef DEBUG_ENABLED
@@ -696,6 +719,7 @@ void GDScriptFunctions::call(Function p_func, const Variant **p_args, int p_arg_
 				str += p_args[i]->operator String();
 			}
 
+			str = format_log(str);
 			print_line(str);
 			r_ret = Variant();
 
@@ -709,6 +733,7 @@ void GDScriptFunctions::call(Function p_func, const Variant **p_args, int p_arg_
 				str += p_args[i]->operator String();
 			}
 
+			str = format_log(str);
 			print_line(str);
 			r_ret = Variant();
 
@@ -722,6 +747,7 @@ void GDScriptFunctions::call(Function p_func, const Variant **p_args, int p_arg_
 				str += p_args[i]->operator String();
 			}
 
+			str = format_log(str);
 			print_line(str);
 			r_ret = Variant();
 
@@ -733,6 +759,7 @@ void GDScriptFunctions::call(Function p_func, const Variant **p_args, int p_arg_
 				str += p_args[i]->operator String();
 			}
 
+			str = format_log(str);
 			print_error(str);
 			r_ret = Variant();
 
@@ -743,6 +770,7 @@ void GDScriptFunctions::call(Function p_func, const Variant **p_args, int p_arg_
 				str += p_args[i]->operator String();
 			}
 
+			str = format_log(str);
 			OS::get_singleton()->print("%s", str.utf8().get_data());
 			r_ret = Variant();
 
