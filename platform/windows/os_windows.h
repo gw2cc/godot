@@ -343,7 +343,7 @@ class OS_Windows : public OS {
 	VideoMode video_mode;
 	bool preserve_window_size = false;
 
-	MainLoop *main_loop;
+	MainLoop *main_loop = nullptr;
 
 	WNDPROC user_proc;
 

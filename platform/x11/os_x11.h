@@ -99,7 +99,7 @@ class OS_X11 : public OS_Unix {
 	List<String> args;
 	Window x11_window;
 	Window xdnd_source_window;
-	MainLoop *main_loop;
+	MainLoop *main_loop = nullptr;
 	::Display *x11_display;
 	char *xmbstring;
 	int xmblen;

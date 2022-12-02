@@ -37,8 +37,12 @@
 #include "core/project_settings.h"
 #include "core/version_generated.gen.h"
 #include "servers/audio_server.h"
+#include "scene/main/scene_tree.h"
 
 #include <stdarg.h>
+#include <sstream>
+#include <ctime>
+#include <iomanip>
 
 OS *OS::singleton = nullptr;
 uint64_t OS::target_ticks = 0;
@@ -108,6 +112,19 @@ void OS::add_logger(Logger *p_logger) {
 	}
 }
 
+static std::string format_log(const char *p_format, MainLoop* ml) {
+	std::stringstream ss;
+
+	std::time_t ts = std::time(nullptr);
+	ss << std::put_time(std::localtime(&ts), "%H:%M:%S") << ' ';
+
+	if (SceneTree* tree = Object::cast_to<SceneTree>(ml))
+		ss << '[' << tree->get_frame() << "] ";
+
+	ss << p_format;
+	return ss.str();
+}
+
 void OS::print_error(const char *p_function, const char *p_file, int p_line, const char *p_code, const char *p_rationale, Logger::ErrorType p_type) {
 	_logger->log_error(p_function, p_file, p_line, p_code, p_rationale, p_type);
 }
@@ -116,7 +133,8 @@ void OS::print(const char *p_format, ...) {
 	va_list argp;
 	va_start(argp, p_format);
 
-	_logger->logv(p_format, argp, false);
+	std::string msg = format_log(p_format, get_main_loop());
+	_logger->logv(msg.c_str(), argp, false);
 
 	va_end(argp);
 };
@@ -125,7 +143,8 @@ void OS::printerr(const char *p_format, ...) {
 	va_list argp;
 	va_start(argp, p_format);
 
-	_logger->logv(p_format, argp, true);
+	std::string msg = format_log(p_format, get_main_loop());
+	_logger->logv(msg.c_str(), argp, true);
 
 	va_end(argp);
 };
