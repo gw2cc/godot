@@ -112,18 +112,21 @@ void OS::add_logger(Logger *p_logger) {
 	}
 }
 
+// recode begin
 static std::string format_log(const char *p_format, MainLoop* ml) {
 	std::stringstream ss;
 
 	std::time_t ts = std::time(nullptr);
-	ss << std::put_time(std::localtime(&ts), "%H:%M:%S") << ' ';
+	ss << std::put_time(std::localtime(&ts), "%H:%M:%S");
 
 	if (SceneTree* tree = Object::cast_to<SceneTree>(ml))
-		ss << '(' << std::setw(6) << tree->get_frame() << ") ";
+		ss << '.' << std::setw(6) << std::setfill('0') << tree->get_frame();
+	ss << ": ";
 
 	ss << p_format;
 	return ss.str();
 }
+// recode end
 
 void OS::print_error(const char *p_function, const char *p_file, int p_line, const char *p_code, const char *p_rationale, Logger::ErrorType p_type) {
 	_logger->log_error(p_function, p_file, p_line, p_code, p_rationale, p_type);

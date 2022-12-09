@@ -140,28 +140,31 @@ const char *GDScriptFunctions::get_func_name(Function p_func) {
 	return _names[p_func];
 }
 
+// recode begin
 static String format_log(String msg) {
-	ScriptLanguage *lang = GDScriptLanguage::get_singleton();
+	auto lang = GDScriptLanguage::get_singleton();
 
-	if (lang->debug_get_stack_level_count() > 0) {
-		String src = lang->debug_get_stack_level_source(0);
-		Vector<String> dirs = src.split("/");
+	for (auto i = 0; i < lang->debug_get_stack_level_count(); ++i) {
+		auto src = lang->debug_get_stack_level_source(i);
+		src = src.replace("\\", "/");
+		auto dirs = src.split("/");
 
-		for (std::size_t i = 0; i < dirs.size()-1; i++) {
+		for (auto i = 0; i < dirs.size()-1; i++) {
 			if (dirs[i] == "plugins" || dirs[i] == "bots") {
-				String name = dirs[i + 1];
+				auto name = dirs[i + 1];
 
-				Vector<String> name_splitted = name.split(".");
+				auto name_splitted = name.split(".");
 				if (name_splitted.size() == 2)
-						name = name_splitted[0];
+					name = name_splitted[0];
 
 				msg = "[" + name + "] " + msg;
-				break;
+				return msg;
 			}
 		}
 	}
 	return msg;
 }
+// recode end
 
 void GDScriptFunctions::call(Function p_func, const Variant **p_args, int p_arg_count, Variant &r_ret, Variant::CallError &r_error) {
 	r_error.error = Variant::CallError::CALL_OK;
