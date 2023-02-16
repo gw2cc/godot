@@ -92,6 +92,10 @@ public:
 
 	FileAccessEncrypted() {}
 	~FileAccessEncrypted();
+
+	// gw2cc begin
+	virtual bool is_protected() { return false; }
+	// gw2cc end
 };
 
 #endif // FILE_ACCESS_ENCRYPTED_H

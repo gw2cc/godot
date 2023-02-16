@@ -1446,6 +1446,8 @@
 		</method>
 	</methods>
 	<members>
+		<member name="AsyncResourceLoader" type="Node" setter="" getter="">
+		</member>
 		<member name="AudioServer" type="AudioServer" setter="" getter="">
 			The [AudioServer] singleton.
 		</member>
@@ -1454,6 +1456,10 @@
 		</member>
 		<member name="ClassDB" type="ClassDB" setter="" getter="">
 			The [ClassDB] singleton.
+		</member>
+		<member name="ClientSession" type="ClientSession" setter="" getter="">
+		</member>
+		<member name="ContentService" type="Node" setter="" getter="">
 		</member>
 		<member name="DisplayServer" type="DisplayServer" setter="" getter="">
 			The [DisplayServer] singleton.
@@ -1495,9 +1501,6 @@
 		</member>
 		<member name="Marshalls" type="Marshalls" setter="" getter="">
 			The [Marshalls] singleton.
-		</member>
-		<member name="NavigationMeshGenerator" type="NavigationMeshGenerator" setter="" getter="">
-			The [NavigationMeshGenerator] singleton.
 		</member>
 		<member name="NavigationServer2D" type="NavigationServer2D" setter="" getter="">
 			The [NavigationServer2D] singleton.
