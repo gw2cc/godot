@@ -622,6 +622,9 @@ public:
 	virtual void tablet_set_current_driver(const String &p_driver) override;
 
 	virtual void process_events() override;
+	// gw2cc begin
+	void process_key_events() { return _process_key_events(); }
+	// gw2cc end
 
 	virtual void force_process_and_drop_events() override;
 
