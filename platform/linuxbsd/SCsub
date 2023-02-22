@@ -2,6 +2,7 @@
 
 Import("env")
 
+import os
 from platform_methods import run_in_subprocess
 import platform_linuxbsd_builders
 
@@ -36,7 +37,23 @@ if env["dbus"]:
     if env["use_sowrap"]:
         common_linuxbsd.append("dbus-so_wrap.c")
 
-prog = env.add_program("#bin/godot", ["godot_linuxbsd.cpp"] + common_linuxbsd)
+
+linuxbsd_lib = env.add_library("linuxbsd", ["godot_linuxbsd.cpp"] + common_linuxbsd)
+
+# remove system libs
+godot_libs = [l for l in env['LIBS'] if not isinstance(l, str)]
+
+def merge_libs(env, target, source):
+    mri_script = f'create {target[0]}\n'
+    for s in source:
+        mri_script += f'addlib {s}\n'
+    mri_script += 'save\nend'
+
+    with os.popen('ar -M', mode='w') as p:
+        p.write(mri_script)
+        p.close()
+
+prog = env.Command(f'#bin/libgodot{env["LIBSUFFIX"]}', godot_libs + [linuxbsd_lib], merge_libs)
 
 if env["debug_symbols"] and env["separate_debug_symbols"]:
     env.AddPostAction(prog, run_in_subprocess(platform_linuxbsd_builders.make_debug_linuxbsd))
