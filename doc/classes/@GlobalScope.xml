@@ -1545,6 +1545,8 @@
 		<member name="ResourceUID" type="ResourceUID" setter="" getter="">
 			The [ResourceUID] singleton.
 		</member>
+		<member name="StringService" type="Node" setter="" getter="">
+		</member>
 		<member name="TextServerManager" type="TextServerManager" setter="" getter="">
 			The [TextServerManager] singleton.
 		</member>
