@@ -865,6 +865,15 @@
 				[b]Note:[/b] This method is implemented on Android and iOS.
 			</description>
 		</method>
+		<method name="screen_get_pixel" qualifiers="const">
+			<return type="Color" />
+			<param index="0" name="position" type="Vector2i" />
+			<description>
+				Returns color of the display pixel at the [param position].
+				[b]Note:[/b] This method is implemented on Linux (X11), macOS, and Windows.
+				[b]Note:[/b] On macOS, this method requires "Screen Recording" permission, if permission is not granted it will return desktop wallpaper color.
+			</description>
+		</method>
 		<method name="screen_get_position" qualifiers="const">
 			<return type="Vector2i" />
 			<param index="0" name="screen" type="int" default="-1" />
@@ -991,7 +1000,7 @@
 				- [code]name[/code] is voice name.
 				- [code]id[/code] is voice identifier.
 				- [code]language[/code] is language code in [code]lang_Variant[/code] format. [code]lang[/code] part is a 2 or 3-letter code based on the ISO-639 standard, in lowercase. And [code]Variant[/code] part is an engine dependent string describing country, region or/and dialect.
-				Note that Godot depends on system libraries for text-to-speech functionality. These libraries are installed by default on Windows and MacOS, but not on all Linux distributions. If they are not present, this method will return an empty list. This applies to both Godot users on Linux, as well as end-users on Linux running Godot games that use text-to-speech.
+				Note that Godot depends on system libraries for text-to-speech functionality. These libraries are installed by default on Windows and macOS, but not on all Linux distributions. If they are not present, this method will return an empty list. This applies to both Godot users on Linux, as well as end-users on Linux running Godot games that use text-to-speech.
 				[b]Note:[/b] This method is implemented on Android, iOS, Web, Linux (X11), macOS, and Windows.
 			</description>
 		</method>
@@ -1543,6 +1552,9 @@
 		<constant name="FEATURE_EXTEND_TO_TITLE" value="20" enum="Feature">
 			Display server supports expanding window content to the title. See [constant WINDOW_FLAG_EXTEND_TO_TITLE]. [b]macOS[/b]
 		</constant>
+		<constant name="FEATURE_SCREEN_CAPTURE" value="21" enum="Feature">
+			Display server supports reading screen pixels. See [method screen_get_pixel].
+		</constant>
 		<constant name="MOUSE_MODE_VISIBLE" value="0" enum="MouseMode">
 			Makes the mouse cursor visible if it is hidden.
 		</constant>
@@ -1788,7 +1800,7 @@
 			OpenGL context (only with the GL Compatibility renderer):
 			- Windows: [code]HGLRC[/code] for the window.
 			- Linux: [code]GLXContext*[/code] for the window.
-			- MacOS: [code]NSOpenGLContext*[/code] for the window.
+			- macOS: [code]NSOpenGLContext*[/code] for the window.
 			- Android: [code]EGLContext[/code] for the window.
 		</constant>
 		<constant name="TTS_UTTERANCE_STARTED" value="0" enum="TTSUtteranceEvent">

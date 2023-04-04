@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  thorvg_svg_in_ot.h                                                    */
+/*  roughness_limiter.h                                                   */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,61 +28,40 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef THORVG_SVG_IN_OT_H
-#define THORVG_SVG_IN_OT_H
+#ifndef ROUGHNESS_LIMITER_RD_H
+#define ROUGHNESS_LIMITER_RD_H
 
-#ifdef GDEXTENSION
-// Headers for building as GDExtension plug-in.
+#include "servers/rendering/renderer_rd/pipeline_cache_rd.h"
+#include "servers/rendering/renderer_rd/shaders/effects/roughness_limiter.glsl.gen.h"
+#include "servers/rendering/renderer_scene_render.h"
 
-#include <godot_cpp/core/mutex_lock.hpp>
-#include <godot_cpp/godot.hpp>
-#include <godot_cpp/templates/hash_map.hpp>
+#include "servers/rendering_server.h"
 
-using namespace godot;
+namespace RendererRD {
 
-#else
-// Headers for building as built-in module.
+// Note, this logic is unused at the time of writing. It should be re-incorporated into the renderer at some point.
 
-#include "core/os/mutex.h"
-#include "core/templates/hash_map.h"
-#include "core/typedefs.h"
+class RoughnessLimiter {
+private:
+	struct RoughnessLimiterPushConstant {
+		int32_t screen_size[2];
+		float curve;
+		uint32_t pad;
+	};
 
-#include "modules/modules_enabled.gen.h" // For svg, freetype.
-#endif
+	RoughnessLimiterPushConstant push_constant;
+	RoughnessLimiterShaderRD shader;
+	RID shader_version;
+	RID pipeline;
 
-#ifdef MODULE_SVG_ENABLED
-#ifdef MODULE_FREETYPE_ENABLED
+protected:
+public:
+	RoughnessLimiter();
+	~RoughnessLimiter();
 
-#include <freetype/freetype.h>
-#include <freetype/otsvg.h>
-#include <ft2build.h>
-#include <thorvg.h>
-
-struct GL_State {
-	bool ready = false;
-	float bmp_x = 0;
-	float bmp_y = 0;
-	float x = 0;
-	float y = 0;
-	float w = 0;
-	float h = 0;
-	String xml_code;
-	tvg::Matrix m;
+	void roughness_limit(RID p_source_normal, RID p_roughness, const Size2i &p_size, float p_curve);
 };
 
-struct TVG_State {
-	Mutex mutex;
-	HashMap<uint32_t, GL_State> glyph_map;
-};
+} // namespace RendererRD
 
-FT_Error tvg_svg_in_ot_init(FT_Pointer *p_state);
-void tvg_svg_in_ot_free(FT_Pointer *p_state);
-FT_Error tvg_svg_in_ot_preset_slot(FT_GlyphSlot p_slot, FT_Bool p_cache, FT_Pointer *p_state);
-FT_Error tvg_svg_in_ot_render(FT_GlyphSlot p_slot, FT_Pointer *p_state);
-
-SVG_RendererHooks *get_tvg_svg_in_ot_hooks();
-
-#endif // MODULE_FREETYPE_ENABLED
-#endif // MODULE_SVG_ENABLED
-
-#endif // THORVG_SVG_IN_OT_H
+#endif // ROUGHNESS_LIMITER_RD_H
