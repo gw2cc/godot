@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="MessageAnalyzer" inherits="Object" version="4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_message">
+			<return type="void" />
+			<param index="0" name="message" type="Message" />
+			<description>
+			</description>
+		</method>
+		<method name="clear_messages">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="get_message" qualifiers="const">
+			<return type="Message" />
+			<param index="0" name="index" type="int" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="message_count" type="int" setter="" getter="get_message_count" default="0">
+		</member>
+		<member name="messages" type="Array" setter="" getter="get_messages" default="[]">
+		</member>
+	</members>
+	<signals>
+		<signal name="message_added">
+			<param index="0" name="message" type="Message" />
+			<description>
+			</description>
+		</signal>
+	</signals>
+</class>
