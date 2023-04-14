@@ -1930,8 +1930,8 @@ Error VulkanContext::_update_swap_chain(Window *window) {
 		VkCompositeAlphaFlagBitsKHR compositeAlphaFlags[4] = {
 			VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
 			VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR,
-			VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
 			VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
+			VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
 		};
 
 		print_verbose("Supported composite alpha flags:");
