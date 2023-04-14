@@ -1934,6 +1934,12 @@ Error VulkanContext::_update_swap_chain(Window *window) {
 			VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 		};
 
+		print_verbose("Supported composite alpha flags:");
+		print_verbose("\tVK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR: " + String::num_int64(surfCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR));
+		print_verbose("\tVK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR: " + String::num_int64(surfCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR));
+		print_verbose("\tVK_COMPOSITE_ALPHA_INHERIT_BIT_KHR: " + String::num_int64(surfCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR));
+		print_verbose("\tVK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR: " + String::num_int64(surfCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR));
+
 		for (uint32_t i = 0; i < ARRAY_SIZE(compositeAlphaFlags); i++) {
 			if (surfCapabilities.supportedCompositeAlpha & compositeAlphaFlags[i]) {
 				compositeAlpha = compositeAlphaFlags[i];
