@@ -1504,8 +1504,6 @@
 		<member name="Marshalls" type="Marshalls" setter="" getter="">
 			The [Marshalls] singleton.
 		</member>
-		<member name="MessageAnalyzer" type="MessageAnalyzer" setter="" getter="">
-		</member>
 		<member name="NavigationServer2D" type="NavigationServer2D" setter="" getter="">
 			The [NavigationServer2D] singleton.
 		</member>
