@@ -4527,8 +4527,8 @@ int Tree::get_item_offset(TreeItem *p_item) const {
 			return ofs;
 		}
 
-		ofs += compute_item_height(it);
-		if (it != root || !hide_root) {
+		if ((it != root || !hide_root) && it->is_visible()) {
+			ofs += compute_item_height(it);
 			ofs += theme_cache.v_separation;
 		}
 
