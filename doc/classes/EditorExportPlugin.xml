@@ -79,9 +79,27 @@
 			<description>
 			</description>
 		</method>
+		<method name="_get_export_options" qualifiers="virtual const">
+			<return type="Dictionary[]" />
+			<param index="0" name="platform" type="EditorExportPlatform" />
+			<description>
+				Return a list of export options that can be configured for this export plugin.
+				Each element in the return value is a [Dictionary] with the following keys:
+				- [code]option[/code]: A dictionary with the structure documented by [method Object.get_property_list], but all keys are optional.
+				- [code]default_value[/code]: The default value for this option.
+				- [code]update_visibility[/code]: An optional boolean value. If set to [code]true[/code], the preset will emit [signal Object.property_list_changed] when the option is changed.
+			</description>
+		</method>
 		<method name="_get_name" qualifiers="virtual const">
 			<return type="String" />
 			<description>
+			</description>
+		</method>
+		<method name="_should_update_export_options" qualifiers="virtual const">
+			<return type="bool" />
+			<param index="0" name="platform" type="EditorExportPlatform" />
+			<description>
+				Return [code]true[/code], if the result of [method _get_export_options] has changed and the export options of preset corresponding to [param platform] should be updated.
 			</description>
 		</method>
 		<method name="add_file">
@@ -146,6 +164,13 @@
 			<param index="1" name="tags" type="PackedStringArray" />
 			<param index="2" name="target" type="String" />
 			<description>
+			</description>
+		</method>
+		<method name="get_option" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+				Returns the current value of an export option supplied by [method _get_export_options].
 			</description>
 		</method>
 		<method name="skip">

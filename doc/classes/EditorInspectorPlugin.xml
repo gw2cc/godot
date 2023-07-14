@@ -46,7 +46,7 @@
 			<param index="2" name="name" type="String" />
 			<param index="3" name="hint_type" type="int" enum="PropertyHint" />
 			<param index="4" name="hint_string" type="String" />
-			<param index="5" name="usage_flags" type="int" enum="PropertyUsageFlags" />
+			<param index="5" name="usage_flags" type="int" enum="PropertyUsageFlags" is_bitfield="true" />
 			<param index="6" name="wide" type="bool" />
 			<description>
 			</description>

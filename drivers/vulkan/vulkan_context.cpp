@@ -1930,15 +1930,9 @@ Error VulkanContext::_update_swap_chain(Window *window) {
 		VkCompositeAlphaFlagBitsKHR compositeAlphaFlags[4] = {
 			VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
 			VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR,
-			VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 			VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR,
+			VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 		};
-
-		print_verbose("Supported composite alpha flags:");
-		print_verbose("\tVK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR: " + String::num_int64(surfCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR));
-		print_verbose("\tVK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR: " + String::num_int64(surfCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR));
-		print_verbose("\tVK_COMPOSITE_ALPHA_INHERIT_BIT_KHR: " + String::num_int64(surfCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_INHERIT_BIT_KHR));
-		print_verbose("\tVK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR: " + String::num_int64(surfCapabilities.supportedCompositeAlpha & VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR));
 
 		for (uint32_t i = 0; i < ARRAY_SIZE(compositeAlphaFlags); i++) {
 			if (surfCapabilities.supportedCompositeAlpha & compositeAlphaFlags[i]) {
@@ -2282,6 +2276,7 @@ Error VulkanContext::prepare_buffers() {
 				// presentation engine will still present the image correctly.
 				print_verbose("Vulkan: Early suboptimal swapchain, recreating.");
 				_update_swap_chain(w);
+				break;
 			} else if (err != VK_SUCCESS) {
 				ERR_BREAK_MSG(err != VK_SUCCESS, "Vulkan: Did not create swapchain successfully. Error code: " + String(string_VkResult(err)));
 			} else {

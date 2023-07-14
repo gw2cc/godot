@@ -5,6 +5,7 @@
 	<description>
 	</description>
 	<tutorials>
+		<link title="Evaluating Expressions">$DOCS_URL/tutorials/scripting/evaluating_expressions.html</link>
 	</tutorials>
 	<methods>
 		<method name="execute">

@@ -30,6 +30,9 @@
 		</constant>
 		<constant name="FILL_RADIAL" value="1" enum="Fill">
 		</constant>
+		<constant name="FILL_SQUARE" value="2" enum="Fill">
+			The colors are linearly interpolated in a square pattern.
+		</constant>
 		<constant name="REPEAT_NONE" value="0" enum="Repeat">
 		</constant>
 		<constant name="REPEAT" value="1" enum="Repeat">

@@ -3790,7 +3790,7 @@ Variant ShaderLanguage::constant_value_to_variant(const Vector<ShaderLanguage::C
 					}
 					value = Variant(array);
 				} else {
-					value = Variant(Vector2(p_value[0].sint, p_value[1].sint));
+					value = Variant(Vector2i(p_value[0].sint, p_value[1].sint));
 				}
 				break;
 			case ShaderLanguage::TYPE_IVEC3:
@@ -3803,7 +3803,7 @@ Variant ShaderLanguage::constant_value_to_variant(const Vector<ShaderLanguage::C
 					}
 					value = Variant(array);
 				} else {
-					value = Variant(Vector3(p_value[0].sint, p_value[1].sint, p_value[2].sint));
+					value = Variant(Vector3i(p_value[0].sint, p_value[1].sint, p_value[2].sint));
 				}
 				break;
 			case ShaderLanguage::TYPE_IVEC4:
@@ -3816,7 +3816,7 @@ Variant ShaderLanguage::constant_value_to_variant(const Vector<ShaderLanguage::C
 					}
 					value = Variant(array);
 				} else {
-					value = Variant(Quaternion(p_value[0].sint, p_value[1].sint, p_value[2].sint, p_value[3].sint));
+					value = Variant(Vector4i(p_value[0].sint, p_value[1].sint, p_value[2].sint, p_value[3].sint));
 				}
 				break;
 			case ShaderLanguage::TYPE_UINT:
@@ -3840,7 +3840,7 @@ Variant ShaderLanguage::constant_value_to_variant(const Vector<ShaderLanguage::C
 					}
 					value = Variant(array);
 				} else {
-					value = Variant(Vector2(p_value[0].uint, p_value[1].uint));
+					value = Variant(Vector2i(p_value[0].uint, p_value[1].uint));
 				}
 				break;
 			case ShaderLanguage::TYPE_UVEC3:
@@ -3853,7 +3853,7 @@ Variant ShaderLanguage::constant_value_to_variant(const Vector<ShaderLanguage::C
 					}
 					value = Variant(array);
 				} else {
-					value = Variant(Vector3(p_value[0].uint, p_value[1].uint, p_value[2].uint));
+					value = Variant(Vector3i(p_value[0].uint, p_value[1].uint, p_value[2].uint));
 				}
 				break;
 			case ShaderLanguage::TYPE_UVEC4:
@@ -3866,7 +3866,7 @@ Variant ShaderLanguage::constant_value_to_variant(const Vector<ShaderLanguage::C
 					}
 					value = Variant(array);
 				} else {
-					value = Variant(Quaternion(p_value[0].uint, p_value[1].uint, p_value[2].uint, p_value[3].uint));
+					value = Variant(Vector4i(p_value[0].uint, p_value[1].uint, p_value[2].uint, p_value[3].uint));
 				}
 				break;
 			case ShaderLanguage::TYPE_FLOAT:
@@ -3942,7 +3942,7 @@ Variant ShaderLanguage::constant_value_to_variant(const Vector<ShaderLanguage::C
 					if (p_hint == ShaderLanguage::ShaderNode::Uniform::HINT_SOURCE_COLOR) {
 						value = Variant(Color(p_value[0].real, p_value[1].real, p_value[2].real, p_value[3].real));
 					} else {
-						value = Variant(Quaternion(p_value[0].real, p_value[1].real, p_value[2].real, p_value[3].real));
+						value = Variant(Vector4(p_value[0].real, p_value[1].real, p_value[2].real, p_value[3].real));
 					}
 				}
 				break;
@@ -8027,6 +8027,9 @@ Error ShaderLanguage::_parse_shader(const HashMap<StringName, FunctionInfo> &p_f
 	while (tk.type != TK_EOF) {
 		switch (tk.type) {
 			case TK_RENDER_MODE: {
+#ifdef DEBUG_ENABLED
+				keyword_completion_context = CF_UNSPECIFIED;
+#endif // DEBUG_ENABLED
 				while (true) {
 					StringName mode;
 					_get_completable_identifier(nullptr, COMPLETION_RENDER_MODE, mode);
@@ -8114,6 +8117,9 @@ Error ShaderLanguage::_parse_shader(const HashMap<StringName, FunctionInfo> &p_f
 						return ERR_PARSE_ERROR;
 					}
 				}
+#ifdef DEBUG_ENABLED
+				keyword_completion_context = CF_GLOBAL_SPACE;
+#endif // DEBUG_ENABLED
 			} break;
 			case TK_STRUCT: {
 				ShaderNode::Struct st;
@@ -10529,36 +10535,42 @@ Error ShaderLanguage::complete(const String &p_code, const ShaderCompileInfo &p_
 
 					r_options->push_back(option);
 				}
-			} else if ((int(completion_base) > int(TYPE_MAT4) && int(completion_base) < int(TYPE_STRUCT)) && !completion_base_array) {
+			} else if ((int(completion_base) > int(TYPE_MAT4) && int(completion_base) < int(TYPE_STRUCT))) {
 				Vector<String> options;
-				if (current_uniform_filter == FILTER_DEFAULT) {
-					options.push_back("filter_linear");
-					options.push_back("filter_linear_mipmap");
-					options.push_back("filter_linear_mipmap_anisotropic");
-					options.push_back("filter_nearest");
-					options.push_back("filter_nearest_mipmap");
-					options.push_back("filter_nearest_mipmap_anisotropic");
-				}
-				if (current_uniform_hint == ShaderNode::Uniform::HINT_NONE) {
-					options.push_back("hint_anisotropy");
-					options.push_back("hint_default_black");
-					options.push_back("hint_default_white");
-					options.push_back("hint_default_transparent");
-					options.push_back("hint_normal");
-					options.push_back("hint_roughness_a");
-					options.push_back("hint_roughness_b");
-					options.push_back("hint_roughness_g");
-					options.push_back("hint_roughness_gray");
-					options.push_back("hint_roughness_normal");
-					options.push_back("hint_roughness_r");
-					options.push_back("hint_screen_texture");
-					options.push_back("hint_normal_roughness_texture");
-					options.push_back("hint_depth_texture");
-					options.push_back("source_color");
-				}
-				if (current_uniform_repeat == REPEAT_DEFAULT) {
-					options.push_back("repeat_enable");
-					options.push_back("repeat_disable");
+				if (completion_base_array) {
+					if (current_uniform_hint == ShaderNode::Uniform::HINT_NONE) {
+						options.push_back("source_color");
+					}
+				} else {
+					if (current_uniform_filter == FILTER_DEFAULT) {
+						options.push_back("filter_linear");
+						options.push_back("filter_linear_mipmap");
+						options.push_back("filter_linear_mipmap_anisotropic");
+						options.push_back("filter_nearest");
+						options.push_back("filter_nearest_mipmap");
+						options.push_back("filter_nearest_mipmap_anisotropic");
+					}
+					if (current_uniform_hint == ShaderNode::Uniform::HINT_NONE) {
+						options.push_back("hint_anisotropy");
+						options.push_back("hint_default_black");
+						options.push_back("hint_default_white");
+						options.push_back("hint_default_transparent");
+						options.push_back("hint_normal");
+						options.push_back("hint_roughness_a");
+						options.push_back("hint_roughness_b");
+						options.push_back("hint_roughness_g");
+						options.push_back("hint_roughness_gray");
+						options.push_back("hint_roughness_normal");
+						options.push_back("hint_roughness_r");
+						options.push_back("hint_screen_texture");
+						options.push_back("hint_normal_roughness_texture");
+						options.push_back("hint_depth_texture");
+						options.push_back("source_color");
+					}
+					if (current_uniform_repeat == REPEAT_DEFAULT) {
+						options.push_back("repeat_enable");
+						options.push_back("repeat_disable");
+					}
 				}
 
 				for (int i = 0; i < options.size(); i++) {

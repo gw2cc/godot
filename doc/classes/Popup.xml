@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="Popup" inherits="Window" version="4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+<class name="Popup" inherits="Window" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
 	<brief_description>
+		Base class for contextual windows and panels with fixed position.
 	</brief_description>
 	<description>
+		[Popup] is a base class for contextual windows and panels with fixed position. It's a modal by default (see [member Window.popup_window]) and provides methods for implementing custom popup behavior.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -17,6 +19,7 @@
 	<signals>
 		<signal name="popup_hide">
 			<description>
+				Emitted when the popup is hidden.
 			</description>
 		</signal>
 	</signals>
