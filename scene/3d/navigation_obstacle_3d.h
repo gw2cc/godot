@@ -108,8 +108,6 @@ public:
 
 	void _avoidance_done(Vector3 p_new_velocity); // Dummy
 
-	void _avoidance_done(Vector3 p_new_velocity); // Dummy
-
 private:
 	void _update_map(RID p_map);
 	void _update_position(const Vector3 p_position);
