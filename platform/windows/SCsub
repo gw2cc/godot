@@ -33,18 +33,7 @@ for lib in env["LIBS"]:
         continue
     libs.append(lib)
 
-
-lib = env.add_library("windows", common_win + res_obj)
-env.Prepend(LIBS=[lib])
-
-with open("../../godot_libs.cmake", "w") as f:
-    f.write("set(GODOT_LIBS\n")
-    for lib in env["LIBS"]:
-        for l in lib:
-            if "module_gw2cc" in l.name:
-                continue
-            f.write("    \"" + l.get_abspath().replace("\\", "/") + "\"\n")
-    f.write(")\n")
+prog = env.add_library("#bin/godot", common_win + res_obj + libs, PROGSUFFIX=env["PROGSUFFIX"])
 
 # Build console wrapper app.
 if env["windows_subsystem"] == "gui":
@@ -74,6 +63,6 @@ if env["vsproj"]:
 
 if not os.getenv("VCINSTALLDIR"):
     if env["debug_symbols"] and env["separate_debug_symbols"]:
-        env.AddPostAction(lib, run_in_subprocess(platform_windows_builders.make_debug_mingw))
+        env.AddPostAction(prog, run_in_subprocess(platform_windows_builders.make_debug_mingw))
         if env["windows_subsystem"] == "gui":
             env.AddPostAction(prog_wrap, run_in_subprocess(platform_windows_builders.make_debug_mingw))

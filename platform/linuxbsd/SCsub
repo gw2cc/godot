@@ -39,19 +39,21 @@ if env["dbus"]:
 
 
 linuxbsd_lib = env.add_library("linuxbsd", ["godot_linuxbsd.cpp"] + common_linuxbsd)
-env.Prepend(LIBS=[linuxbsd_lib])
 
 # remove system libs
 godot_libs = [l for l in env['LIBS'] if not isinstance(l, str)]
 
-with open("../../godot_libs.cmake", "w") as f:
-    f.write("set(GODOT_LIBS\n")
-    for lib in godot_libs + [linuxbsd_lib]:
-        for l in lib:
-            if "module_gw2cc" in l.name:
-                continue
-            f.write("    \"" + l.get_abspath().replace("\\", "/") + "\"\n")
-    f.write(")\n")
+def merge_libs(env, target, source):
+    mri_script = f'create {target[0]}\n'
+    for s in source:
+        mri_script += f'addlib {s}\n'
+    mri_script += 'save\nend'
+
+    with os.popen('ar -M', mode='w') as p:
+        p.write(mri_script)
+        p.close()
+
+prog = env.Command(f'#bin/libgodot{env["LIBSUFFIX"]}', godot_libs + [linuxbsd_lib], merge_libs)
 
 if env["debug_symbols"] and env["separate_debug_symbols"]:
-    env.AddPostAction(linuxbsd_lib, run_in_subprocess(platform_linuxbsd_builders.make_debug_linuxbsd))
+    env.AddPostAction(prog, run_in_subprocess(platform_linuxbsd_builders.make_debug_linuxbsd))
