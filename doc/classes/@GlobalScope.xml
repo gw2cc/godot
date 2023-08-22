@@ -1452,6 +1452,8 @@
 		</method>
 	</methods>
 	<members>
+		<member name="AnimationService" type="Node" setter="" getter="">
+		</member>
 		<member name="AsyncResourceLoader" type="Node" setter="" getter="">
 		</member>
 		<member name="AudioServer" type="AudioServer" setter="" getter="">
