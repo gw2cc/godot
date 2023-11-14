@@ -5,6 +5,7 @@
 	<description>
 	</description>
 	<tutorials>
+		<link title="SSL certificates">$DOCS_URL/tutorials/networking/ssl_certificates.html</link>
 	</tutorials>
 	<methods>
 		<method name="is_public_only" qualifiers="const">

@@ -5,6 +5,7 @@
 	<description>
 	</description>
 	<tutorials>
+		<link title="Using Lightmap global illumination">$DOCS_URL/tutorials/3d/global_illumination/using_lightmap_gi.html</link>
 	</tutorials>
 	<members>
 		<member name="bias" type="float" setter="set_bias" getter="get_bias" default="0.0005">
@@ -72,6 +73,9 @@
 		<constant name="BAKE_ERROR_CANT_CREATE_IMAGE" value="7" enum="BakeError">
 		</constant>
 		<constant name="BAKE_ERROR_USER_ABORTED" value="8" enum="BakeError">
+		</constant>
+		<constant name="BAKE_ERROR_TEXTURE_SIZE_TOO_SMALL" value="9" enum="BakeError">
+			Lightmap baking failed as the maximum texture size is too small to fit some of the meshes marked for baking.
 		</constant>
 		<constant name="ENVIRONMENT_MODE_DISABLED" value="0" enum="EnvironmentMode">
 		</constant>

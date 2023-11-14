@@ -5,6 +5,7 @@
 	<description>
 	</description>
 	<tutorials>
+		<link title="Particle systems (3D)">$DOCS_URL/tutorials/3d/particles/index.html</link>
 	</tutorials>
 	<methods>
 		<method name="convert_from_particles">

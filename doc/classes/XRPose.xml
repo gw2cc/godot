@@ -5,6 +5,7 @@
 	<description>
 	</description>
 	<tutorials>
+		<link title="XR documentation index">$DOCS_URL/tutorials/xr/index.html</link>
 	</tutorials>
 	<methods>
 		<method name="get_adjusted_transform" qualifiers="const">

@@ -5,6 +5,7 @@
 	<description>
 	</description>
 	<tutorials>
+		<link title="Volumetric fog and fog volumes">$DOCS_URL/tutorials/3d/volumetric_fog.html</link>
 	</tutorials>
 	<members>
 		<member name="material" type="Material" setter="set_material" getter="get_material">
