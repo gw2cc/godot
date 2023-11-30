@@ -395,7 +395,7 @@ Error OS_Windows::open_dynamic_library(const String p_path, void *&p_library_han
 		}
 	}
 #else
-	ERR_FAIL_COND_V_MSG(!p_library_handle, ERR_CANT_OPEN, vformat("Can't open dynamic library: %s. Error: %s.", p_path, format_error_message(GetLastError())));
+	ERR_FAIL_NULL_V_MSG(p_library_handle, ERR_CANT_OPEN, vformat("Can't open dynamic library: %s. Error: %s.", p_path, format_error_message(GetLastError())));
 #endif
 
 	if (cookie) {
@@ -841,11 +841,6 @@ Error OS_Windows::create_process(const String &p_path, const List<String> &p_arg
 	LPSTARTUPINFOW si_w = (LPSTARTUPINFOW)&pi.si;
 
 	DWORD creation_flags = NORMAL_PRIORITY_CLASS;
-	// gw2cc begin
-#ifdef WINDOWS_SUBSYSTEM_CONSOLE
-	creation_flags |= CREATE_NEW_CONSOLE;
-#endif
-	// gw2cc begin
 	if (p_open_console) {
 		creation_flags |= CREATE_NEW_CONSOLE;
 	} else {
@@ -1683,7 +1678,7 @@ Error OS_Windows::move_to_trash(const String &p_path) {
 
 String OS_Windows::get_system_ca_certificates() {
 	HCERTSTORE cert_store = CertOpenSystemStoreA(0, "ROOT");
-	ERR_FAIL_COND_V_MSG(!cert_store, "", "Failed to read the root certificate store.");
+	ERR_FAIL_NULL_V_MSG(cert_store, "", "Failed to read the root certificate store.");
 
 	FILETIME curr_time;
 	GetSystemTimeAsFileTime(&curr_time);
@@ -1714,7 +1709,7 @@ String OS_Windows::get_system_ca_certificates() {
 OS_Windows::OS_Windows(HINSTANCE _hInstance) {
 	hInstance = _hInstance;
 
-	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 
 #ifdef WASAPI_ENABLED
 	AudioDriverManager::add_driver(&driver_wasapi);
