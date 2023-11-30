@@ -3391,7 +3391,7 @@ void Viewport::_push_unhandled_input_internal(const Ref<InputEvent> &p_event) {
 
 								)) {
 			physics_picking_events.push_back(p_event);
-			set_input_as_handled();
+			//set_input_as_handled();
 		}
 	}
 }
