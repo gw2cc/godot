@@ -841,6 +841,11 @@ Error OS_Windows::create_process(const String &p_path, const List<String> &p_arg
 	LPSTARTUPINFOW si_w = (LPSTARTUPINFOW)&pi.si;
 
 	DWORD creation_flags = NORMAL_PRIORITY_CLASS;
+	// gw2cc begin
+#ifdef WINDOWS_SUBSYSTEM_CONSOLE
+	creation_flags |= CREATE_NEW_CONSOLE;
+#endif
+	// gw2cc begin
 	if (p_open_console) {
 		creation_flags |= CREATE_NEW_CONSOLE;
 	} else {
