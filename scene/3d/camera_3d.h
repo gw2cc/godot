@@ -36,11 +36,6 @@
 #include "scene/resources/camera_attributes.h"
 #include "scene/resources/environment.h"
 
-#ifdef MINGW_ENABLED
-#undef near
-#undef far
-#endif
-
 class Camera3D : public Node3D {
 	GDCLASS(Camera3D, Node3D);
 
@@ -72,8 +67,8 @@ private:
 	real_t fov = 75.0;
 	real_t size = 1.0;
 	Vector2 frustum_offset;
-	real_t near = 0.05;
-	real_t far = 4000.0;
+	real_t camera_near = 0.05;
+	real_t camera_far = 4000.0;
 	real_t v_offset = 0.0;
 	real_t h_offset = 0.0;
 	KeepAspect keep_aspect = KEEP_HEIGHT;
