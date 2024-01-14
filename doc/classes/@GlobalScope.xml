@@ -1588,8 +1588,6 @@
 		<member name="IP" type="IP" setter="" getter="">
 			The [IP] singleton.
 		</member>
-		<member name="Injector" type="Injector" setter="" getter="">
-		</member>
 		<member name="Input" type="Input" setter="" getter="">
 			The [Input] singleton.
 		</member>
