@@ -43,12 +43,6 @@
 				[i]Deprecated.[/i] Use [method get_rid] instead.
 			</description>
 		</method>
-		<method name="get_rid" qualifiers="const">
-			<return type="RID" />
-			<description>
-				Returns the [RID] of this region on the [NavigationServer3D]. Combined with [method NavigationServer3D.map_get_closest_point_owner] can be used to identify the [NavigationRegion3D] closest to a point on the merged navigation map.
-			</description>
-		</method>
 		<method name="set_navigation_layer_value">
 			<return type="void" />
 			<param index="0" name="layer_number" type="int" />
