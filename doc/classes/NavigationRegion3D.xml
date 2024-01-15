@@ -43,6 +43,11 @@
 				[i]Deprecated.[/i] Use [method get_rid] instead.
 			</description>
 		</method>
+		<method name="get_rid" qualifiers="const">
+			<return type="RID" />
+			<description>
+			</description>
+		</method>
 		<method name="set_navigation_layer_value">
 			<return type="void" />
 			<param index="0" name="layer_number" type="int" />
