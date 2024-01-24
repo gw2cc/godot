@@ -233,6 +233,10 @@ public:
 
 	FileAccess() {}
 	virtual ~FileAccess() {}
+
+	// gw2cc begin
+	virtual bool is_protected() { return false; }
+	// gw2cc end
 };
 
 VARIANT_ENUM_CAST(FileAccess::CompressionMode);

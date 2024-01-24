@@ -147,6 +147,22 @@ public:
 
 	Resource();
 	~Resource();
+
+	// gw2cc begin
+public:
+	void set_source_path(const String &p_path) {
+		old_path = p_path;
+	}
+
+	String get_source_path() const {
+		if (old_path != "")
+			return old_path;
+		else
+			return path_cache;
+	}
+private:
+	String old_path;
+	// gw2cc end
 };
 
 class ResourceCache {

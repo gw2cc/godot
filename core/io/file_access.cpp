@@ -121,6 +121,12 @@ Ref<FileAccess> FileAccess::_open(const String &p_path, ModeFlags p_mode_flags) 
 	if (err) {
 		return Ref<FileAccess>();
 	}
+	// gw2cc begin
+	if(fa->is_protected()) {
+		last_file_open_error = ERR_FILE_CANT_OPEN;
+		return Ref<FileAccess>();
+	}
+	// gw2cc end
 	return fa;
 }
 

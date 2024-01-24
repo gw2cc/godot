@@ -345,6 +345,12 @@ Error DirAccess::copy(String p_from, String p_to, int p_chmod_flags) {
 		Ref<FileAccess> fsrc = FileAccess::open(p_from, FileAccess::READ, &err);
 		ERR_FAIL_COND_V_MSG(err != OK, err, "Failed to open " + p_from);
 
+		// gw2cc begin
+		if (fsrc->is_protected()) {
+			return ERR_FILE_NO_PERMISSION;
+		}
+		// gw2cc end
+
 		Ref<FileAccess> fdst = FileAccess::open(p_to, FileAccess::WRITE, &err);
 		ERR_FAIL_COND_V_MSG(err != OK, err, "Failed to open " + p_to);
 

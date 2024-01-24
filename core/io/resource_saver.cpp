@@ -107,6 +107,16 @@ Error ResourceSaver::save(const Ref<Resource> &p_resource, const String &p_path,
 	String extension = path.get_extension();
 	Error err = ERR_FILE_UNRECOGNIZED;
 
+	// gw2cc begin
+	if (p_resource->get_source_path() != "") {
+		Ref fa = FileAccess::open(p_resource->get_source_path(), FileAccess::READ);
+		if (fa.is_valid()) {
+			if (fa->is_protected())
+				return ERR_FILE_UNRECOGNIZED; // nice try
+		}
+	}
+	// gw2cc end
+
 	for (int i = 0; i < saver_count; i++) {
 		if (!saver[i]->recognize(p_resource)) {
 			continue;
