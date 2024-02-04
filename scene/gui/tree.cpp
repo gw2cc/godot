@@ -2510,18 +2510,15 @@ int Tree::draw_item(const Point2i &p_pos, const Point2 &p_draw_ofs, const Size2 
 
 int Tree::_count_selected_items(TreeItem *p_from) const {
 	int count = 0;
+
 	for (int i = 0; i < columns.size(); i++) {
 		if (p_from->is_selected(i)) {
 			count++;
 		}
 	}
 
-	if (p_from->get_first_child()) {
-		count += _count_selected_items(p_from->get_first_child());
-	}
-
-	if (p_from->get_next()) {
-		count += _count_selected_items(p_from->get_next());
+	for(TreeItem *c = p_from->get_first_child(); c; c = c->get_next()) {
+		count += _count_selected_items(c);
 	}
 
 	return count;
