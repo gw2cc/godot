@@ -532,11 +532,13 @@ String DirAccessPack::get_current_dir(bool p_include_drive) const {
 }
 
 bool DirAccessPack::file_exists(String p_file) {
-	p_file = fix_path(p_file);
-
 	PackedData::PackedDir *pd = _find_dir(p_file.get_base_dir());
 	if (!pd) {
-		return false;
+		p_file = fix_path(p_file);
+		pd = _find_dir(p_file.get_base_dir());
+		if (!pd) {
+			return false;
+		}
 	}
 	return pd->files.has(p_file.get_file());
 }
