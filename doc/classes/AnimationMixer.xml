@@ -18,7 +18,7 @@
 			<param index="3" name="object" type="Object" />
 			<param index="4" name="object_idx" type="int" />
 			<description>
-				A virtual function for processing after key getting during playback.
+				A virtual function for processing after getting a key during playback.
 			</description>
 		</method>
 		<method name="add_animation_library">

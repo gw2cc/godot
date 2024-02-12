@@ -1018,6 +1018,7 @@
 			<return type="AABB" />
 			<param index="0" name="body" type="RID" />
 			<description>
+				Returns the bounds of the given soft body in global coordinates.
 			</description>
 		</method>
 		<method name="space_create">

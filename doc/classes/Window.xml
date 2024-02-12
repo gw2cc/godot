@@ -357,10 +357,11 @@
 				Centers a native window on the current screen and an embedded window on its embedder [Viewport].
 			</description>
 		</method>
-		<method name="move_to_foreground">
+		<method name="move_to_foreground" is_deprecated="true">
 			<return type="void" />
 			<description>
 				Moves the [Window] on top of other windows and focuses it.
+				[i]Deprecated.[/i] Use [method Window.grab_focus] instead.
 			</description>
 		</method>
 		<method name="popup">
@@ -671,7 +672,7 @@
 		<member name="transparent" type="bool" setter="set_flag" getter="get_flag" default="false">
 			If [code]true[/code], the [Window]'s background can be transparent. This is best used with embedded windows.
 			[b]Note:[/b] Transparency support is implemented on Linux, macOS and Windows, but availability might vary depending on GPU driver, display manager, and compositor capabilities.
-			[b]Note:[/b] This property has no effect if either [member ProjectSettings.display/window/per_pixel_transparency/allowed], or the window's [member Viewport.transparent_bg] is set to [code]false[/code].
+			[b]Note:[/b] This property has no effect if [member ProjectSettings.display/window/per_pixel_transparency/allowed] is set to [code]false[/code].
 		</member>
 		<member name="unfocusable" type="bool" setter="set_flag" getter="get_flag" default="false">
 			If [code]true[/code], the [Window] can't be focused nor interacted with. It can still be visible.

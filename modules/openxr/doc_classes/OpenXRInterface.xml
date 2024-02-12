@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="OpenXRInterface" inherits="XRInterface" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		Our OpenXR interface.
 	</brief_description>
 	<description>
+		The OpenXR interface allows Godot to interact with OpenXR runtimes and make it possible to create XR experiences and games.
+		Due to the needs of OpenXR this interface works slightly different than other plugin based XR interfaces. It needs to be initialized when Godot starts. You need to enable OpenXR, settings for this can be found in your games project settings under the XR heading. You do need to mark a viewport for use with XR in order for Godot to know which render result should be output to the headset.
 	</description>
 	<tutorials>
+		<link title="Setting up XR">$DOCS_URL/tutorials/xr/setting_up_xr.html</link>
 	</tutorials>
 	<methods>
 		<method name="get_action_sets" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Returns a list of action sets registered with Godot (loaded from the action map at runtime).
 			</description>
 		</method>
 		<method name="get_available_display_refresh_rates" qualifiers="const">
 			<return type="Array" />
 			<description>
+				Returns display refresh rates supported by the current HMD. Only returned if this feature is supported by the OpenXR runtime and after the interface has been initialized.
 			</description>
 		</method>
 		<method name="get_hand_joint_angular_velocity" qualifiers="const">
@@ -76,6 +82,7 @@
 			<return type="bool" />
 			<param index="0" name="name" type="String" />
 			<description>
+				Returns [code]true[/code] if the given action set is active.
 			</description>
 		</method>
 		<method name="is_eye_gaze_interaction_supported">
@@ -104,6 +111,7 @@
 			<param index="0" name="name" type="String" />
 			<param index="1" name="active" type="bool" />
 			<description>
+				Sets the given action set as active or inactive.
 			</description>
 		</method>
 		<method name="set_motion_range">
@@ -117,12 +125,15 @@
 	</methods>
 	<members>
 		<member name="display_refresh_rate" type="float" setter="set_display_refresh_rate" getter="get_display_refresh_rate" default="0.0">
+			The display refresh rate for the current HMD. Only functional if this feature is supported by the OpenXR runtime and after the interface has been initialized.
 		</member>
 		<member name="foveation_dynamic" type="bool" setter="set_foveation_dynamic" getter="get_foveation_dynamic" default="false">
 			Enable dynamic foveation adjustment, the interface must be initialized before this is accessible. If enabled foveation will automatically adjusted between low and [member foveation_level].
+			[b]Note:[/b] Only works on compatibility renderer.
 		</member>
 		<member name="foveation_level" type="int" setter="set_foveation_level" getter="get_foveation_level" default="0">
 			Set foveation level from 0 (off) to 3 (high), the interface must be initialized before this is accessible.
+			[b]Note:[/b] Only works on compatibility renderer.
 		</member>
 		<member name="render_target_size_multiplier" type="float" setter="set_render_target_size_multiplier" getter="get_render_target_size_multiplier" default="1.0">
 			The render size multiplier for the current HMD. Must be set before the interface has been initialized.
@@ -131,22 +142,27 @@
 	<signals>
 		<signal name="pose_recentered">
 			<description>
+				Informs the user queued a recenter of the player position.
 			</description>
 		</signal>
 		<signal name="session_begun">
 			<description>
+				Informs our OpenXR session has been started.
 			</description>
 		</signal>
 		<signal name="session_focussed">
 			<description>
+				Informs our OpenXR session now has focus.
 			</description>
 		</signal>
 		<signal name="session_stopping">
 			<description>
+				Informs our OpenXR session is stopping.
 			</description>
 		</signal>
 		<signal name="session_visible">
 			<description>
+				Informs our OpenXR session is now visible (output is being sent to the HMD).
 			</description>
 		</signal>
 	</signals>
@@ -161,10 +177,13 @@
 			Maximum value for the hand enum.
 		</constant>
 		<constant name="HAND_MOTION_RANGE_UNOBSTRUCTED" value="0" enum="HandMotionRange">
+			Full hand range, if user closes their hands, we make a full fist.
 		</constant>
 		<constant name="HAND_MOTION_RANGE_CONFORM_TO_CONTROLLER" value="1" enum="HandMotionRange">
+			Conform to controller, if user closes their hands, the tracked data conforms to the shape of the controller.
 		</constant>
 		<constant name="HAND_MOTION_RANGE_MAX" value="2" enum="HandMotionRange">
+			Maximum value for the motion range enum.
 		</constant>
 		<constant name="HAND_JOINT_PALM" value="0" enum="HandJoints">
 			Palm joint.

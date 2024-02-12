@@ -117,6 +117,7 @@
 			<param index="0" name="class_name" type="String" />
 			<param index="1" name="function_name" type="String" />
 			<description>
+				Returns the line where the function is defined in the code, or [code]-1[/code] if the function is not present.
 			</description>
 		</method>
 		<method name="_finish" qualifiers="virtual">
