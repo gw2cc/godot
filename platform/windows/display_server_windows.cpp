@@ -994,11 +994,7 @@ DisplayServer::WindowID DisplayServerWindows::get_window_at_screen_position(cons
 	p.y = p_position.y + offset.y;
 
 
-	HWND hwnd = ChildWindowFromPointEx(GetDesktopWindow(), p, CWP_SKIPINVISIBLE);
-	if (hwnd == GetDesktopWindow())
-	{
-		hwnd = WindowFromPoint(p);
-	}
+	HWND hwnd = WindowFromPoint(p);
 	for (const KeyValue<WindowID, WindowData> &E : windows) {
 		if (E.value.hWnd == hwnd) {
 			return E.key;
