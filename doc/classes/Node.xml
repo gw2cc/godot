@@ -100,7 +100,7 @@
 			<return type="void" />
 			<param index="0" name="event" type="InputEvent" />
 			<description>
-				Called when an [InputEventKey] or [InputEventShortcut] hasn't been consumed by [method _input] or any GUI [Control] item. It is called before [method _unhandled_key_input] and [method _unhandled_input]. The input event propagates up through the node tree until a node consumes it.
+				Called when an [InputEventKey], [InputEventShortcut], or [InputEventJoypadButton] hasn't been consumed by [method _input] or any GUI [Control] item. It is called before [method _unhandled_key_input] and [method _unhandled_input]. The input event propagates up through the node tree until a node consumes it.
 				It is only called if shortcut processing is enabled, which is done automatically if this method is overridden, and can be toggled with [method set_process_shortcut_input].
 				To consume the input event and stop it propagating further to other nodes, [method Viewport.set_input_as_handled] can be called.
 				This method can be used to handle shortcuts. For generic GUI events, use [method _input] instead. Gameplay events should usually be handled with either [method _unhandled_input] or [method _unhandled_key_input].
@@ -199,19 +199,13 @@
 		<method name="can_process" qualifiers="const">
 			<return type="bool" />
 			<description>
-				Returns [code]true[/code] if the node can receive processing notifications and input callbacks ([constant NOTIFICATION_PROCESS], [method _input], etc) from the [SceneTree] and [Viewport]. The returned value depends on [member process_mode]:
-				- If set to [constant PROCESS_MODE_PAUSABLE], returns [code]true[/code] when the game is processing, i.e. [member SceneTree.paused] is [code]false[/code];
-				- If set to [constant PROCESS_MODE_WHEN_PAUSED], returns [code]true[/code] when the game is paused, i.e. [member SceneTree.paused] is [code]true[/code];
-				- If set to [constant PROCESS_MODE_ALWAYS], always returns [code]true[/code];
-				- If set to [constant PROCESS_MODE_DISABLED], always returns [code]false[/code];
-				- If set to [constant PROCESS_MODE_INHERIT], use the parent node's [member process_mode] to determine the result.
-				If the node is not inside the tree, returns [code]false[/code] no matter the value of [member process_mode].
+				Returns [code]true[/code] if the node can receive processing notifications and input callbacks ([constant NOTIFICATION_PROCESS], [method _input], etc) from the [SceneTree] and [Viewport]. The value depends on both the current [member process_mode] and [member SceneTree.paused]. Returns [code]false[/code] if the node is not inside the tree.
 			</description>
 		</method>
 		<method name="create_tween">
 			<return type="Tween" />
 			<description>
-				Creates a new [Tween] and binds it to this node.
+				Creates a new [Tween] and binds it to this node. Fails if the node is not inside the tree.
 				This is the equivalent of doing:
 				[codeblocks]
 				[gdscript]
@@ -221,8 +215,7 @@
 				GetTree().CreateTween().BindNode(this);
 				[/csharp]
 				[/codeblocks]
-				The Tween will start automatically on the next process frame or physics frame (depending on [enum Tween.TweenProcessMode]). See [method Tween.bind_node] for more info on Tweens bound to nodes.
-				[b]Note:[/b] The method can still be used when the node is not inside [SceneTree]. It can fail in an unlikely case of using a custom [MainLoop].
+				The Tween will start automatically on the next process frame or physics frame (depending on [enum Tween.TweenProcessMode]).
 			</description>
 		</method>
 		<method name="duplicate" qualifiers="const">
@@ -746,7 +739,7 @@
 			<param index="0" name="new_parent" type="Node" />
 			<param index="1" name="keep_global_transform" type="bool" default="true" />
 			<description>
-				Changes the parent of this [Node] to the [param new_parent]. The node needs to already have a parent. The node's [member owner] is preserved if its owner is still reachable from the new location (i.e., the node is still a descendant of the new parent after the operation).
+				Changes the parent of this [Node] to the [param new_parent]. The node needs to already have a parent.
 				If [param keep_global_transform] is [code]true[/code], the node's global transform will be preserved if supported. [Node2D], [Node3D] and [Control] support this argument (but [Control] keeps only position).
 			</description>
 		</method>
@@ -835,7 +828,7 @@
 			<return type="void" />
 			<param index="0" name="enable" type="bool" />
 			<description>
-				If set to [code]true[/code], enables physics (fixed framerate) processing. When a node is being processed, it will receive a [constant NOTIFICATION_PHYSICS_PROCESS] at a fixed (usually 60 FPS, see [member Engine.physics_ticks_per_second] to change) interval (and the [method _physics_process] callback will be called if it exists). Enabled automatically if [method _physics_process] is overridden.
+				If set to [code]true[/code], enables physics (fixed framerate) processing. When a node is being processed, it will receive a [constant NOTIFICATION_PHYSICS_PROCESS] at a fixed (usually 60 FPS, see [member Engine.physics_ticks_per_second] to change) interval (and the [method _physics_process] callback will be called if exists). Enabled automatically if [method _physics_process] is overridden.
 			</description>
 		</method>
 		<method name="set_physics_process_internal">
@@ -850,8 +843,7 @@
 			<return type="void" />
 			<param index="0" name="enable" type="bool" />
 			<description>
-				If set to [code]true[/code], enables processing. When a node is being processed, it will receive a [constant NOTIFICATION_PROCESS] on every drawn frame (and the [method _process] callback will be called if it exists). Enabled automatically if [method _process] is overridden.
-				[b]Note:[/b] This method only affects the [method _process] callback, i.e. it has no effect on other callbacks like [method _physics_process]. If you want to disable all processing for the node, set [member process_mode] to [constant PROCESS_MODE_DISABLED].
+				If set to [code]true[/code], enables processing. When a node is being processed, it will receive a [constant NOTIFICATION_PROCESS] on every drawn frame (and the [method _process] callback will be called if exists). Enabled automatically if [method _process] is overridden.
 			</description>
 		</method>
 		<method name="set_process_input">
@@ -929,7 +921,7 @@
 			[b]Note:[/b] In the editor, nodes not owned by the scene root are usually not displayed in the Scene dock, and will [b]not[/b] be saved. To prevent this, remember to set the owner after calling [method add_child]. See also (see [member unique_name_in_owner])
 		</member>
 		<member name="process_mode" type="int" setter="set_process_mode" getter="get_process_mode" enum="Node.ProcessMode" default="0">
-			The node's processing behavior (see [enum ProcessMode]). To check if the node can process in its current mode, use [method can_process].
+			The node's processing behavior (see [enum ProcessMode]). To check if the node is able to process, with the current mode and [member SceneTree.paused], use [method can_process].
 		</member>
 		<member name="process_physics_priority" type="int" setter="set_physics_process_priority" getter="get_physics_process_priority" default="0">
 			Similar to [member process_priority] but for [constant NOTIFICATION_PHYSICS_PROCESS], [method _physics_process] or the internal version.
@@ -941,7 +933,7 @@
 			Set the process thread group for this node (basically, whether it receives [constant NOTIFICATION_PROCESS], [constant NOTIFICATION_PHYSICS_PROCESS], [method _process] or [method _physics_process] (and the internal versions) on the main thread or in a sub-thread.
 			By default, the thread group is [constant PROCESS_THREAD_GROUP_INHERIT], which means that this node belongs to the same thread group as the parent node. The thread groups means that nodes in a specific thread group will process together, separate to other thread groups (depending on [member process_thread_group_order]). If the value is set is [constant PROCESS_THREAD_GROUP_SUB_THREAD], this thread group will occur on a sub thread (not the main thread), otherwise if set to [constant PROCESS_THREAD_GROUP_MAIN_THREAD] it will process on the main thread. If there is not a parent or grandparent node set to something other than inherit, the node will belong to the [i]default thread group[/i]. This default group will process on the main thread and its group order is 0.
 			During processing in a sub-thread, accessing most functions in nodes outside the thread group is forbidden (and it will result in an error in debug mode). Use [method Object.call_deferred], [method call_thread_safe], [method call_deferred_thread_group] and the likes in order to communicate from the thread groups to the main thread (or to other thread groups).
-			To better understand process thread groups, the idea is that any node set to any other value than [constant PROCESS_THREAD_GROUP_INHERIT] will include any children (and grandchildren) nodes set to inherit into its process thread group. this means that the processing of all the nodes in the group will happen together, at the same time as the node including them.
+			To better understand process thread groups, the idea is that any node set to any other value than [constant PROCESS_THREAD_GROUP_INHERIT] will include any child (and grandchild) nodes set to inherit into its process thread group. This means that the processing of all the nodes in the group will happen together, at the same time as the node including them.
 		</member>
 		<member name="process_thread_group_order" type="int" setter="set_process_thread_group_order" getter="get_process_thread_group_order">
 			Change the process thread group order. Groups with a lesser order will process before groups with a greater order. This is useful when a large amount of nodes process in sub thread and, afterwards, another group wants to collect their result in the main thread, as an example.
@@ -1178,13 +1170,13 @@
 			Never process. Completely disables processing, ignoring [member SceneTree.paused]. This is the inverse of [constant PROCESS_MODE_ALWAYS].
 		</constant>
 		<constant name="PROCESS_THREAD_GROUP_INHERIT" value="0" enum="ProcessThreadGroup">
-			If the [member process_thread_group] property is sent to this, the node will belong to any parent (or grandparent) node that has a thread group mode that is not inherit. See [member process_thread_group] for more information.
+			Process this node based on the thread group mode of the first parent (or grandparent) node that has a thread group mode that is not inherit. See [member process_thread_group] for more information.
 		</constant>
 		<constant name="PROCESS_THREAD_GROUP_MAIN_THREAD" value="1" enum="ProcessThreadGroup">
-			Process this node (and children nodes set to inherit) on the main thread. See [member process_thread_group] for more information.
+			Process this node (and child nodes set to inherit) on the main thread. See [member process_thread_group] for more information.
 		</constant>
 		<constant name="PROCESS_THREAD_GROUP_SUB_THREAD" value="2" enum="ProcessThreadGroup">
-			Process this node (and children nodes set to inherit) on a sub-thread. See [member process_thread_group] for more information.
+			Process this node (and child nodes set to inherit) on a sub-thread. See [member process_thread_group] for more information.
 		</constant>
 		<constant name="FLAG_PROCESS_THREAD_MESSAGES" value="1" enum="ProcessThreadMessages" is_bitfield="true">
 		</constant>
@@ -1208,10 +1200,10 @@
 			The node will not be internal.
 		</constant>
 		<constant name="INTERNAL_MODE_FRONT" value="1" enum="InternalMode">
-			The node will be placed at the beginning of the parent's children list, before any non-internal sibling.
+			The node will be placed at the beginning of the parent's children, before any non-internal sibling.
 		</constant>
 		<constant name="INTERNAL_MODE_BACK" value="2" enum="InternalMode">
-			The node will be placed at the end of the parent's children list, after any non-internal sibling.
+			The node will be placed at the end of the parent's children, after any non-internal sibling.
 		</constant>
 	</constants>
 </class>
