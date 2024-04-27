@@ -996,7 +996,6 @@ DisplayServer::WindowID DisplayServerWindows::get_window_at_screen_position(cons
 	p.x = p_position.x + offset.x;
 	p.y = p_position.y + offset.y;
 
-
 	HWND hwnd = WindowFromPoint(p);
 	for (const KeyValue<WindowID, WindowData> &E : windows) {
 		if (E.value.hWnd == hwnd) {
@@ -3708,7 +3707,7 @@ LRESULT DisplayServerWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 					}
 				} else {
 					if (--pressrc <= 0 || last_button_state.is_empty()) {
-						if (mouse_mode != MOUSE_MODE_CAPTURED) {
+						if (mouse_mode != MOUSE_MODE_CAPTURED && GetCapture() == hWnd) {
 							ReleaseCapture();
 						}
 						pressrc = 0;
