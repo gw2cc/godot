@@ -2132,6 +2132,7 @@ void GDScriptLanguage::finish() {
 		// it, for that matter- to be released so the next one is not the same as
 		// before).
 		Ref<GDScript> scr = s->self();
+		Ref<WeakRef> wnext = memnew(WeakRef);
 		if (scr.is_valid()) {
 			for (KeyValue<StringName, GDScriptFunction *> &E : scr->member_functions) {
 				GDScriptFunction *func = E.value;
