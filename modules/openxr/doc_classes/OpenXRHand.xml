@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="OpenXRHand" inherits="Node3D" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="OpenXRHand" inherits="Node3D" deprecated="Use [XRHandModifier3D] instead." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		Node supporting hand and finger tracking in OpenXR.
 	</brief_description>
@@ -12,6 +12,9 @@
 	<tutorials>
 	</tutorials>
 	<members>
+		<member name="bone_update" type="int" setter="set_bone_update" getter="get_bone_update" enum="OpenXRHand.BoneUpdate" default="0">
+			Specify the type of updates to perform on the bone.
+		</member>
 		<member name="hand" type="int" setter="set_hand" getter="get_hand" enum="OpenXRHand.Hands" default="0">
 			Specifies whether this node tracks the left or right hand of the player.
 		</member>
@@ -20,6 +23,9 @@
 		</member>
 		<member name="motion_range" type="int" setter="set_motion_range" getter="get_motion_range" enum="OpenXRHand.MotionRange" default="0">
 			Set the motion range (if supported) limiting the hand motion.
+		</member>
+		<member name="skeleton_rig" type="int" setter="set_skeleton_rig" getter="get_skeleton_rig" enum="OpenXRHand.SkeletonRig" default="0">
+			Set the type of skeleton rig the [member hand_skeleton] is compliant with.
 		</member>
 	</members>
 	<constants>
@@ -40,6 +46,24 @@
 		</constant>
 		<constant name="MOTION_RANGE_MAX" value="2" enum="MotionRange">
 			Maximum supported motion ranges.
+		</constant>
+		<constant name="SKELETON_RIG_OPENXR" value="0" enum="SkeletonRig">
+			An OpenXR compliant skeleton.
+		</constant>
+		<constant name="SKELETON_RIG_HUMANOID" value="1" enum="SkeletonRig">
+			A [SkeletonProfileHumanoid] compliant skeleton.
+		</constant>
+		<constant name="SKELETON_RIG_MAX" value="2" enum="SkeletonRig">
+			Maximum supported hands.
+		</constant>
+		<constant name="BONE_UPDATE_FULL" value="0" enum="BoneUpdate">
+			The skeletons bones are fully updated (both position and rotation) to match the tracked bones.
+		</constant>
+		<constant name="BONE_UPDATE_ROTATION_ONLY" value="1" enum="BoneUpdate">
+			The skeletons bones are only rotated to align with the tracked bones, preserving bone length.
+		</constant>
+		<constant name="BONE_UPDATE_MAX" value="2" enum="BoneUpdate">
+			Maximum supported bone update mode.
 		</constant>
 	</constants>
 </class>
