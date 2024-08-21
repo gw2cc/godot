@@ -3,7 +3,6 @@
 Import("env")
 
 import os
-from platform_methods import run_in_subprocess
 import platform_linuxbsd_builders
 
 common_linuxbsd = [
