@@ -350,8 +350,8 @@ void ResourceLoader::_thread_load_function(void *p_userdata) {
 		// From now on, no critical section needed as no one will write to the task anymore.
 		// Moreover, the mutex being unlocked is a requirement if some of the calls below
 		// that set the resource up invoke code that in turn requests resource loading.
-		thread_load_mutex.unlock();
-		unlock_pending = false;
+		/*thread_load_mutex.unlock();
+		unlock_pending = false;*/
 
 		if (!ignoring) {
 			if (replacing) {

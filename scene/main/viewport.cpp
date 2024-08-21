@@ -1977,6 +1977,11 @@ void Viewport::_gui_input_event(Ref<InputEvent> p_event) {
 			if (stopped) {
 				set_input_as_handled();
 			}
+		} else {
+			// No control under mouse.
+			if (gui.tooltip_popup) {
+				_gui_cancel_tooltip();
+			}
 		}
 
 		if (gui.dragging) {
@@ -2984,7 +2989,10 @@ bool Viewport::_sub_windows_forward_input(const Ref<InputEvent> &p_event) {
 
 	gui.subwindow_focused->_window_input(ev);
 
-	return true;
+	if (!gui.subwindow_focused) {
+		return true;
+	}
+	return gui.subwindow_focused->is_input_handled() || gui.subwindow_focused->is_handling_input_locally();
 }
 
 void Viewport::_update_mouse_over() {
@@ -3323,7 +3331,7 @@ void Viewport::_push_unhandled_input_internal(const Ref<InputEvent> &p_event) {
 
 								)) {
 			physics_picking_events.push_back(p_event);
-			set_input_as_handled();
+			//set_input_as_handled();
 		}
 	}
 }

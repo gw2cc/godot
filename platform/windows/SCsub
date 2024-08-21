@@ -55,7 +55,13 @@ env.Depends(res_obj, "#core/version_generated.gen.h")
 env.add_source_files(sources, common_win)
 sources += res_obj
 
-prog = env.add_program("#bin/godot", sources, PROGSUFFIX=env["PROGSUFFIX"])
+libs = []
+for lib in env["LIBS"]:
+    if "module_gw2cc" in lib[0].name:
+        continue
+    libs.append(lib)
+
+prog = env.add_library("#bin/godot", sources + libs, PROGSUFFIX=env["PROGSUFFIX"])
 arrange_program_clean(prog)
 
 # Build console wrapper app.

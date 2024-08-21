@@ -1827,52 +1827,52 @@
 		<member name="layer_names/3d_navigation/layer_32" type="String" setter="" getter="" default="&quot;&quot;">
 			Optional name for the 3D navigation layer 32. If left empty, the layer will display as "Layer 32".
 		</member>
-		<member name="layer_names/3d_physics/layer_1" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_1" type="String" setter="" getter="" default="&quot;default&quot;">
 			Optional name for the 3D physics layer 1. If left empty, the layer will display as "Layer 1".
 		</member>
-		<member name="layer_names/3d_physics/layer_2" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_2" type="String" setter="" getter="" default="&quot;environment&quot;">
 			Optional name for the 3D physics layer 2. If left empty, the layer will display as "Layer 2".
 		</member>
-		<member name="layer_names/3d_physics/layer_3" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_3" type="String" setter="" getter="" default="&quot;water&quot;">
 			Optional name for the 3D physics layer 3. If left empty, the layer will display as "Layer 3".
 		</member>
-		<member name="layer_names/3d_physics/layer_4" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_4" type="String" setter="" getter="" default="&quot;platform&quot;">
 			Optional name for the 3D physics layer 4. If left empty, the layer will display as "Layer 4".
 		</member>
-		<member name="layer_names/3d_physics/layer_5" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_5" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 5. If left empty, the layer will display as "Layer 5".
 		</member>
-		<member name="layer_names/3d_physics/layer_6" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_6" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 6. If left empty, the layer will display as "Layer 6".
 		</member>
-		<member name="layer_names/3d_physics/layer_7" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_7" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 7. If left empty, the layer will display as "Layer 7".
 		</member>
-		<member name="layer_names/3d_physics/layer_8" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_8" type="String" setter="" getter="" default="&quot;agent&quot;">
 			Optional name for the 3D physics layer 8. If left empty, the layer will display as "Layer 8".
 		</member>
-		<member name="layer_names/3d_physics/layer_9" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_9" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 9. If left empty, the layer will display as "Layer 9".
 		</member>
-		<member name="layer_names/3d_physics/layer_10" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_10" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 10. If left empty, the layer will display as "Layer 10".
 		</member>
-		<member name="layer_names/3d_physics/layer_11" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_11" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 11. If left empty, the layer will display as "Layer 11".
 		</member>
-		<member name="layer_names/3d_physics/layer_12" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_12" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 12. If left empty, the layer will display as "Layer 12".
 		</member>
-		<member name="layer_names/3d_physics/layer_13" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_13" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 13. If left empty, the layer will display as "Layer 13".
 		</member>
-		<member name="layer_names/3d_physics/layer_14" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_14" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 14. If left empty, the layer will display as "Layer 14".
 		</member>
-		<member name="layer_names/3d_physics/layer_15" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_15" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 15. If left empty, the layer will display as "Layer 15".
 		</member>
-		<member name="layer_names/3d_physics/layer_16" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_physics/layer_16" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D physics layer 16. If left empty, the layer will display as "Layer 16".
 		</member>
 		<member name="layer_names/3d_physics/layer_17" type="String" setter="" getter="" default="&quot;&quot;">
@@ -1923,52 +1923,52 @@
 		<member name="layer_names/3d_physics/layer_32" type="String" setter="" getter="" default="&quot;&quot;">
 			Optional name for the 3D physics layer 32. If left empty, the layer will display as "Layer 32".
 		</member>
-		<member name="layer_names/3d_render/layer_1" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_1" type="String" setter="" getter="" default="&quot;default&quot;">
 			Optional name for the 3D render layer 1. If left empty, the layer will display as "Layer 1".
 		</member>
-		<member name="layer_names/3d_render/layer_2" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_2" type="String" setter="" getter="" default="&quot;heightmap&quot;">
 			Optional name for the 3D render layer 2. If left empty, the layer will display as "Layer 2".
 		</member>
-		<member name="layer_names/3d_render/layer_3" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_3" type="String" setter="" getter="" default="&quot;water&quot;">
 			Optional name for the 3D render layer 3. If left empty, the layer will display as "Layer 3".
 		</member>
-		<member name="layer_names/3d_render/layer_4" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_4" type="String" setter="" getter="" default="&quot;zone&quot;">
 			Optional name for the 3D render layer 4. If left empty, the layer will display as "Layer 4".
 		</member>
-		<member name="layer_names/3d_render/layer_5" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_5" type="String" setter="" getter="" default="&quot;prop&quot;">
 			Optional name for the 3D render layer 5. If left empty, the layer will display as "Layer 5".
 		</member>
-		<member name="layer_names/3d_render/layer_6" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_6" type="String" setter="" getter="" default="&quot;obs&quot;">
 			Optional name for the 3D render layer 6. If left empty, the layer will display as "Layer 6".
 		</member>
-		<member name="layer_names/3d_render/layer_7" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_7" type="String" setter="" getter="" default="&quot;agent_char&quot;">
 			Optional name for the 3D render layer 7. If left empty, the layer will display as "Layer 7".
 		</member>
-		<member name="layer_names/3d_render/layer_8" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_8" type="String" setter="" getter="" default="&quot;agent_keyframed&quot;">
 			Optional name for the 3D render layer 8. If left empty, the layer will display as "Layer 8".
 		</member>
-		<member name="layer_names/3d_render/layer_9" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_9" type="String" setter="" getter="" default="&quot;agent_dynamic&quot;">
 			Optional name for the 3D render layer 9. If left empty, the layer will display as "Layer 9".
 		</member>
-		<member name="layer_names/3d_render/layer_10" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_10" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D render layer 10. If left empty, the layer will display as "Layer 10".
 		</member>
-		<member name="layer_names/3d_render/layer_11" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_11" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D render layer 11. If left empty, the layer will display as "Layer 11".
 		</member>
-		<member name="layer_names/3d_render/layer_12" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_12" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D render layer 12. If left empty, the layer will display as "Layer 12".
 		</member>
-		<member name="layer_names/3d_render/layer_13" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_13" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D render layer 13. If left empty, the layer will display as "Layer 13".
 		</member>
-		<member name="layer_names/3d_render/layer_14" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_14" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D render layer 14. If left empty, the layer will display as "Layer 14".
 		</member>
-		<member name="layer_names/3d_render/layer_15" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_15" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D render layer 15. If left empty, the layer will display as "Layer 15".
 		</member>
-		<member name="layer_names/3d_render/layer_16" type="String" setter="" getter="" default="&quot;&quot;">
+		<member name="layer_names/3d_render/layer_16" type="String" setter="" getter="" default="&quot;reserved&quot;">
 			Optional name for the 3D render layer 16. If left empty, the layer will display as "Layer 16".
 		</member>
 		<member name="layer_names/3d_render/layer_17" type="String" setter="" getter="" default="&quot;&quot;">

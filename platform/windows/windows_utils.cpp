@@ -155,7 +155,9 @@ Error WindowsUtils::copy_and_rename_pdb(const String &p_dll_path) {
 	} else if (!FileAccess::exists(copy_pdb_path)) {
 		copy_pdb_path = dll_base_dir.path_join(copy_pdb_path.get_file());
 	}
-	ERR_FAIL_COND_V_MSG(!FileAccess::exists(copy_pdb_path), FAILED, vformat("File '%s' does not exist.", copy_pdb_path));
+	if (!FileAccess::exists(copy_pdb_path)) {
+		return ERR_SKIP;
+	}
 
 	String new_pdb_base_name = p_dll_path.get_file().get_basename() + "_";
 

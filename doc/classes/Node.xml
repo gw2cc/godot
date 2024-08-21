@@ -330,6 +330,11 @@
 				If [param include_internal] is [code]false[/code], excludes internal children from the returned array (see [method add_child]'s [code]internal[/code] parameter).
 			</description>
 		</method>
+		<method name="get_client">
+			<return type="ClientSession" />
+			<description>
+			</description>
+		</method>
 		<method name="get_groups" qualifiers="const">
 			<return type="StringName[]" />
 			<description>

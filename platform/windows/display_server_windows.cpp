@@ -4776,7 +4776,7 @@ LRESULT DisplayServerWindows::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 					}
 				} else {
 					if (--pressrc <= 0 || mouse_get_button_state().is_empty()) {
-						if (mouse_mode != MOUSE_MODE_CAPTURED) {
+						if (mouse_mode != MOUSE_MODE_CAPTURED && GetCapture() == hWnd) {
 							ReleaseCapture();
 						}
 						pressrc = 0;
