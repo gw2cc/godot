@@ -95,8 +95,6 @@ struct Canvas::Impl
 
         auto m = Matrix{1, 0, 0, 0, 1, 0, 0, 0, 1};
 
-        auto m = Matrix{1, 0, 0, 0, 1, 0, 0, 0, 1};
-
         if (paint) {
             paint->pImpl->update(renderer, m, clips, 255, flag);
         } else {

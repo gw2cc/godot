@@ -100,9 +100,6 @@ Result SwCanvas::target(uint32_t* buffer, uint32_t stride, uint32_t w, uint32_t 
     //Paints must be updated again with this new target.
     Canvas::pImpl->status = Status::Damaged;
 
-    //FIXME: The value must be associated with an individual canvas instance.
-    ImageLoader::cs = static_cast<ColorSpace>(cs);
-
     return Result::Success;
 #endif
     return Result::NonSupport;
