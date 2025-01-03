@@ -31,7 +31,6 @@
 #ifndef EDITOR_PLUGIN_SETTINGS_H
 #define EDITOR_PLUGIN_SETTINGS_H
 
-#include "editor/editor_data.h"
 #include "editor/plugins/plugin_config_dialog.h"
 
 class Tree;
@@ -66,8 +65,6 @@ class EditorPluginSettings : public VBoxContainer {
 
 protected:
 	void _notification(int p_what);
-
-	static void _bind_methods();
 
 public:
 	void update_plugins();

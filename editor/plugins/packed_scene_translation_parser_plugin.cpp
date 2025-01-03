@@ -32,7 +32,6 @@
 
 #include "core/io/resource_loader.h"
 #include "core/object/script_language.h"
-#include "scene/gui/option_button.h"
 #include "scene/resources/packed_scene.h"
 
 void PackedSceneEditorTranslationParserPlugin::get_recognized_extensions(List<String> *r_extensions) const {
@@ -49,7 +48,9 @@ Error PackedSceneEditorTranslationParserPlugin::parse_file(const String &p_path,
 		ERR_PRINT("Failed to load " + p_path);
 		return err;
 	}
-	Ref<SceneState> state = Ref<PackedScene>(loaded_res)->get_state();
+	Ref<PackedScene> packed_scene = loaded_res;
+	ERR_FAIL_COND_V_MSG(packed_scene.is_null(), ERR_FILE_UNRECOGNIZED, vformat("'%s' is not a valid PackedScene resource.", p_path));
+	Ref<SceneState> state = packed_scene->get_state();
 
 	Vector<String> parsed_strings;
 	Vector<Pair<NodePath, bool>> atr_owners;
@@ -83,9 +84,8 @@ Error PackedSceneEditorTranslationParserPlugin::parse_file(const String &p_path,
 
 			int idx_last = atr_owners.size() - 1;
 			if (idx_last > 0 && !parent_path.begins_with(atr_owners[idx_last].first)) {
-				// Switch to the previous auto translation owner this was nested in, if that was the case.
+				// Exit from the current owner nesting into the previous one.
 				atr_owners.remove_at(idx_last);
-				idx_last -= 1;
 			}
 
 			if (property == "auto_translate_mode") {
@@ -106,7 +106,7 @@ Error PackedSceneEditorTranslationParserPlugin::parse_file(const String &p_path,
 		// If `auto_translate_mode` wasn't found, that means it is set to its default value (`AUTO_TRANSLATE_MODE_INHERIT`).
 		if (!auto_translate_mode_found) {
 			int idx_last = atr_owners.size() - 1;
-			if (idx_last > 0 && atr_owners[idx_last].first == parent_path) {
+			if (idx_last > 0 && parent_path.begins_with(atr_owners[idx_last].first)) {
 				auto_translating = atr_owners[idx_last].second;
 			} else {
 				atr_owners.push_back(Pair(state->get_node_path(i), true));

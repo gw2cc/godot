@@ -712,7 +712,7 @@ void TextShaderEditor::_menu_option(int p_option) {
 			code_editor->get_find_replace_bar()->popup_replace();
 		} break;
 		case SEARCH_GOTO_LINE: {
-			goto_line_dialog->popup_find_line(code_editor->get_text_editor());
+			goto_line_popup->popup_find_line(code_editor);
 		} break;
 		case BOOKMARK_TOGGLE: {
 			code_editor->toggle_bookmark();
@@ -779,7 +779,7 @@ void TextShaderEditor::_show_warnings_panel(bool p_show) {
 
 void TextShaderEditor::_warning_clicked(const Variant &p_line) {
 	if (p_line.get_type() == Variant::INT) {
-		code_editor->get_text_editor()->set_caret_line(p_line.operator int64_t());
+		code_editor->goto_line_centered(p_line.operator int64_t());
 	}
 }
 
@@ -867,7 +867,7 @@ void TextShaderEditor::_check_for_external_edit() {
 
 void TextShaderEditor::_reload_shader_from_disk() {
 	Ref<Shader> rel_shader = ResourceLoader::load(shader->get_path(), shader->get_class(), ResourceFormatLoader::CACHE_MODE_IGNORE);
-	ERR_FAIL_COND(!rel_shader.is_valid());
+	ERR_FAIL_COND(rel_shader.is_null());
 
 	code_editor->set_block_shader_changed(true);
 	shader->set_code(rel_shader->get_code());
@@ -878,7 +878,7 @@ void TextShaderEditor::_reload_shader_from_disk() {
 
 void TextShaderEditor::_reload_shader_include_from_disk() {
 	Ref<ShaderInclude> rel_shader_include = ResourceLoader::load(shader_inc->get_path(), shader_inc->get_class(), ResourceFormatLoader::CACHE_MODE_IGNORE);
-	ERR_FAIL_COND(!rel_shader_include.is_valid());
+	ERR_FAIL_COND(rel_shader_include.is_null());
 
 	code_editor->set_block_shader_changed(true);
 	shader_inc->set_code(rel_shader_include->get_code());
@@ -895,7 +895,7 @@ void TextShaderEditor::_reload() {
 	}
 }
 
-void TextShaderEditor::edit(const Ref<Shader> &p_shader) {
+void TextShaderEditor::edit_shader(const Ref<Shader> &p_shader) {
 	if (p_shader.is_null() || !p_shader->is_text_shader()) {
 		return;
 	}
@@ -910,7 +910,7 @@ void TextShaderEditor::edit(const Ref<Shader> &p_shader) {
 	code_editor->set_edited_shader(shader);
 }
 
-void TextShaderEditor::edit(const Ref<ShaderInclude> &p_shader_inc) {
+void TextShaderEditor::edit_shader_include(const Ref<ShaderInclude> &p_shader_inc) {
 	if (p_shader_inc.is_null()) {
 		return;
 	}
@@ -1141,6 +1141,7 @@ TextShaderEditor::TextShaderEditor() {
 	context_menu->connect(SceneStringName(id_pressed), callable_mp(this, &TextShaderEditor::_menu_option));
 
 	VBoxContainer *main_container = memnew(VBoxContainer);
+	main_container->set_anchors_and_offsets_preset(Control::PRESET_FULL_RECT);
 	HBoxContainer *hbc = memnew(HBoxContainer);
 
 	edit_menu = memnew(MenuButton);
@@ -1234,8 +1235,8 @@ TextShaderEditor::TextShaderEditor() {
 	editor_box->add_child(warnings_panel);
 	code_editor->set_warnings_panel(warnings_panel);
 
-	goto_line_dialog = memnew(GotoLineDialog);
-	add_child(goto_line_dialog);
+	goto_line_popup = memnew(GotoLinePopup);
+	add_child(goto_line_popup);
 
 	disk_changed = memnew(ConfirmationDialog);
 
@@ -1255,4 +1256,5 @@ TextShaderEditor::TextShaderEditor() {
 	add_child(disk_changed);
 
 	_editor_settings_changed();
+	code_editor->show_toggle_scripts_button(); // TODO: Disabled for now, because it doesn't work properly.
 }

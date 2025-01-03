@@ -119,7 +119,7 @@ void BoneMapperItem::create_editor() {
 	hbox->add_child(skeleton_bone_selector);
 
 	picker_button = memnew(Button);
-	picker_button->set_icon(get_editor_theme_icon(SNAME("ClassList")));
+	picker_button->set_button_icon(get_editor_theme_icon(SNAME("ClassList")));
 	picker_button->connect(SceneStringName(pressed), callable_mp(this, &BoneMapperItem::_open_picker));
 	hbox->add_child(picker_button);
 
@@ -147,7 +147,7 @@ void BoneMapperItem::_notification(int p_what) {
 			bone_map->connect("bone_map_updated", callable_mp(this, &BoneMapperItem::_update_property));
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
-			if (!bone_map.is_null() && bone_map->is_connected("bone_map_updated", callable_mp(this, &BoneMapperItem::_update_property))) {
+			if (bone_map.is_valid() && bone_map->is_connected("bone_map_updated", callable_mp(this, &BoneMapperItem::_update_property))) {
 				bone_map->disconnect("bone_map_updated", callable_mp(this, &BoneMapperItem::_update_property));
 			}
 		} break;
@@ -252,9 +252,6 @@ StringName BonePicker::get_selected_bone() {
 	return selected->get_text(0);
 }
 
-void BonePicker::_bind_methods() {
-}
-
 void BonePicker::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
@@ -299,7 +296,7 @@ void BoneMapper::create_editor() {
 	group_hbox->add_child(profile_group_selector);
 
 	clear_mapping_button = memnew(Button);
-	clear_mapping_button->set_icon(get_editor_theme_icon(SNAME("Clear")));
+	clear_mapping_button->set_button_icon(get_editor_theme_icon(SNAME("Clear")));
 	clear_mapping_button->set_tooltip_text(TTR("Clear mappings in current group."));
 	clear_mapping_button->connect(SceneStringName(pressed), callable_mp(this, &BoneMapper::_clear_mapping_current_group));
 	group_hbox->add_child(clear_mapping_button);
@@ -330,7 +327,7 @@ void BoneMapper::create_editor() {
 }
 
 void BoneMapper::update_group_idx() {
-	if (!bone_map->get_profile().is_valid()) {
+	if (bone_map->get_profile().is_null()) {
 		return;
 	}
 
@@ -415,7 +412,7 @@ void BoneMapper::recreate_editor() {
 		profile_texture->set_texture(Ref<Texture2D>());
 	}
 
-	if (!profile.is_valid()) {
+	if (profile.is_null()) {
 		return;
 	}
 
@@ -537,7 +534,7 @@ void BoneMapper::_clear_mapping_current_group() {
 #ifdef MODULE_REGEX_ENABLED
 bool BoneMapper::is_match_with_bone_name(const String &p_bone_name, const String &p_word) {
 	RegEx re = RegEx(p_word);
-	return !re.search(p_bone_name.to_lower()).is_null();
+	return re.search(p_bone_name.to_lower()).is_valid();
 }
 
 int BoneMapper::search_bone_by_name(Skeleton3D *p_skeleton, const Vector<String> &p_picklist, BoneSegregation p_segregation, int p_parent, int p_child, int p_children_count) {
@@ -631,11 +628,11 @@ BoneMapper::BoneSegregation BoneMapper::guess_bone_segregation(const String &p_b
 
 	for (uint32_t i = 0; i < left_words.size(); i++) {
 		RegEx re_l = RegEx(left_words[i]);
-		if (!re_l.search(fixed_bn).is_null()) {
+		if (re_l.search(fixed_bn).is_valid()) {
 			return BONE_SEGREGATION_LEFT;
 		}
 		RegEx re_r = RegEx(right_words[i]);
-		if (!re_r.search(fixed_bn).is_null()) {
+		if (re_r.search(fixed_bn).is_valid()) {
 			return BONE_SEGREGATION_RIGHT;
 		}
 	}
@@ -684,7 +681,7 @@ void BoneMapper::auto_mapping_process(Ref<BoneMap> &p_bone_map) {
 		bool found = false;
 		for (int i = 0; i < search_path.size(); i++) {
 			RegEx re = RegEx("root");
-			if (!re.search(skeleton->get_bone_name(search_path[i]).to_lower()).is_null()) {
+			if (re.search(skeleton->get_bone_name(search_path[i]).to_lower()).is_valid()) {
 				bone_idx = search_path[i]; // Name match is preferred.
 				found = true;
 				break;
@@ -862,7 +859,7 @@ void BoneMapper::auto_mapping_process(Ref<BoneMap> &p_bone_map) {
 
 	// 4-1. Guess Finger
 	int tips_index = -1;
-	bool thumb_tips_size = 0;
+	bool thumb_tips_size = false;
 	bool named_finger_is_found = false;
 	LocalVector<String> fingers;
 	fingers.push_back("thumb|pollex");
@@ -951,7 +948,7 @@ void BoneMapper::auto_mapping_process(Ref<BoneMap> &p_bone_map) {
 			Vector<String> finger_names;
 			for (int i = 0; i < search_path.size(); i++) {
 				String bn = skeleton->get_bone_name(search_path[i]);
-				if (!finger_re.search(bn.to_lower()).is_null()) {
+				if (finger_re.search(bn.to_lower()).is_valid()) {
 					finger_names.push_back(bn);
 				}
 			}
@@ -997,7 +994,7 @@ void BoneMapper::auto_mapping_process(Ref<BoneMap> &p_bone_map) {
 	}
 
 	tips_index = -1;
-	thumb_tips_size = 0;
+	thumb_tips_size = false;
 	named_finger_is_found = false;
 	if (right_hand_or_palm != -1) {
 		LocalVector<LocalVector<String>> right_fingers_map;
@@ -1080,7 +1077,7 @@ void BoneMapper::auto_mapping_process(Ref<BoneMap> &p_bone_map) {
 			Vector<String> finger_names;
 			for (int i = 0; i < search_path.size(); i++) {
 				String bn = skeleton->get_bone_name(search_path[i]);
-				if (!finger_re.search(bn.to_lower()).is_null()) {
+				if (finger_re.search(bn.to_lower()).is_valid()) {
 					finger_names.push_back(bn);
 				}
 			}
@@ -1232,9 +1229,11 @@ void BoneMapper::auto_mapping_process(Ref<BoneMap> &p_bone_map) {
 	picklist.push_back("face");
 	int head = search_bone_by_name(skeleton, picklist, BONE_SEGREGATION_NONE, neck);
 	if (head == -1) {
-		search_path = skeleton->get_bone_children(neck);
-		if (search_path.size() == 1) {
-			head = search_path[0]; // Maybe only one child of the Neck is Head.
+		if (neck != -1) {
+			search_path = skeleton->get_bone_children(neck);
+			if (search_path.size() == 1) {
+				head = search_path[0]; // Maybe only one child of the Neck is Head.
+			}
 		}
 	}
 	if (head == -1) {
@@ -1393,7 +1392,7 @@ void BoneMapper::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
 			clear_items();
-			if (!bone_map.is_null()) {
+			if (bone_map.is_valid()) {
 				if (bone_map->is_connected("bone_map_updated", callable_mp(this, &BoneMapper::_update_state))) {
 					bone_map->disconnect("bone_map_updated", callable_mp(this, &BoneMapper::_update_state));
 				}
@@ -1478,12 +1477,6 @@ void EditorInspectorPluginBoneMap::parse_begin(Object *p_object) {
 }
 
 BoneMapEditorPlugin::BoneMapEditorPlugin() {
-	// Register properties in editor settings.
-	EDITOR_DEF("editors/bone_mapper/handle_colors/unset", Color(0.3, 0.3, 0.3));
-	EDITOR_DEF("editors/bone_mapper/handle_colors/set", Color(0.1, 0.6, 0.25));
-	EDITOR_DEF("editors/bone_mapper/handle_colors/missing", Color(0.8, 0.2, 0.8));
-	EDITOR_DEF("editors/bone_mapper/handle_colors/error", Color(0.8, 0.2, 0.2));
-
 	Ref<EditorInspectorPluginBoneMap> inspector_plugin;
 	inspector_plugin.instantiate();
 	add_inspector_plugin(inspector_plugin);

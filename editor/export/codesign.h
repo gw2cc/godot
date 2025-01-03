@@ -41,16 +41,10 @@
 //  - Requirements code generator is not implemented (only hard-coded requirements for the ad-hoc signing is supported).
 //  - RFC5652/CMS blob generation is not implemented, supports ad-hoc signing only.
 
-#include "core/crypto/crypto_core.h"
-#include "core/io/dir_access.h"
 #include "core/io/file_access.h"
-#include "core/io/plist.h"
 #include "core/object/ref_counted.h"
 
 #include "modules/modules_enabled.gen.h" // For regex.
-#ifdef MODULE_REGEX_ENABLED
-#include "modules/regex/regex.h"
-#endif
 
 #ifdef MODULE_REGEX_ENABLED
 
@@ -166,7 +160,7 @@ public:
 
 	virtual int get_size() const override;
 
-	virtual uint32_t get_index_type() const override { return 0x00000002; };
+	virtual uint32_t get_index_type() const override { return 0x00000002; }
 	virtual void write_to_file(Ref<FileAccess> p_file) const override;
 };
 
@@ -188,7 +182,7 @@ public:
 
 	virtual int get_size() const override;
 
-	virtual uint32_t get_index_type() const override { return 0x00000005; };
+	virtual uint32_t get_index_type() const override { return 0x00000005; }
 	virtual void write_to_file(Ref<FileAccess> p_file) const override;
 };
 
@@ -210,7 +204,7 @@ public:
 
 	virtual int get_size() const override;
 
-	virtual uint32_t get_index_type() const override { return 0x00000007; };
+	virtual uint32_t get_index_type() const override { return 0x00000007; }
 	virtual void write_to_file(Ref<FileAccess> p_file) const override;
 };
 
@@ -311,7 +305,7 @@ public:
 	virtual PackedByteArray get_hash_sha256() const override;
 
 	virtual int get_size() const override;
-	virtual uint32_t get_index_type() const override { return 0x00000000; };
+	virtual uint32_t get_index_type() const override { return 0x00000000; }
 
 	virtual void write_to_file(Ref<FileAccess> p_file) const override;
 };
@@ -330,7 +324,7 @@ public:
 	virtual PackedByteArray get_hash_sha256() const override;
 
 	virtual int get_size() const override;
-	virtual uint32_t get_index_type() const override { return 0x00010000; };
+	virtual uint32_t get_index_type() const override { return 0x00010000; }
 
 	virtual void write_to_file(Ref<FileAccess> p_file) const override;
 };

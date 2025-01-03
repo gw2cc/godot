@@ -172,7 +172,7 @@ void GPUParticlesCollisionSDF3D::_find_meshes(const AABB &p_aabb, Node *p_at_nod
 			for (int i = 0; i < meshes.size(); i += 2) {
 				Transform3D mxf = meshes[i];
 				Ref<Mesh> mesh = meshes[i + 1];
-				if (!mesh.is_valid()) {
+				if (mesh.is_null()) {
 					continue;
 				}
 
@@ -524,7 +524,7 @@ Ref<Image> GPUParticlesCollisionSDF3D::bake() {
 }
 
 PackedStringArray GPUParticlesCollisionSDF3D::get_configuration_warnings() const {
-	PackedStringArray warnings = Node::get_configuration_warnings();
+	PackedStringArray warnings = GPUParticlesCollision3D::get_configuration_warnings();
 
 	if (bake_mask == 0) {
 		warnings.push_back(RTR("The Bake Mask has no bits enabled, which means baking will not produce any collision for this GPUParticlesCollisionSDF3D.\nTo resolve this, enable at least one bit in the Bake Mask property."));

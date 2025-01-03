@@ -51,14 +51,18 @@ struct Shape::Impl
 
     bool render(RenderMethod* renderer)
     {
-        Compositor* cmp = nullptr;
-        bool ret;
+        if (!rd) return false;
+
+        RenderCompositor* cmp = nullptr;
+
+        renderer->blend(PP(shape)->blendMethod);
 
         if (needComp) {
             cmp = renderer->target(bounds(renderer), renderer->colorSpace());
             renderer->beginComposite(cmp, CompositeMethod::None, opacity);
         }
-        ret = renderer->renderShape(rd);
+
+        auto ret = renderer->renderShape(rd);
         if (cmp) renderer->endComposite(cmp);
         return ret;
     }
@@ -79,7 +83,7 @@ struct Shape::Impl
         auto method = shape->composite(&target);
         if (!target || method == CompositeMethod::ClipPath) return false;
         if (target->pImpl->opacity == 255 || target->pImpl->opacity == 0) {
-            if (target->identifier() == TVG_CLASS_ID_SHAPE) {
+            if (target->type() == Type::Shape) {
                 auto shape = static_cast<const Shape*>(target);
                 if (!shape->fill()) {
                     uint8_t r, g, b, a;
@@ -102,7 +106,7 @@ struct Shape::Impl
 
         if ((needComp = needComposition(opacity))) {
             /* Overriding opacity value. If this scene is half-translucent,
-               It must do intermeidate composition with that opacity value. */ 
+               It must do intermediate composition with that opacity value. */ 
             this->opacity = opacity;
             opacity = 255;
         }
@@ -114,6 +118,7 @@ struct Shape::Impl
 
     RenderRegion bounds(RenderMethod* renderer)
     {
+        if (!rd) return {0, 0, 0, 0};
         return renderer->region(rd);
     }
 
@@ -214,7 +219,7 @@ struct Shape::Impl
             rs.stroke = new RenderStroke();
         }
 
-        if (mathEqual(rs.stroke->trim.begin, begin) && mathEqual(rs.stroke->trim.end, end) &&
+        if (tvg::equal(rs.stroke->trim.begin, begin) && tvg::equal(rs.stroke->trim.end, end) &&
             rs.stroke->trim.simultaneous == simultaneous) return;
 
         rs.stroke->trim.begin = begin;

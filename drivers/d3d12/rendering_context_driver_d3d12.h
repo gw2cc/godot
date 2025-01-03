@@ -59,7 +59,7 @@
 #undef AS
 #endif
 
-#if WINVER < _WIN32_WINNT_WIN8
+#if (WINVER < _WIN32_WINNT_WIN8) && defined(_MSC_VER)
 #pragma push_macro("NTDDI_VERSION")
 #pragma push_macro("WINVER")
 #undef NTDDI_VERSION
@@ -75,6 +75,7 @@
 
 #include "d3dx12.h"
 #include <dxgi1_6.h>
+
 #include <wrl/client.h>
 
 #if defined(__GNUC__) && !defined(__clang__)
@@ -127,9 +128,9 @@ public:
 		uint32_t height = 0;
 		DisplayServer::VSyncMode vsync_mode = DisplayServer::VSYNC_ENABLED;
 		bool needs_resize = false;
-		ComPtr<struct IDCompositionDevice> composition_device;
-		ComPtr<struct IDCompositionTarget> composition_target;
-		ComPtr<struct IDCompositionVisual> composition_visual;
+		ComPtr<IDCompositionDevice> composition_device;
+		ComPtr<IDCompositionTarget> composition_target;
+		ComPtr<IDCompositionVisual> composition_visual;
 	};
 
 	HMODULE lib_d3d12 = nullptr;

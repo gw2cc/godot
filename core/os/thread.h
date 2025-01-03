@@ -29,18 +29,27 @@
 /**************************************************************************/
 
 #include "platform_config.h"
+
 // Define PLATFORM_THREAD_OVERRIDE in your platform's `platform_config.h`
-// to use a custom Thread implementation defined in `platform/[your_platform]/platform_thread.h`
-// Overriding the platform implementation is required in some proprietary platforms
+// to use a custom Thread implementation defined in `platform/[your_platform]/platform_thread.h`.
+// Overriding the Thread implementation is required in some proprietary platforms.
+
 #ifdef PLATFORM_THREAD_OVERRIDE
+
 #include "platform_thread.h"
+
 #else
 
 #ifndef THREAD_H
 #define THREAD_H
 
-#include "core/templates/safe_refcount.h"
 #include "core/typedefs.h"
+
+#ifdef THREADS_ENABLED
+
+#include "core/templates/safe_refcount.h"
+
+#include <new> // IWYU pragma: keep // For hardware interference size.
 
 #ifdef MINGW_ENABLED
 #define MINGW_STDTHREAD_REDUNDANCY_WARNING
@@ -52,8 +61,6 @@
 #endif
 
 class String;
-
-#ifdef THREADS_ENABLED
 
 class Thread {
 public:
@@ -84,6 +91,20 @@ public:
 		void (*wrapper)(Thread::Callback, void *) = nullptr;
 		void (*term)() = nullptr;
 	};
+
+#if defined(__cpp_lib_hardware_interference_size) && !defined(ANDROID_ENABLED) // This would be OK with NDK >= 26.
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Winterference-size"
+#endif
+	static constexpr size_t CACHE_LINE_BYTES = std::hardware_destructive_interference_size;
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
+#else
+	// At a negligible memory cost, we use a conservatively high value.
+	static constexpr size_t CACHE_LINE_BYTES = 128;
+#endif
 
 private:
 	friend class Main;
@@ -129,11 +150,15 @@ public:
 
 #else // No threads.
 
+class String;
+
 class Thread {
 public:
 	typedef void (*Callback)(void *p_userdata);
 
 	typedef uint64_t ID;
+
+	static constexpr size_t CACHE_LINE_BYTES = sizeof(void *);
 
 	enum : ID {
 		UNASSIGNED_ID = 0,

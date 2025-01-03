@@ -34,7 +34,6 @@
 #include "scene/3d/node_3d.h"
 
 #include "scene/3d/skeleton_3d.h"
-#include "scene/animation/animation_mixer.h"
 
 class SkeletonModifier3D : public Node3D {
 	GDCLASS(SkeletonModifier3D, Node3D);
@@ -50,6 +49,7 @@ protected:
 
 	void _update_skeleton();
 	void _update_skeleton_path();
+	void _force_update_skeleton_skin();
 
 	virtual void _skeleton_changed(Skeleton3D *p_old, Skeleton3D *p_new);
 

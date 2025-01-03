@@ -31,7 +31,6 @@
 #ifndef AUDIO_STREAM_MP3_H
 #define AUDIO_STREAM_MP3_H
 
-#include "core/io/resource_loader.h"
 #include "servers/audio/audio_stream.h"
 
 #include <minimp3_ex.h>
@@ -49,7 +48,7 @@ class AudioStreamPlaybackMP3 : public AudioStreamPlaybackResampled {
 
 	bool looping_override = false;
 	bool looping = false;
-	mp3dec_ex_t *mp3d = nullptr;
+	mp3dec_ex_t mp3d = {};
 	uint32_t frames_mixed = 0;
 	bool active = false;
 	int loops = 0;
@@ -96,7 +95,7 @@ class AudioStreamMP3 : public AudioStream {
 
 	friend class AudioStreamPlaybackMP3;
 
-	PackedByteArray data;
+	LocalVector<uint8_t> data;
 	uint32_t data_len = 0;
 
 	float sample_rate = 1.0;

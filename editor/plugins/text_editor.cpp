@@ -31,10 +31,10 @@
 #include "text_editor.h"
 
 #include "core/io/json.h"
-#include "core/os/keyboard.h"
 #include "editor/editor_node.h"
 #include "editor/editor_settings.h"
 #include "scene/gui/menu_button.h"
+#include "scene/gui/split_container.h"
 
 void TextEditor::add_syntax_highlighter(Ref<EditorSyntaxHighlighter> p_highlighter) {
 	ERR_FAIL_COND(p_highlighter.is_null());
@@ -103,12 +103,12 @@ void TextEditor::set_edited_resource(const Ref<Resource> &p_res) {
 	edited_res = p_res;
 
 	Ref<TextFile> text_file = edited_res;
-	if (text_file != nullptr) {
+	if (text_file.is_valid()) {
 		code_editor->get_text_editor()->set_text(text_file->get_text());
 	}
 
 	Ref<JSON> json_file = edited_res;
-	if (json_file != nullptr) {
+	if (json_file.is_valid()) {
 		code_editor->get_text_editor()->set_text(json_file->get_parsed_text());
 	}
 
@@ -168,12 +168,12 @@ void TextEditor::reload_text() {
 	int v = te->get_v_scroll();
 
 	Ref<TextFile> text_file = edited_res;
-	if (text_file != nullptr) {
+	if (text_file.is_valid()) {
 		te->set_text(text_file->get_text());
 	}
 
 	Ref<JSON> json_file = edited_res;
-	if (json_file != nullptr) {
+	if (json_file.is_valid()) {
 		te->set_text(json_file->get_parsed_text());
 	}
 
@@ -193,7 +193,7 @@ void TextEditor::_validate_script() {
 	emit_signal(SNAME("edited_script_changed"));
 
 	Ref<JSON> json_file = edited_res;
-	if (json_file != nullptr) {
+	if (json_file.is_valid()) {
 		CodeEdit *te = code_editor->get_text_editor();
 
 		te->set_line_background_color(code_editor->get_error_pos().x, Color(0, 0, 0, 0));
@@ -244,12 +244,12 @@ void TextEditor::_bookmark_item_pressed(int p_idx) {
 
 void TextEditor::apply_code() {
 	Ref<TextFile> text_file = edited_res;
-	if (text_file != nullptr) {
+	if (text_file.is_valid()) {
 		text_file->set_text(code_editor->get_text_editor()->get_text());
 	}
 
 	Ref<JSON> json_file = edited_res;
-	if (json_file != nullptr) {
+	if (json_file.is_valid()) {
 		json_file->parse(code_editor->get_text_editor()->get_text(), true);
 	}
 	code_editor->get_text_editor()->get_syntax_highlighter()->update_cache();
@@ -304,8 +304,8 @@ void TextEditor::tag_saved_version() {
 	code_editor->get_text_editor()->tag_saved_version();
 }
 
-void TextEditor::goto_line(int p_line, bool p_with_error) {
-	code_editor->goto_line(p_line);
+void TextEditor::goto_line(int p_line, int p_column) {
+	code_editor->goto_line(p_line, p_column);
 }
 
 void TextEditor::goto_line_selection(int p_line, int p_begin, int p_end) {
@@ -467,7 +467,7 @@ void TextEditor::_edit_option(int p_op) {
 			emit_signal(SNAME("replace_in_files_requested"), selected_text);
 		} break;
 		case SEARCH_GOTO_LINE: {
-			goto_line_dialog->popup_find_line(tx);
+			goto_line_popup->popup_find_line(code_editor);
 		} break;
 		case BOOKMARK_TOGGLE: {
 			code_editor->toggle_bookmark();
@@ -606,6 +606,7 @@ TextEditor::TextEditor() {
 	code_editor->set_anchors_and_offsets_preset(Control::PRESET_FULL_RECT);
 	code_editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	code_editor->show_toggle_scripts_button();
+	code_editor->set_toggle_list_control(ScriptEditor::get_singleton()->get_left_list_split());
 
 	update_settings();
 
@@ -704,8 +705,8 @@ TextEditor::TextEditor() {
 	bookmarks_menu->connect("about_to_popup", callable_mp(this, &TextEditor::_update_bookmark_list));
 	bookmarks_menu->connect("index_pressed", callable_mp(this, &TextEditor::_bookmark_item_pressed));
 
-	goto_line_dialog = memnew(GotoLineDialog);
-	add_child(goto_line_dialog);
+	goto_line_popup = memnew(GotoLinePopup);
+	add_child(goto_line_popup);
 }
 
 TextEditor::~TextEditor() {

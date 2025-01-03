@@ -30,9 +30,6 @@
 
 #include "audio_stream_ogg_vorbis.h"
 
-#include "core/io/file_access.h"
-#include "core/variant/typed_array.h"
-
 #include "modules/vorbis/resource_importer_ogg_vorbis.h"
 #include <ogg/ogg.h>
 
@@ -390,6 +387,9 @@ Ref<AudioSamplePlayback> AudioStreamPlaybackOggVorbis::get_sample_playback() con
 
 void AudioStreamPlaybackOggVorbis::set_sample_playback(const Ref<AudioSamplePlayback> &p_playback) {
 	sample_playback = p_playback;
+	if (sample_playback.is_valid()) {
+		sample_playback->stream_playback = Ref<AudioStreamPlayback>(this);
+	}
 }
 
 AudioStreamPlaybackOggVorbis::~AudioStreamPlaybackOggVorbis() {
