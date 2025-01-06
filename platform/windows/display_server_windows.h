@@ -848,6 +848,9 @@ public:
 	virtual void tablet_set_current_driver(const String &p_driver) override;
 
 	virtual void process_events() override;
+	void process_key_events() {
+		return _process_key_events();
+	}
 
 	virtual void force_process_and_drop_events() override;
 

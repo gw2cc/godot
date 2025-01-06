@@ -391,7 +391,7 @@ struct ObjectGDExtension {
 
 #define GDCLASS(m_class, m_inherits)                                                                                                        \
 private:                                                                                                                                    \
-	void operator=(const m_class &p_rval) {}                                                                                                \
+	void operator=(const m_class &) {}                                                                                                \
 	friend class ::ClassDB;                                                                                                                 \
                                                                                                                                             \
 public:                                                                                                                                     \
