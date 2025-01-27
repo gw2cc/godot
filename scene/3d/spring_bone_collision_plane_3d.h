@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  joypad_macos.h                                                        */
+/*  spring_bone_collision_plane_3d.h                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,62 +28,16 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "core/input/input.h"
+#ifndef SPRING_BONE_COLLISION_PLANE_3D_H
+#define SPRING_BONE_COLLISION_PLANE_3D_H
 
-#define Key _QKey
-#import <CoreHaptics/CoreHaptics.h>
-#import <GameController/GameController.h>
-#undef Key
+#include "scene/3d/spring_bone_collision_3d.h"
 
-@interface JoypadMacOSObserver : NSObject
+class SpringBoneCollisionPlane3D : public SpringBoneCollision3D {
+	GDCLASS(SpringBoneCollisionPlane3D, SpringBoneCollision3D);
 
-- (void)startObserving;
-- (void)startProcessing;
-- (void)finishObserving;
-
-@end
-
-API_AVAILABLE(macosx(11))
-@interface RumbleMotor : NSObject
-@property(strong, nonatomic) CHHapticEngine *engine;
-@property(strong, nonatomic) id<CHHapticPatternPlayer> player;
-@end
-
-API_AVAILABLE(macosx(11))
-@interface RumbleContext : NSObject
-// High frequency motor, it's usually the right engine.
-@property(strong, nonatomic) RumbleMotor *weak_motor;
-// Low frequency motor, it's usually the left engine.
-@property(strong, nonatomic) RumbleMotor *strong_motor;
-@end
-
-// Controller support for macOS begins with macOS 10.9+,
-// however haptics (vibrations) are only supported in macOS 11+.
-@interface Joypad : NSObject
-
-@property(assign, nonatomic) BOOL force_feedback;
-@property(assign, nonatomic) NSInteger ff_effect_timestamp;
-@property(strong, nonatomic) GCController *controller;
-@property(strong, nonatomic) RumbleContext *rumble_context API_AVAILABLE(macosx(11));
-
-- (instancetype)init;
-- (instancetype)init:(GCController *)controller;
-
-@end
-
-class JoypadMacOS {
-private:
-	JoypadMacOSObserver *observer;
-
-public:
-	JoypadMacOS();
-	~JoypadMacOS();
-
-	API_AVAILABLE(macosx(11))
-	void joypad_vibration_start(Joypad *p_joypad, float p_weak_magnitude, float p_strong_magnitude, float p_duration, uint64_t p_timestamp);
-	API_AVAILABLE(macosx(11))
-	void joypad_vibration_stop(Joypad *p_joypad, uint64_t p_timestamp);
-
-	void start_processing();
-	void process_joypads();
+protected:
+	virtual Vector3 _collide(const Transform3D &p_center, float p_bone_radius, float p_bone_length, const Vector3 &p_current) const override;
 };
+
+#endif // SPRING_BONE_COLLISION_PLANE_3D_H

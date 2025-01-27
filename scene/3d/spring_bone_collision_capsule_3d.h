@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  joypad_ios.h                                                          */
+/*  spring_bone_collision_capsule_3d.h                                    */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,23 +28,33 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#import <GameController/GameController.h>
+#ifndef SPRING_BONE_COLLISION_CAPSULE_3D_H
+#define SPRING_BONE_COLLISION_CAPSULE_3D_H
 
-@interface JoypadIOSObserver : NSObject
+#include "scene/3d/spring_bone_collision_3d.h"
 
-- (void)startObserving;
-- (void)startProcessing;
-- (void)finishObserving;
+class SpringBoneCollisionCapsule3D : public SpringBoneCollision3D {
+	GDCLASS(SpringBoneCollisionCapsule3D, SpringBoneCollision3D);
 
-@end
+	float radius = 0.1;
+	float height = 0.5;
+	bool inside = false;
 
-class JoypadIOS {
-private:
-	JoypadIOSObserver *observer;
+protected:
+	static void _bind_methods();
+
+	virtual Vector3 _collide(const Transform3D &p_center, float p_bone_radius, float p_bone_length, const Vector3 &p_current) const override;
 
 public:
-	JoypadIOS();
-	~JoypadIOS();
+	void set_radius(float p_radius);
+	float get_radius() const;
+	void set_height(float p_height);
+	float get_height() const;
+	void set_inside(bool p_enabled);
+	bool is_inside() const;
 
-	void start_processing();
+	// Helper.
+	Pair<Vector3, Vector3> get_head_and_tail(const Transform3D &p_center) const;
 };
+
+#endif // SPRING_BONE_COLLISION_CAPSULE_3D_H
