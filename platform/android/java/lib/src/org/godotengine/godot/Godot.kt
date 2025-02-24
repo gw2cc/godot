@@ -333,7 +333,7 @@ class Godot(private val context: Context) {
 	 * Toggle immersive mode.
 	 * Must be called from the UI thread.
 	 */
-	private fun enableImmersiveMode(enabled: Boolean, override: Boolean = false) {
+	fun enableImmersiveMode(enabled: Boolean, override: Boolean = false) {
 		val activity = getActivity() ?: return
 		val window = activity.window ?: return
 
@@ -823,9 +823,26 @@ class Godot(private val context: Context) {
 	 * Returns true if `Vulkan` is used for rendering.
 	 */
 	private fun usesVulkan(): Boolean {
-		val renderer = GodotLib.getGlobal("rendering/renderer/rendering_method")
-		val renderingDevice = GodotLib.getGlobal("rendering/rendering_device/driver")
-		return ("forward_plus" == renderer || "mobile" == renderer) && "vulkan" == renderingDevice
+		var rendererSource = "ProjectSettings"
+		var renderer = GodotLib.getGlobal("rendering/renderer/rendering_method")
+		var renderingDeviceSource = "ProjectSettings"
+		var renderingDevice = GodotLib.getGlobal("rendering/rendering_device/driver")
+		val cmdline = getCommandLine()
+		var index = cmdline.indexOf("--rendering-method")
+		if (index > -1 && cmdline.size > index + 1) {
+			rendererSource = "CommandLine"
+			renderer = cmdline.get(index + 1)
+		}
+		index = cmdline.indexOf("--rendering-driver")
+		if (index > -1 && cmdline.size > index + 1) {
+			renderingDeviceSource = "CommandLine"
+			renderingDevice = cmdline.get(index + 1)
+		}
+		val result = ("forward_plus" == renderer || "mobile" == renderer) && "vulkan" == renderingDevice
+		Log.d(TAG, """usesVulkan(): ${result}
+			renderingDevice: ${renderingDevice} (${renderingDeviceSource})
+			renderer: ${renderer} (${rendererSource})""")
+		return result
 	}
 
 	/**
@@ -1052,6 +1069,16 @@ class Godot(private val context: Context) {
 	}
 
 	/**
+	 * Returns true if this is the Godot editor.
+	 */
+	fun isEditorHint() = isEditorBuild() && GodotLib.isEditorHint()
+
+	/**
+	 * Returns true if this is the Godot project manager.
+	 */
+	fun isProjectManagerHint() = isEditorBuild() && GodotLib.isProjectManagerHint()
+
+	/**
 	 * Return true if the given feature is supported.
 	 */
 	@Keep
@@ -1159,5 +1186,10 @@ class Godot(private val context: Context) {
 	private fun nativeVerifyApk(apkPath: String): Int {
 		val verifyResult = primaryHost?.verifyApk(apkPath) ?: Error.ERR_UNAVAILABLE
 		return verifyResult.toNativeValue()
+	}
+
+	@Keep
+	private fun nativeOnEditorWorkspaceSelected(workspace: String) {
+		primaryHost?.onEditorWorkspaceSelected(workspace)
 	}
 }
