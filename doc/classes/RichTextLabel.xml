@@ -285,12 +285,6 @@
 				Returns whether the menu is visible. Use this instead of [code]get_menu().visible[/code] to improve performance (so the creation of the menu is avoided).
 			</description>
 		</method>
-		<method name="is_ready" qualifiers="const" deprecated="Use [method is_finished] instead.">
-			<return type="bool" />
-			<description>
-				If [member threaded] is enabled, returns [code]true[/code] if the background thread has finished text processing, otherwise always return [code]true[/code].
-			</description>
-		</method>
 		<method name="menu_option">
 			<return type="void" />
 			<param index="0" name="option" type="int" />

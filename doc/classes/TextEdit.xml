@@ -83,17 +83,6 @@
 				Adds a selection and a caret for the next occurrence of the current selection. If there is no active selection, selects word under caret.
 			</description>
 		</method>
-		<method name="adjust_carets_after_edit" deprecated="No longer necessary since methods now adjust carets themselves.">
-			<return type="void" />
-			<param index="0" name="caret" type="int" />
-			<param index="1" name="from_line" type="int" />
-			<param index="2" name="from_col" type="int" />
-			<param index="3" name="to_line" type="int" />
-			<param index="4" name="to_col" type="int" />
-			<description>
-				This method does nothing.
-			</description>
-		</method>
 		<method name="adjust_viewport_to_caret">
 			<return type="void" />
 			<param index="0" name="caret_index" type="int" default="0" />
@@ -239,12 +228,6 @@
 			<param index="0" name="caret_index" type="int" default="0" />
 			<description>
 				Returns the caret pixel draw position.
-			</description>
-		</method>
-		<method name="get_caret_index_edit_order" deprecated="Carets no longer need to be edited in any specific order. If the carets need to be sorted, use [method get_sorted_carets] instead.">
-			<return type="PackedInt32Array" />
-			<description>
-				Returns a list of caret indexes in their edit order, this done from bottom to top. Edit order refers to the way actions such as [method insert_text_at_caret] are applied.
 			</description>
 		</method>
 		<method name="get_caret_line" qualifiers="const">
@@ -580,13 +563,6 @@
 				If [param include_edges] is [code]false[/code], the position must be inside the selection and not at either end. If [param only_selections] is [code]false[/code], carets without a selection will also be considered.
 			</description>
 		</method>
-		<method name="get_selection_column" qualifiers="const" deprecated="Use [method get_selection_origin_column] instead.">
-			<return type="int" />
-			<param index="0" name="caret_index" type="int" default="0" />
-			<description>
-				Returns the original start column of the selection.
-			</description>
-		</method>
 		<method name="get_selection_from_column" qualifiers="const">
 			<return type="int" />
 			<param index="0" name="caret_index" type="int" default="0" />
@@ -599,13 +575,6 @@
 			<param index="0" name="caret_index" type="int" default="0" />
 			<description>
 				Returns the selection begin line. Returns the caret line if there is no selection.
-			</description>
-		</method>
-		<method name="get_selection_line" qualifiers="const" deprecated="Use [method get_selection_origin_line] instead.">
-			<return type="int" />
-			<param index="0" name="caret_index" type="int" default="0" />
-			<description>
-				Returns the original start line of the selection.
 			</description>
 		</method>
 		<method name="get_selection_mode" qualifiers="const">

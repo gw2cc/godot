@@ -1765,13 +1765,6 @@
 				Returns [code]true[/code] if changes have been made to the RenderingServer's data. [method force_draw] is usually called if this happens.
 			</description>
 		</method>
-		<method name="has_feature" qualifiers="const" deprecated="This method has not been used since Godot 3.0.">
-			<return type="bool" />
-			<param index="0" name="feature" type="int" enum="RenderingServer.Features" />
-			<description>
-				This method does nothing and always returns [code]false[/code].
-			</description>
-		</method>
 		<method name="has_os_feature" qualifiers="const">
 			<return type="bool" />
 			<param index="0" name="feature" type="String" />
@@ -5898,10 +5891,6 @@
 		</constant>
 		<constant name="PIPELINE_SOURCE_MAX" value="5" enum="PipelineSource">
 			Represents the size of the [enum PipelineSource] enum.
-		</constant>
-		<constant name="FEATURE_SHADERS" value="0" enum="Features" deprecated="This constant has not been used since Godot 3.0.">
-		</constant>
-		<constant name="FEATURE_MULTITHREADED" value="1" enum="Features" deprecated="This constant has not been used since Godot 3.0.">
 		</constant>
 	</constants>
 </class>

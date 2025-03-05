@@ -359,12 +359,6 @@
 				Centers a native window on the current screen and an embedded window on its embedder [Viewport].
 			</description>
 		</method>
-		<method name="move_to_foreground" deprecated="Use [method Window.grab_focus] instead.">
-			<return type="void" />
-			<description>
-				Causes the window to grab focus, allowing it to receive user input.
-			</description>
-		</method>
 		<method name="popup">
 			<return type="void" />
 			<param index="0" name="rect" type="Rect2i" default="Rect2i(0, 0, 0, 0)" />
@@ -574,9 +568,6 @@
 	<members>
 		<member name="always_on_top" type="bool" setter="set_flag" getter="get_flag" default="false">
 			If [code]true[/code], the window will be on top of all other windows. Does not work if [member transient] is enabled.
-		</member>
-		<member name="auto_translate" type="bool" setter="set_auto_translate" getter="is_auto_translating" default="true" deprecated="Use [member Node.auto_translate_mode] instead.">
-			Toggles if any text should automatically change to its translated version depending on the current locale.
 		</member>
 		<member name="borderless" type="bool" setter="set_flag" getter="get_flag" default="false">
 			If [code]true[/code], the window will have no borders.
@@ -929,8 +920,6 @@
 		</constant>
 		<constant name="LAYOUT_DIRECTION_MAX" value="5" enum="LayoutDirection">
 			Represents the size of the [enum LayoutDirection] enum.
-		</constant>
-		<constant name="LAYOUT_DIRECTION_LOCALE" value="1" enum="LayoutDirection" deprecated="Use [constant LAYOUT_DIRECTION_APPLICATION_LOCALE] instead.">
 		</constant>
 		<constant name="WINDOW_INITIAL_POSITION_ABSOLUTE" value="0" enum="WindowInitialPosition">
 			Initial window position is determined by [member position].

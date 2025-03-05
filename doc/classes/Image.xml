@@ -119,16 +119,6 @@
 				Copies [param src] image to this image.
 			</description>
 		</method>
-		<method name="create" qualifiers="static" deprecated="Use [method create_empty].">
-			<return type="Image" />
-			<param index="0" name="width" type="int" />
-			<param index="1" name="height" type="int" />
-			<param index="2" name="use_mipmaps" type="bool" />
-			<param index="3" name="format" type="int" enum="Image.Format" />
-			<description>
-				Creates an empty image of given size and format. See [enum Format] constants. If [param use_mipmaps] is [code]true[/code], then generate mipmaps for this image. See the [method generate_mipmaps].
-			</description>
-		</method>
 		<method name="create_empty" qualifiers="static">
 			<return type="Image" />
 			<param index="0" name="width" type="int" />

@@ -14,14 +14,6 @@
 		<link title="Using compute shaders">$DOCS_URL/tutorials/shaders/compute_shaders.html</link>
 	</tutorials>
 	<methods>
-		<method name="barrier" deprecated="Barriers are automatically inserted by RenderingDevice.">
-			<return type="void" />
-			<param index="0" name="from" type="int" enum="RenderingDevice.BarrierMask" is_bitfield="true" default="32767" />
-			<param index="1" name="to" type="int" enum="RenderingDevice.BarrierMask" is_bitfield="true" default="32767" />
-			<description>
-				This method does nothing.
-			</description>
-		</method>
 		<method name="buffer_clear">
 			<return type="int" enum="Error" />
 			<param index="0" name="buffer" type="RID" />
@@ -228,14 +220,6 @@
 				Ends the command buffer debug label region started by a [method draw_command_begin_label] call.
 			</description>
 		</method>
-		<method name="draw_command_insert_label" deprecated="Inserting labels no longer applies due to command reordering.">
-			<return type="void" />
-			<param index="0" name="name" type="String" />
-			<param index="1" name="color" type="Color" />
-			<description>
-				This method does nothing.
-			</description>
-		</method>
 		<method name="draw_list_begin">
 			<return type="int" />
 			<param index="0" name="framebuffer" type="RID" />
@@ -282,23 +266,6 @@
 			<description>
 				High-level variant of [method draw_list_begin], with the parameters automatically being adjusted for drawing onto the window specified by the [param screen] ID.
 				[b]Note:[/b] Cannot be used with local RenderingDevices, as these don't have a screen. If called on a local RenderingDevice, [method draw_list_begin_for_screen] returns [constant INVALID_ID].
-			</description>
-		</method>
-		<method name="draw_list_begin_split" deprecated="Split draw lists are used automatically by RenderingDevice.">
-			<return type="PackedInt64Array" />
-			<param index="0" name="framebuffer" type="RID" />
-			<param index="1" name="splits" type="int" />
-			<param index="2" name="initial_color_action" type="int" enum="RenderingDevice.InitialAction" />
-			<param index="3" name="final_color_action" type="int" enum="RenderingDevice.FinalAction" />
-			<param index="4" name="initial_depth_action" type="int" enum="RenderingDevice.InitialAction" />
-			<param index="5" name="final_depth_action" type="int" enum="RenderingDevice.FinalAction" />
-			<param index="6" name="clear_color_values" type="PackedColorArray" default="PackedColorArray()" />
-			<param index="7" name="clear_depth" type="float" default="1.0" />
-			<param index="8" name="clear_stencil" type="int" default="0" />
-			<param index="9" name="region" type="Rect2" default="Rect2(0, 0, 0, 0)" />
-			<param index="10" name="storage_textures" type="RID[]" default="[]" />
-			<description>
-				This method does nothing and always returns an empty [PackedInt64Array].
 			</description>
 		</method>
 		<method name="draw_list_bind_index_array">
@@ -401,13 +368,6 @@
 				Switches to the next draw pass.
 			</description>
 		</method>
-		<method name="draw_list_switch_to_next_pass_split" deprecated="Split draw lists are used automatically by RenderingDevice.">
-			<return type="PackedInt64Array" />
-			<param index="0" name="splits" type="int" />
-			<description>
-				This method does nothing and always returns an empty [PackedInt64Array].
-			</description>
-		</method>
 		<method name="framebuffer_create">
 			<return type="RID" />
 			<param index="0" name="textures" type="RID[]" />
@@ -491,12 +451,6 @@
 			<param index="0" name="rid" type="RID" />
 			<description>
 				Tries to free an object in the RenderingDevice. To avoid memory leaks, this should be called after using an object as memory management does not occur automatically when using RenderingDevice directly.
-			</description>
-		</method>
-		<method name="full_barrier" deprecated="Barriers are automatically inserted by RenderingDevice.">
-			<return type="void" />
-			<description>
-				This method does nothing.
 			</description>
 		</method>
 		<method name="get_captured_timestamp_cpu_time" qualifiers="const">
@@ -995,14 +949,6 @@
 				Returns the data format used to create this texture.
 			</description>
 		</method>
-		<method name="texture_get_native_handle" deprecated="Use [method get_driver_resource] with [constant DRIVER_RESOURCE_TEXTURE] instead.">
-			<return type="int" />
-			<param index="0" name="texture" type="RID" />
-			<description>
-				Returns the internal graphics handle for this texture object. For use when communicating with third-party APIs mostly with GDExtension.
-				[b]Note:[/b] This function returns a [code]uint64_t[/code] which internally maps to a [code]GLuint[/code] (OpenGL) or [code]VkImage[/code] (Vulkan).
-			</description>
-		</method>
 		<method name="texture_is_discardable">
 			<return type="bool" />
 			<param index="0" name="texture" type="RID" />
@@ -1189,32 +1135,6 @@
 		</constant>
 		<constant name="DRIVER_RESOURCE_RENDER_PIPELINE" value="12" enum="DriverResource">
 			- Vulkan: [code]VkPipeline[/code].
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_DEVICE" value="0" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_LOGICAL_DEVICE] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_PHYSICAL_DEVICE" value="1" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_PHYSICAL_DEVICE] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_INSTANCE" value="2" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_TOPMOST_OBJECT] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_QUEUE" value="3" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_COMMAND_QUEUE] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_QUEUE_FAMILY_INDEX" value="4" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_QUEUE_FAMILY] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_IMAGE" value="5" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_TEXTURE] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_IMAGE_VIEW" value="6" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_TEXTURE_VIEW] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_IMAGE_NATIVE_TEXTURE_FORMAT" value="7" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_TEXTURE_DATA_FORMAT] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_SAMPLER" value="8" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_SAMPLER] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_DESCRIPTOR_SET" value="9" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_UNIFORM_SET] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_BUFFER" value="10" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_BUFFER] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_COMPUTE_PIPELINE" value="11" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_COMPUTE_PIPELINE] instead.">
-		</constant>
-		<constant name="DRIVER_RESOURCE_VULKAN_RENDER_PIPELINE" value="12" enum="DriverResource" deprecated="Use [constant DRIVER_RESOURCE_RENDER_PIPELINE] instead.">
 		</constant>
 		<constant name="DATA_FORMAT_R4G4_UNORM_PACK8" value="0" enum="DataFormat">
 			4-bit-per-channel red/green channel data format, packed into 8 bits. Values are in the [code][0.0, 1.0][/code] range.
@@ -1874,27 +1794,6 @@
 		<constant name="DATA_FORMAT_MAX" value="218" enum="DataFormat">
 			Represents the size of the [enum DataFormat] enum.
 		</constant>
-		<constant name="BARRIER_MASK_VERTEX" value="1" enum="BarrierMask" is_bitfield="true">
-			Vertex shader barrier mask.
-		</constant>
-		<constant name="BARRIER_MASK_FRAGMENT" value="8" enum="BarrierMask" is_bitfield="true">
-			Fragment shader barrier mask.
-		</constant>
-		<constant name="BARRIER_MASK_COMPUTE" value="2" enum="BarrierMask" is_bitfield="true">
-			Compute barrier mask.
-		</constant>
-		<constant name="BARRIER_MASK_TRANSFER" value="4" enum="BarrierMask" is_bitfield="true">
-			Transfer barrier mask.
-		</constant>
-		<constant name="BARRIER_MASK_RASTER" value="9" enum="BarrierMask" is_bitfield="true">
-			Raster barrier mask (vertex and fragment). Equivalent to [code]BARRIER_MASK_VERTEX | BARRIER_MASK_FRAGMENT[/code].
-		</constant>
-		<constant name="BARRIER_MASK_ALL_BARRIERS" value="32767" enum="BarrierMask" is_bitfield="true">
-			Barrier mask for all types (vertex, fragment, compute, transfer).
-		</constant>
-		<constant name="BARRIER_MASK_NO_BARRIER" value="32768" enum="BarrierMask" is_bitfield="true">
-			No barrier for any type.
-		</constant>
 		<constant name="TEXTURE_TYPE_1D" value="0" enum="TextureType">
 			1-dimensional texture.
 		</constant>
@@ -2367,41 +2266,6 @@
 		<constant name="DYNAMIC_STATE_STENCIL_WRITE_MASK" value="32" enum="PipelineDynamicStateFlags" is_bitfield="true">
 		</constant>
 		<constant name="DYNAMIC_STATE_STENCIL_REFERENCE" value="64" enum="PipelineDynamicStateFlags" is_bitfield="true">
-		</constant>
-		<constant name="INITIAL_ACTION_LOAD" value="0" enum="InitialAction" deprecated="Initial actions are solved automatically by RenderingDevice.">
-			Load the previous contents of the framebuffer.
-		</constant>
-		<constant name="INITIAL_ACTION_CLEAR" value="1" enum="InitialAction" deprecated="Initial actions are solved automatically by RenderingDevice.">
-			Clear the whole framebuffer or its specified region.
-		</constant>
-		<constant name="INITIAL_ACTION_DISCARD" value="2" enum="InitialAction" deprecated="Initial actions are solved automatically by RenderingDevice.">
-			Ignore the previous contents of the framebuffer. This is the fastest option if you'll overwrite all of the pixels and don't need to read any of them.
-		</constant>
-		<constant name="INITIAL_ACTION_MAX" value="3" enum="InitialAction" deprecated="Initial actions are solved automatically by RenderingDevice.">
-			Represents the size of the [enum InitialAction] enum.
-		</constant>
-		<constant name="INITIAL_ACTION_CLEAR_REGION" value="1" enum="InitialAction" deprecated="Initial actions are solved automatically by RenderingDevice.">
-		</constant>
-		<constant name="INITIAL_ACTION_CLEAR_REGION_CONTINUE" value="1" enum="InitialAction" deprecated="Initial actions are solved automatically by RenderingDevice.">
-		</constant>
-		<constant name="INITIAL_ACTION_KEEP" value="0" enum="InitialAction" deprecated="Initial actions are solved automatically by RenderingDevice.">
-		</constant>
-		<constant name="INITIAL_ACTION_DROP" value="2" enum="InitialAction" deprecated="Initial actions are solved automatically by RenderingDevice.">
-		</constant>
-		<constant name="INITIAL_ACTION_CONTINUE" value="0" enum="InitialAction" deprecated="Initial actions are solved automatically by RenderingDevice.">
-		</constant>
-		<constant name="FINAL_ACTION_STORE" value="0" enum="FinalAction" deprecated="Final actions are solved automatically by RenderingDevice.">
-			Store the result of the draw list in the framebuffer. This is generally what you want to do.
-		</constant>
-		<constant name="FINAL_ACTION_DISCARD" value="1" enum="FinalAction" deprecated="Final actions are solved automatically by RenderingDevice.">
-			Discard the contents of the framebuffer. This is the fastest option if you don't need to use the results of the draw list.
-		</constant>
-		<constant name="FINAL_ACTION_MAX" value="2" enum="FinalAction" deprecated="Final actions are solved automatically by RenderingDevice.">
-			Represents the size of the [enum FinalAction] enum.
-		</constant>
-		<constant name="FINAL_ACTION_READ" value="0" enum="FinalAction" deprecated="Final actions are solved automatically by RenderingDevice.">
-		</constant>
-		<constant name="FINAL_ACTION_CONTINUE" value="0" enum="FinalAction" deprecated="Final actions are solved automatically by RenderingDevice.">
 		</constant>
 		<constant name="SHADER_STAGE_VERTEX" value="0" enum="ShaderStage">
 			Vertex shader stage. This can be used to manipulate vertices from a shader (but not create new vertices).

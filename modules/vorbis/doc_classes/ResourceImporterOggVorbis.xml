@@ -11,22 +11,6 @@
 	<tutorials>
 		<link title="Importing audio samples">$DOCS_URL/tutorials/assets_pipeline/importing_audio_samples.html</link>
 	</tutorials>
-	<methods>
-		<method name="load_from_buffer" qualifiers="static" deprecated="Use [method AudioStreamOggVorbis.load_from_buffer] instead.">
-			<return type="AudioStreamOggVorbis" />
-			<param index="0" name="stream_data" type="PackedByteArray" />
-			<description>
-				Creates a new [AudioStreamOggVorbis] instance from the given buffer. The buffer must contain Ogg Vorbis data.
-			</description>
-		</method>
-		<method name="load_from_file" qualifiers="static" deprecated="Use [method AudioStreamOggVorbis.load_from_file] instead.">
-			<return type="AudioStreamOggVorbis" />
-			<param index="0" name="path" type="String" />
-			<description>
-				Creates a new [AudioStreamOggVorbis] instance from the given file path. The file must be in Ogg Vorbis format.
-			</description>
-		</method>
-	</methods>
 	<members>
 		<member name="bar_beats" type="int" setter="" getter="" default="4">
 			The number of bars within a single beat in the audio track. This is only relevant for music that wishes to make use of interactive music functionality, not sound effects.

@@ -78,13 +78,6 @@
 				Clears cells that do not exist in the tileset.
 			</description>
 		</method>
-		<method name="force_update" deprecated="Use [method notify_runtime_tile_data_update] and/or [method update_internals] instead.">
-			<return type="void" />
-			<param index="0" name="layer" type="int" default="-1" />
-			<description>
-				Forces the TileMap and the layer [param layer] to update.
-			</description>
-		</method>
 		<method name="get_cell_alternative_tile" qualifiers="const">
 			<return type="int" />
 			<param index="0" name="layer" type="int" />
@@ -198,13 +191,6 @@
 			<return type="int" />
 			<description>
 				Returns the number of layers in the TileMap.
-			</description>
-		</method>
-		<method name="get_navigation_map" qualifiers="const" deprecated="Use [method get_layer_navigation_map] instead.">
-			<return type="RID" />
-			<param index="0" name="layer" type="int" />
-			<description>
-				Returns the [RID] of the [NavigationServer2D] navigation map assigned to the specified TileMap layer [param layer].
 			</description>
 		</method>
 		<method name="get_neighbor_cell" qualifiers="const">
@@ -474,14 +460,6 @@
 			<description>
 				Sets a layers Z-index value. This Z-index is added to each tile's Z-index value.
 				If [param layer] is negative, the layers are accessed from the last one.
-			</description>
-		</method>
-		<method name="set_navigation_map" deprecated="Use [method set_layer_navigation_map] instead.">
-			<return type="void" />
-			<param index="0" name="layer" type="int" />
-			<param index="1" name="map" type="RID" />
-			<description>
-				Assigns [param map] as a [NavigationServer2D] navigation map for the specified TileMap layer [param layer].
 			</description>
 		</method>
 		<method name="set_pattern">

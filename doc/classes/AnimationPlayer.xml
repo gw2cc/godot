@@ -44,12 +44,6 @@
 				Returns the blend time (in seconds) between two animations, referenced by their keys.
 			</description>
 		</method>
-		<method name="get_method_call_mode" qualifiers="const" deprecated="Use [member AnimationMixer.callback_mode_method] instead.">
-			<return type="int" enum="AnimationPlayer.AnimationMethodCallMode" />
-			<description>
-				Returns the call mode used for "Call Method" tracks.
-			</description>
-		</method>
 		<method name="get_playing_speed" qualifiers="const">
 			<return type="float" />
 			<description>
@@ -57,22 +51,10 @@
 				Returns a negative value if the current animation is playing backwards.
 			</description>
 		</method>
-		<method name="get_process_callback" qualifiers="const" deprecated="Use [member AnimationMixer.callback_mode_process] instead.">
-			<return type="int" enum="AnimationPlayer.AnimationProcessCallback" />
-			<description>
-				Returns the process notification in which to update animations.
-			</description>
-		</method>
 		<method name="get_queue">
 			<return type="PackedStringArray" />
 			<description>
 				Returns a list of the animation keys that are currently queued to play.
-			</description>
-		</method>
-		<method name="get_root" qualifiers="const" deprecated="Use [member AnimationMixer.root_node] instead.">
-			<return type="NodePath" />
-			<description>
-				Returns the node which node path references will travel from.
 			</description>
 		</method>
 		<method name="get_section_end_time" qualifiers="const">
@@ -231,27 +213,6 @@
 				Specifies a blend time (in seconds) between two animations, referenced by their keys.
 			</description>
 		</method>
-		<method name="set_method_call_mode" deprecated="Use [member AnimationMixer.callback_mode_method] instead.">
-			<return type="void" />
-			<param index="0" name="mode" type="int" enum="AnimationPlayer.AnimationMethodCallMode" />
-			<description>
-				Sets the call mode used for "Call Method" tracks.
-			</description>
-		</method>
-		<method name="set_process_callback" deprecated="Use [member AnimationMixer.callback_mode_process] instead.">
-			<return type="void" />
-			<param index="0" name="mode" type="int" enum="AnimationPlayer.AnimationProcessCallback" />
-			<description>
-				Sets the process notification in which to update animations.
-			</description>
-		</method>
-		<method name="set_root" deprecated="Use [member AnimationMixer.root_node] instead.">
-			<return type="void" />
-			<param index="0" name="path" type="NodePath" />
-			<description>
-				Sets the node which node path references will travel from.
-			</description>
-		</method>
 		<method name="set_section">
 			<return type="void" />
 			<param index="0" name="start_time" type="float" default="-1" />
@@ -338,16 +299,4 @@
 			</description>
 		</signal>
 	</signals>
-	<constants>
-		<constant name="ANIMATION_PROCESS_PHYSICS" value="0" enum="AnimationProcessCallback" deprecated="See [constant AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_PHYSICS].">
-		</constant>
-		<constant name="ANIMATION_PROCESS_IDLE" value="1" enum="AnimationProcessCallback" deprecated="See [constant AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_IDLE].">
-		</constant>
-		<constant name="ANIMATION_PROCESS_MANUAL" value="2" enum="AnimationProcessCallback" deprecated="See [constant AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL].">
-		</constant>
-		<constant name="ANIMATION_METHOD_CALL_DEFERRED" value="0" enum="AnimationMethodCallMode" deprecated="See [constant AnimationMixer.ANIMATION_CALLBACK_MODE_METHOD_DEFERRED].">
-		</constant>
-		<constant name="ANIMATION_METHOD_CALL_IMMEDIATE" value="1" enum="AnimationMethodCallMode" deprecated="See [constant AnimationMixer.ANIMATION_CALLBACK_MODE_METHOD_IMMEDIATE].">
-		</constant>
-	</constants>
 </class>

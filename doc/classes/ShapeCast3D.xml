@@ -120,13 +120,6 @@
 				Removes a collision exception so the shape does report collisions with the specified [RID].
 			</description>
 		</method>
-		<method name="resource_changed" deprecated="Use [signal Resource.changed] instead.">
-			<return type="void" />
-			<param index="0" name="resource" type="Resource" />
-			<description>
-				This method does nothing.
-			</description>
-		</method>
 		<method name="set_collision_mask_value">
 			<return type="void" />
 			<param index="0" name="layer_number" type="int" />

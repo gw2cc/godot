@@ -132,12 +132,6 @@
 				Returns a [PackedVector2Array] containing all the vertices being used to create the polygons.
 			</description>
 		</method>
-		<method name="make_polygons_from_outlines" deprecated="Use [method NavigationServer2D.parse_source_geometry_data] and [method NavigationServer2D.bake_from_source_geometry_data] instead.">
-			<return type="void" />
-			<description>
-				Creates polygons from the outlines added in the editor or by script.
-			</description>
-		</method>
 		<method name="remove_outline">
 			<return type="void" />
 			<param index="0" name="idx" type="int" />

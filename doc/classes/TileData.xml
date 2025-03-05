@@ -85,17 +85,6 @@
 				[param flip_h], [param flip_v], and [param transpose] allow transforming the returned polygon.
 			</description>
 		</method>
-		<method name="get_occluder" qualifiers="const" deprecated="Use [method get_occluder_polygon] instead.">
-			<return type="OccluderPolygon2D" />
-			<param index="0" name="layer_id" type="int" />
-			<param index="1" name="flip_h" type="bool" default="false" />
-			<param index="2" name="flip_v" type="bool" default="false" />
-			<param index="3" name="transpose" type="bool" default="false" />
-			<description>
-				Returns the occluder polygon of the tile for the TileSet occlusion layer with index [param layer_id].
-				[param flip_h], [param flip_v], and [param transpose] allow transforming the returned polygon.
-			</description>
-		</method>
 		<method name="get_occluder_polygon" qualifiers="const">
 			<return type="OccluderPolygon2D" />
 			<param index="0" name="layer_id" type="int" />
@@ -233,14 +222,6 @@
 			<param index="1" name="navigation_polygon" type="NavigationPolygon" />
 			<description>
 				Sets the navigation polygon for the TileSet navigation layer with index [param layer_id].
-			</description>
-		</method>
-		<method name="set_occluder" deprecated="Use [method set_occluder_polygon] instead.">
-			<return type="void" />
-			<param index="0" name="layer_id" type="int" />
-			<param index="1" name="occluder_polygon" type="OccluderPolygon2D" />
-			<description>
-				Sets the occluder for the TileSet occlusion layer with index [param layer_id].
 			</description>
 		</method>
 		<method name="set_occluder_polygon">

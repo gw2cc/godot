@@ -11,22 +11,6 @@
 		<link title="GDScript exports">$DOCS_URL/tutorials/scripting/gdscript/gdscript_exports.html</link>
 	</tutorials>
 	<methods>
-		<method name="Color8" deprecated="Use [method Color.from_rgba8] instead.">
-			<return type="Color" />
-			<param index="0" name="r8" type="int" />
-			<param index="1" name="g8" type="int" />
-			<param index="2" name="b8" type="int" />
-			<param index="3" name="a8" type="int" default="255" />
-			<description>
-				Returns a [Color] constructed from red ([param r8]), green ([param g8]), blue ([param b8]), and optionally alpha ([param a8]) integer channels, each divided by [code]255.0[/code] for their final value. Using [method Color8] instead of the standard [Color] constructor is useful when you need to match exact color values in an [Image].
-				[codeblock]
-				var red = Color8(255, 0, 0)             # Same as Color(1, 0, 0).
-				var dark_blue = Color8(0, 0, 51)        # Same as Color(0, 0, 0.2).
-				var my_color = Color8(306, 255, 0, 102) # Same as Color(1.2, 1, 0, 0.4).
-				[/codeblock]
-				[b]Note:[/b] Due to the lower precision of [method Color8] compared to the standard [Color] constructor, a color created with [method Color8] will generally not be equal to the same color created with the standard [Color] constructor. Use [method Color.is_equal_approx] for comparisons to avoid issues with floating-point precision error.
-			</description>
-		</method>
 		<method name="assert">
 			<return type="void" />
 			<param index="0" name="condition" type="bool" />
@@ -58,29 +42,6 @@
 				[/codeblock]
 			</description>
 		</method>
-		<method name="convert" deprecated="Use [method @GlobalScope.type_convert] instead.">
-			<return type="Variant" />
-			<param index="0" name="what" type="Variant" />
-			<param index="1" name="type" type="int" enum="Variant.Type" />
-			<description>
-				Converts [param what] to [param type] in the best way possible. The [param type] uses the [enum Variant.Type] values.
-				[codeblock]
-				var a = [4, 2.5, 1.2]
-				print(a is Array) # Prints true
-
-				var b = convert(a, TYPE_PACKED_BYTE_ARRAY)
-				print(b)          # Prints [4, 2, 1]
-				print(b is Array) # Prints false
-				[/codeblock]
-			</description>
-		</method>
-		<method name="dict_to_inst" deprecated="Consider using [method JSON.to_native] or [method Object.get_property_list] instead.">
-			<return type="Object" />
-			<param index="0" name="dictionary" type="Dictionary" />
-			<description>
-				Converts a [param dictionary] (created with [method inst_to_dict]) back to an Object instance. Can be useful for deserializing.
-			</description>
-		</method>
 		<method name="get_stack">
 			<return type="Array" />
 			<description>
@@ -101,27 +62,6 @@
 				[/codeblock]
 				[b]Note:[/b] This function only works if the running instance is connected to a debugging server (i.e. an editor instance). [method get_stack] will not work in projects exported in release mode, or in projects exported in debug mode if not connected to a debugging server.
 				[b]Note:[/b] Calling this function from a [Thread] is not supported. Doing so will return an empty array.
-			</description>
-		</method>
-		<method name="inst_to_dict" deprecated="Consider using [method JSON.from_native] or [method Object.get_property_list] instead.">
-			<return type="Dictionary" />
-			<param index="0" name="instance" type="Object" />
-			<description>
-				Returns the passed [param instance] converted to a Dictionary. Can be useful for serializing.
-				[codeblock]
-				var foo = "bar"
-				func _ready():
-				    var d = inst_to_dict(self)
-				    print(d.keys())
-				    print(d.values())
-				[/codeblock]
-				Prints out:
-				[codeblock lang=text]
-				[@subpath, @path, foo]
-				[, res://test.gd, bar]
-				[/codeblock]
-				[b]Note:[/b] This function can only be used to serialize objects with an attached [GDScript] stored in a separate file. Objects without an attached script, with a script written in another language, or with a built-in script are not supported.
-				[b]Note:[/b] This function is not recursive, which means that nested objects will not be represented as dictionaries. Also, properties passed by reference ([Object], [Dictionary], [Array], and packed arrays) are copied by reference, not duplicated.
 			</description>
 		</method>
 		<method name="is_instance_of">

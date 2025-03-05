@@ -278,618 +278,6 @@
 				[b]Note:[/b] Native dialogs are not included in this list.
 			</description>
 		</method>
-		<method name="global_menu_add_check_item" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="label" type="String" />
-			<param index="2" name="callback" type="Callable" default="Callable()" />
-			<param index="3" name="key_callback" type="Callable" default="Callable()" />
-			<param index="4" name="tag" type="Variant" default="null" />
-			<param index="5" name="accelerator" type="int" enum="Key" default="0" />
-			<param index="6" name="index" type="int" default="-1" />
-			<description>
-				Adds a new checkable item with text [param label] to the global menu with ID [param menu_root].
-				Returns index of the inserted item, it's not guaranteed to be the same as [param index] value.
-				An [param accelerator] can optionally be defined, which is a keyboard shortcut that can be pressed to trigger the menu button even if it's not currently open. The [param accelerator] is generally a combination of [enum KeyModifierMask]s and [enum Key]s using bitwise OR such as [code]KEY_MASK_CTRL | KEY_A[/code] ([kbd]Ctrl + A[/kbd]).
-				[b]Note:[/b] The [param callback] and [param key_callback] Callables need to accept exactly one Variant parameter, the parameter passed to the Callables will be the value passed to [param tag].
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Supported system menu IDs:[/b]
-				[codeblock lang=text]
-				"_main" - Main menu (macOS).
-				"_dock" - Dock popup menu (macOS).
-				"_apple" - Apple menu (macOS, custom items added before "Services").
-				"_window" - Window menu (macOS, custom items added after "Bring All to Front").
-				"_help" - Help menu (macOS).
-				[/codeblock]
-			</description>
-		</method>
-		<method name="global_menu_add_icon_check_item" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="icon" type="Texture2D" />
-			<param index="2" name="label" type="String" />
-			<param index="3" name="callback" type="Callable" default="Callable()" />
-			<param index="4" name="key_callback" type="Callable" default="Callable()" />
-			<param index="5" name="tag" type="Variant" default="null" />
-			<param index="6" name="accelerator" type="int" enum="Key" default="0" />
-			<param index="7" name="index" type="int" default="-1" />
-			<description>
-				Adds a new checkable item with text [param label] and icon [param icon] to the global menu with ID [param menu_root].
-				Returns index of the inserted item, it's not guaranteed to be the same as [param index] value.
-				An [param accelerator] can optionally be defined, which is a keyboard shortcut that can be pressed to trigger the menu button even if it's not currently open. The [param accelerator] is generally a combination of [enum KeyModifierMask]s and [enum Key]s using bitwise OR such as [code]KEY_MASK_CTRL | KEY_A[/code] ([kbd]Ctrl + A[/kbd]).
-				[b]Note:[/b] The [param callback] and [param key_callback] Callables need to accept exactly one Variant parameter, the parameter passed to the Callables will be the value passed to [param tag].
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Supported system menu IDs:[/b]
-				[codeblock lang=text]
-				"_main" - Main menu (macOS).
-				"_dock" - Dock popup menu (macOS).
-				"_apple" - Apple menu (macOS, custom items added before "Services").
-				"_window" - Window menu (macOS, custom items added after "Bring All to Front").
-				"_help" - Help menu (macOS).
-				[/codeblock]
-			</description>
-		</method>
-		<method name="global_menu_add_icon_item" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="icon" type="Texture2D" />
-			<param index="2" name="label" type="String" />
-			<param index="3" name="callback" type="Callable" default="Callable()" />
-			<param index="4" name="key_callback" type="Callable" default="Callable()" />
-			<param index="5" name="tag" type="Variant" default="null" />
-			<param index="6" name="accelerator" type="int" enum="Key" default="0" />
-			<param index="7" name="index" type="int" default="-1" />
-			<description>
-				Adds a new item with text [param label] and icon [param icon] to the global menu with ID [param menu_root].
-				Returns index of the inserted item, it's not guaranteed to be the same as [param index] value.
-				An [param accelerator] can optionally be defined, which is a keyboard shortcut that can be pressed to trigger the menu button even if it's not currently open. The [param accelerator] is generally a combination of [enum KeyModifierMask]s and [enum Key]s using bitwise OR such as [code]KEY_MASK_CTRL | KEY_A[/code] ([kbd]Ctrl + A[/kbd]).
-				[b]Note:[/b] The [param callback] and [param key_callback] Callables need to accept exactly one Variant parameter, the parameter passed to the Callables will be the value passed to [param tag].
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Supported system menu IDs:[/b]
-				[codeblock lang=text]
-				"_main" - Main menu (macOS).
-				"_dock" - Dock popup menu (macOS).
-				"_apple" - Apple menu (macOS, custom items added before "Services").
-				"_window" - Window menu (macOS, custom items added after "Bring All to Front").
-				"_help" - Help menu (macOS).
-				[/codeblock]
-			</description>
-		</method>
-		<method name="global_menu_add_icon_radio_check_item" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="icon" type="Texture2D" />
-			<param index="2" name="label" type="String" />
-			<param index="3" name="callback" type="Callable" default="Callable()" />
-			<param index="4" name="key_callback" type="Callable" default="Callable()" />
-			<param index="5" name="tag" type="Variant" default="null" />
-			<param index="6" name="accelerator" type="int" enum="Key" default="0" />
-			<param index="7" name="index" type="int" default="-1" />
-			<description>
-				Adds a new radio-checkable item with text [param label] and icon [param icon] to the global menu with ID [param menu_root].
-				Returns index of the inserted item, it's not guaranteed to be the same as [param index] value.
-				An [param accelerator] can optionally be defined, which is a keyboard shortcut that can be pressed to trigger the menu button even if it's not currently open. The [param accelerator] is generally a combination of [enum KeyModifierMask]s and [enum Key]s using bitwise OR such as [code]KEY_MASK_CTRL | KEY_A[/code] ([kbd]Ctrl + A[/kbd]).
-				[b]Note:[/b] Radio-checkable items just display a checkmark, but don't have any built-in checking behavior and must be checked/unchecked manually. See [method global_menu_set_item_checked] for more info on how to control it.
-				[b]Note:[/b] The [param callback] and [param key_callback] Callables need to accept exactly one Variant parameter, the parameter passed to the Callables will be the value passed to [param tag].
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Supported system menu IDs:[/b]
-				[codeblock lang=text]
-				"_main" - Main menu (macOS).
-				"_dock" - Dock popup menu (macOS).
-				"_apple" - Apple menu (macOS, custom items added before "Services").
-				"_window" - Window menu (macOS, custom items added after "Bring All to Front").
-				"_help" - Help menu (macOS).
-				[/codeblock]
-			</description>
-		</method>
-		<method name="global_menu_add_item" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="label" type="String" />
-			<param index="2" name="callback" type="Callable" default="Callable()" />
-			<param index="3" name="key_callback" type="Callable" default="Callable()" />
-			<param index="4" name="tag" type="Variant" default="null" />
-			<param index="5" name="accelerator" type="int" enum="Key" default="0" />
-			<param index="6" name="index" type="int" default="-1" />
-			<description>
-				Adds a new item with text [param label] to the global menu with ID [param menu_root].
-				Returns index of the inserted item, it's not guaranteed to be the same as [param index] value.
-				An [param accelerator] can optionally be defined, which is a keyboard shortcut that can be pressed to trigger the menu button even if it's not currently open. The [param accelerator] is generally a combination of [enum KeyModifierMask]s and [enum Key]s using bitwise OR such as [code]KEY_MASK_CTRL | KEY_A[/code] ([kbd]Ctrl + A[/kbd]).
-				[b]Note:[/b] The [param callback] and [param key_callback] Callables need to accept exactly one Variant parameter, the parameter passed to the Callables will be the value passed to [param tag].
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Supported system menu IDs:[/b]
-				[codeblock lang=text]
-				"_main" - Main menu (macOS).
-				"_dock" - Dock popup menu (macOS).
-				"_apple" - Apple menu (macOS, custom items added before "Services").
-				"_window" - Window menu (macOS, custom items added after "Bring All to Front").
-				"_help" - Help menu (macOS).
-				[/codeblock]
-			</description>
-		</method>
-		<method name="global_menu_add_multistate_item" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="label" type="String" />
-			<param index="2" name="max_states" type="int" />
-			<param index="3" name="default_state" type="int" />
-			<param index="4" name="callback" type="Callable" default="Callable()" />
-			<param index="5" name="key_callback" type="Callable" default="Callable()" />
-			<param index="6" name="tag" type="Variant" default="null" />
-			<param index="7" name="accelerator" type="int" enum="Key" default="0" />
-			<param index="8" name="index" type="int" default="-1" />
-			<description>
-				Adds a new item with text [param label] to the global menu with ID [param menu_root].
-				Contrarily to normal binary items, multistate items can have more than two states, as defined by [param max_states]. Each press or activate of the item will increase the state by one. The default value is defined by [param default_state].
-				Returns index of the inserted item, it's not guaranteed to be the same as [param index] value.
-				An [param accelerator] can optionally be defined, which is a keyboard shortcut that can be pressed to trigger the menu button even if it's not currently open. The [param accelerator] is generally a combination of [enum KeyModifierMask]s and [enum Key]s using bitwise OR such as [code]KEY_MASK_CTRL | KEY_A[/code] ([kbd]Ctrl + A[/kbd]).
-				[b]Note:[/b] By default, there's no indication of the current item state, it should be changed manually.
-				[b]Note:[/b] The [param callback] and [param key_callback] Callables need to accept exactly one Variant parameter, the parameter passed to the Callables will be the value passed to [param tag].
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Supported system menu IDs:[/b]
-				[codeblock lang=text]
-				"_main" - Main menu (macOS).
-				"_dock" - Dock popup menu (macOS).
-				"_apple" - Apple menu (macOS, custom items added before "Services").
-				"_window" - Window menu (macOS, custom items added after "Bring All to Front").
-				"_help" - Help menu (macOS).
-				[/codeblock]
-			</description>
-		</method>
-		<method name="global_menu_add_radio_check_item" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="label" type="String" />
-			<param index="2" name="callback" type="Callable" default="Callable()" />
-			<param index="3" name="key_callback" type="Callable" default="Callable()" />
-			<param index="4" name="tag" type="Variant" default="null" />
-			<param index="5" name="accelerator" type="int" enum="Key" default="0" />
-			<param index="6" name="index" type="int" default="-1" />
-			<description>
-				Adds a new radio-checkable item with text [param label] to the global menu with ID [param menu_root].
-				Returns index of the inserted item, it's not guaranteed to be the same as [param index] value.
-				An [param accelerator] can optionally be defined, which is a keyboard shortcut that can be pressed to trigger the menu button even if it's not currently open. The [param accelerator] is generally a combination of [enum KeyModifierMask]s and [enum Key]s using bitwise OR such as [code]KEY_MASK_CTRL | KEY_A[/code] ([kbd]Ctrl + A[/kbd]).
-				[b]Note:[/b] Radio-checkable items just display a checkmark, but don't have any built-in checking behavior and must be checked/unchecked manually. See [method global_menu_set_item_checked] for more info on how to control it.
-				[b]Note:[/b] The [param callback] and [param key_callback] Callables need to accept exactly one Variant parameter, the parameter passed to the Callables will be the value passed to [param tag].
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Supported system menu IDs:[/b]
-				[codeblock lang=text]
-				"_main" - Main menu (macOS).
-				"_dock" - Dock popup menu (macOS).
-				"_apple" - Apple menu (macOS, custom items added before "Services").
-				"_window" - Window menu (macOS, custom items added after "Bring All to Front").
-				"_help" - Help menu (macOS).
-				[/codeblock]
-			</description>
-		</method>
-		<method name="global_menu_add_separator" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="index" type="int" default="-1" />
-			<description>
-				Adds a separator between items to the global menu with ID [param menu_root]. Separators also occupy an index.
-				Returns index of the inserted item, it's not guaranteed to be the same as [param index] value.
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Supported system menu IDs:[/b]
-				[codeblock lang=text]
-				"_main" - Main menu (macOS).
-				"_dock" - Dock popup menu (macOS).
-				"_apple" - Apple menu (macOS, custom items added before "Services").
-				"_window" - Window menu (macOS, custom items added after "Bring All to Front").
-				"_help" - Help menu (macOS).
-				[/codeblock]
-			</description>
-		</method>
-		<method name="global_menu_add_submenu_item" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="label" type="String" />
-			<param index="2" name="submenu" type="String" />
-			<param index="3" name="index" type="int" default="-1" />
-			<description>
-				Adds an item that will act as a submenu of the global menu [param menu_root]. The [param submenu] argument is the ID of the global menu root that will be shown when the item is clicked.
-				Returns index of the inserted item, it's not guaranteed to be the same as [param index] value.
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Supported system menu IDs:[/b]
-				[codeblock lang=text]
-				"_main" - Main menu (macOS).
-				"_dock" - Dock popup menu (macOS).
-				"_apple" - Apple menu (macOS, custom items added before "Services").
-				"_window" - Window menu (macOS, custom items added after "Bring All to Front").
-				"_help" - Help menu (macOS).
-				[/codeblock]
-			</description>
-		</method>
-		<method name="global_menu_clear" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<description>
-				Removes all items from the global menu with ID [param menu_root].
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Supported system menu IDs:[/b]
-				[codeblock lang=text]
-				"_main" - Main menu (macOS).
-				"_dock" - Dock popup menu (macOS).
-				"_apple" - Apple menu (macOS, custom items added before "Services").
-				"_window" - Window menu (macOS, custom items added after "Bring All to Front").
-				"_help" - Help menu (macOS).
-				[/codeblock]
-			</description>
-		</method>
-		<method name="global_menu_get_item_accelerator" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" enum="Key" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns the accelerator of the item at index [param idx]. Accelerators are special combinations of keys that activate the item, no matter which control is focused.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_callback" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="Callable" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns the callback of the item at index [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_count" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<description>
-				Returns number of items in the global menu with ID [param menu_root].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_icon" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="Texture2D" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns the icon of the item at index [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_indentation_level" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns the horizontal offset of the item at the given [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_index_from_tag" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="tag" type="Variant" />
-			<description>
-				Returns the index of the item with the specified [param tag]. Indices are automatically assigned to each item by the engine, and cannot be set manually.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_index_from_text" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="text" type="String" />
-			<description>
-				Returns the index of the item with the specified [param text]. Indices are automatically assigned to each item by the engine, and cannot be set manually.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_key_callback" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="Callable" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns the callback of the item accelerator at index [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_max_states" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns number of states of a multistate item. See [method global_menu_add_multistate_item] for details.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_state" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="int" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns the state of a multistate item. See [method global_menu_add_multistate_item] for details.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_submenu" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="String" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns the submenu ID of the item at index [param idx]. See [method global_menu_add_submenu_item] for more info on how to add a submenu.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_tag" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="Variant" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns the metadata of the specified item, which might be of any type. You can set it with [method global_menu_set_item_tag], which provides a simple way of assigning context data to items.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_text" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="String" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns the text of the item at index [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_item_tooltip" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="String" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns the tooltip associated with the specified index [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_get_system_menu_roots" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="Dictionary" />
-			<description>
-				Returns Dictionary of supported system menu IDs and names.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_is_item_checkable" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="bool" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns [code]true[/code] if the item at index [param idx] is checkable in some way, i.e. if it has a checkbox or radio button.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_is_item_checked" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="bool" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns [code]true[/code] if the item at index [param idx] is checked.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_is_item_disabled" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="bool" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns [code]true[/code] if the item at index [param idx] is disabled. When it is disabled it can't be selected, or its action invoked.
-				See [method global_menu_set_item_disabled] for more info on how to disable an item.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_is_item_hidden" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="bool" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns [code]true[/code] if the item at index [param idx] is hidden.
-				See [method global_menu_set_item_hidden] for more info on how to hide an item.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_is_item_radio_checkable" qualifiers="const" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="bool" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Returns [code]true[/code] if the item at index [param idx] has radio button-style checkability.
-				[b]Note:[/b] This is purely cosmetic; you must add the logic for checking/unchecking items in radio groups.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_remove_item" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<description>
-				Removes the item at index [param idx] from the global menu [param menu_root].
-				[b]Note:[/b] The indices of items after the removed item will be shifted by one.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_accelerator" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="keycode" type="int" enum="Key" />
-			<description>
-				Sets the accelerator of the item at index [param idx]. [param keycode] can be a single [enum Key], or a combination of [enum KeyModifierMask]s and [enum Key]s using bitwise OR such as [code]KEY_MASK_CTRL | KEY_A[/code] ([kbd]Ctrl + A[/kbd]).
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_callback" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="callback" type="Callable" />
-			<description>
-				Sets the callback of the item at index [param idx]. Callback is emitted when an item is pressed.
-				[b]Note:[/b] The [param callback] Callable needs to accept exactly one Variant parameter, the parameter passed to the Callable will be the value passed to the [code]tag[/code] parameter when the menu item was created.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_checkable" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="checkable" type="bool" />
-			<description>
-				Sets whether the item at index [param idx] has a checkbox. If [code]false[/code], sets the type of the item to plain text.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_checked" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="checked" type="bool" />
-			<description>
-				Sets the checkstate status of the item at index [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_disabled" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="disabled" type="bool" />
-			<description>
-				Enables/disables the item at index [param idx]. When it is disabled, it can't be selected and its action can't be invoked.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_hidden" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="hidden" type="bool" />
-			<description>
-				Hides/shows the item at index [param idx]. When it is hidden, an item does not appear in a menu and its action cannot be invoked.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_hover_callbacks" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="callback" type="Callable" />
-			<description>
-				Sets the callback of the item at index [param idx]. The callback is emitted when an item is hovered.
-				[b]Note:[/b] The [param callback] Callable needs to accept exactly one Variant parameter, the parameter passed to the Callable will be the value passed to the [code]tag[/code] parameter when the menu item was created.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_icon" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="icon" type="Texture2D" />
-			<description>
-				Replaces the [Texture2D] icon of the specified [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-				[b]Note:[/b] This method is not supported by macOS "_dock" menu items.
-			</description>
-		</method>
-		<method name="global_menu_set_item_indentation_level" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="level" type="int" />
-			<description>
-				Sets the horizontal offset of the item at the given [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_key_callback" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="key_callback" type="Callable" />
-			<description>
-				Sets the callback of the item at index [param idx]. Callback is emitted when its accelerator is activated.
-				[b]Note:[/b] The [param key_callback] Callable needs to accept exactly one Variant parameter, the parameter passed to the Callable will be the value passed to the [code]tag[/code] parameter when the menu item was created.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_max_states" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="max_states" type="int" />
-			<description>
-				Sets number of state of a multistate item. See [method global_menu_add_multistate_item] for details.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_radio_checkable" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="checkable" type="bool" />
-			<description>
-				Sets the type of the item at the specified index [param idx] to radio button. If [code]false[/code], sets the type of the item to plain text.
-				[b]Note:[/b] This is purely cosmetic; you must add the logic for checking/unchecking items in radio groups.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_state" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="state" type="int" />
-			<description>
-				Sets the state of a multistate item. See [method global_menu_add_multistate_item] for details.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_submenu" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="submenu" type="String" />
-			<description>
-				Sets the submenu of the item at index [param idx]. The submenu is the ID of a global menu root that would be shown when the item is clicked.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_tag" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="tag" type="Variant" />
-			<description>
-				Sets the metadata of an item, which may be of any type. You can later get it with [method global_menu_get_item_tag], which provides a simple way of assigning context data to items.
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_text" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="text" type="String" />
-			<description>
-				Sets the text of the item at index [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_item_tooltip" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="idx" type="int" />
-			<param index="2" name="tooltip" type="String" />
-			<description>
-				Sets the [String] tooltip of the item at the specified index [param idx].
-				[b]Note:[/b] This method is implemented only on macOS.
-			</description>
-		</method>
-		<method name="global_menu_set_popup_callbacks" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			<return type="void" />
-			<param index="0" name="menu_root" type="String" />
-			<param index="1" name="open_callback" type="Callable" />
-			<param index="2" name="close_callback" type="Callable" />
-			<description>
-				Registers callables to emit when the menu is respectively about to show or closed. Callback methods should have zero arguments.
-			</description>
-		</method>
 		<method name="has_additional_outputs" qualifiers="const">
 			<return type="bool" />
 			<description>
@@ -1859,97 +1247,94 @@
 		</method>
 	</methods>
 	<constants>
-		<constant name="FEATURE_GLOBAL_MENU" value="0" enum="Feature" deprecated="Use [NativeMenu] or [PopupMenu] instead.">
-			Display server supports global menu. This allows the application to display its menu items in the operating system's top bar. [b]macOS[/b]
-		</constant>
-		<constant name="FEATURE_SUBWINDOWS" value="1" enum="Feature">
+		<constant name="FEATURE_SUBWINDOWS" value="0" enum="Feature">
 			Display server supports multiple windows that can be moved outside of the main window. [b]Windows, macOS, Linux (X11)[/b]
 		</constant>
-		<constant name="FEATURE_TOUCHSCREEN" value="2" enum="Feature">
+		<constant name="FEATURE_TOUCHSCREEN" value="1" enum="Feature">
 			Display server supports touchscreen input. [b]Windows, Linux (X11), Android, iOS, Web[/b]
 		</constant>
-		<constant name="FEATURE_MOUSE" value="3" enum="Feature">
+		<constant name="FEATURE_MOUSE" value="2" enum="Feature">
 			Display server supports mouse input. [b]Windows, macOS, Linux (X11/Wayland), Android, Web[/b]
 		</constant>
-		<constant name="FEATURE_MOUSE_WARP" value="4" enum="Feature">
+		<constant name="FEATURE_MOUSE_WARP" value="3" enum="Feature">
 			Display server supports warping mouse coordinates to keep the mouse cursor constrained within an area, but looping when one of the edges is reached. [b]Windows, macOS, Linux (X11/Wayland)[/b]
 		</constant>
-		<constant name="FEATURE_CLIPBOARD" value="5" enum="Feature">
+		<constant name="FEATURE_CLIPBOARD" value="4" enum="Feature">
 			Display server supports setting and getting clipboard data. See also [constant FEATURE_CLIPBOARD_PRIMARY]. [b]Windows, macOS, Linux (X11/Wayland), Android, iOS, Web[/b]
 		</constant>
-		<constant name="FEATURE_VIRTUAL_KEYBOARD" value="6" enum="Feature">
+		<constant name="FEATURE_VIRTUAL_KEYBOARD" value="5" enum="Feature">
 			Display server supports popping up a virtual keyboard when requested to input text without a physical keyboard. [b]Android, iOS, Web[/b]
 		</constant>
-		<constant name="FEATURE_CURSOR_SHAPE" value="7" enum="Feature">
+		<constant name="FEATURE_CURSOR_SHAPE" value="6" enum="Feature">
 			Display server supports setting the mouse cursor shape to be different from the default. [b]Windows, macOS, Linux (X11/Wayland), Android, Web[/b]
 		</constant>
-		<constant name="FEATURE_CUSTOM_CURSOR_SHAPE" value="8" enum="Feature">
+		<constant name="FEATURE_CUSTOM_CURSOR_SHAPE" value="7" enum="Feature">
 			Display server supports setting the mouse cursor shape to a custom image. [b]Windows, macOS, Linux (X11/Wayland), Web[/b]
 		</constant>
-		<constant name="FEATURE_NATIVE_DIALOG" value="9" enum="Feature">
+		<constant name="FEATURE_NATIVE_DIALOG" value="8" enum="Feature">
 			Display server supports spawning text dialogs using the operating system's native look-and-feel. See [method dialog_show]. [b]Windows, macOS[/b]
 		</constant>
-		<constant name="FEATURE_IME" value="10" enum="Feature">
+		<constant name="FEATURE_IME" value="9" enum="Feature">
 			Display server supports [url=https://en.wikipedia.org/wiki/Input_method]Input Method Editor[/url], which is commonly used for inputting Chinese/Japanese/Korean text. This is handled by the operating system, rather than by Godot. [b]Windows, macOS, Linux (X11)[/b]
 		</constant>
-		<constant name="FEATURE_WINDOW_TRANSPARENCY" value="11" enum="Feature">
+		<constant name="FEATURE_WINDOW_TRANSPARENCY" value="10" enum="Feature">
 			Display server supports windows can use per-pixel transparency to make windows behind them partially or fully visible. [b]Windows, macOS, Linux (X11/Wayland)[/b]
 		</constant>
-		<constant name="FEATURE_HIDPI" value="12" enum="Feature">
+		<constant name="FEATURE_HIDPI" value="11" enum="Feature">
 			Display server supports querying the operating system's display scale factor. This allows for [i]reliable[/i] automatic hiDPI display detection, as opposed to guessing based on the screen resolution and reported display DPI (which can be unreliable due to broken monitor EDID). [b]Windows, Linux (Wayland), macOS[/b]
 		</constant>
-		<constant name="FEATURE_ICON" value="13" enum="Feature">
+		<constant name="FEATURE_ICON" value="12" enum="Feature">
 			Display server supports changing the window icon (usually displayed in the top-left corner). [b]Windows, macOS, Linux (X11)[/b]
 		</constant>
-		<constant name="FEATURE_NATIVE_ICON" value="14" enum="Feature">
+		<constant name="FEATURE_NATIVE_ICON" value="13" enum="Feature">
 			Display server supports changing the window icon (usually displayed in the top-left corner). [b]Windows, macOS[/b]
 		</constant>
-		<constant name="FEATURE_ORIENTATION" value="15" enum="Feature">
+		<constant name="FEATURE_ORIENTATION" value="14" enum="Feature">
 			Display server supports changing the screen orientation. [b]Android, iOS[/b]
 		</constant>
-		<constant name="FEATURE_SWAP_BUFFERS" value="16" enum="Feature">
+		<constant name="FEATURE_SWAP_BUFFERS" value="15" enum="Feature">
 			Display server supports V-Sync status can be changed from the default (which is forced to be enabled platforms not supporting this feature). [b]Windows, macOS, Linux (X11/Wayland)[/b]
 		</constant>
-		<constant name="FEATURE_CLIPBOARD_PRIMARY" value="18" enum="Feature">
+		<constant name="FEATURE_CLIPBOARD_PRIMARY" value="17" enum="Feature">
 			Display server supports Primary clipboard can be used. This is a different clipboard from [constant FEATURE_CLIPBOARD]. [b]Linux (X11/Wayland)[/b]
 		</constant>
-		<constant name="FEATURE_TEXT_TO_SPEECH" value="19" enum="Feature">
+		<constant name="FEATURE_TEXT_TO_SPEECH" value="18" enum="Feature">
 			Display server supports text-to-speech. See [code]tts_*[/code] methods. [b]Windows, macOS, Linux (X11/Wayland), Android, iOS, Web[/b]
 		</constant>
-		<constant name="FEATURE_EXTEND_TO_TITLE" value="20" enum="Feature">
+		<constant name="FEATURE_EXTEND_TO_TITLE" value="19" enum="Feature">
 			Display server supports expanding window content to the title. See [constant WINDOW_FLAG_EXTEND_TO_TITLE]. [b]macOS[/b]
 		</constant>
-		<constant name="FEATURE_SCREEN_CAPTURE" value="21" enum="Feature">
+		<constant name="FEATURE_SCREEN_CAPTURE" value="20" enum="Feature">
 			Display server supports reading screen pixels. See [method screen_get_pixel].
 		</constant>
-		<constant name="FEATURE_STATUS_INDICATOR" value="22" enum="Feature">
+		<constant name="FEATURE_STATUS_INDICATOR" value="21" enum="Feature">
 			Display server supports application status indicators.
 		</constant>
-		<constant name="FEATURE_NATIVE_HELP" value="23" enum="Feature">
+		<constant name="FEATURE_NATIVE_HELP" value="22" enum="Feature">
 			Display server supports native help system search callbacks. See [method help_set_search_callbacks].
 		</constant>
-		<constant name="FEATURE_NATIVE_DIALOG_INPUT" value="24" enum="Feature">
+		<constant name="FEATURE_NATIVE_DIALOG_INPUT" value="23" enum="Feature">
 			Display server supports spawning text input dialogs using the operating system's native look-and-feel. See [method dialog_input_text]. [b]Windows, macOS[/b]
 		</constant>
-		<constant name="FEATURE_NATIVE_DIALOG_FILE" value="25" enum="Feature">
+		<constant name="FEATURE_NATIVE_DIALOG_FILE" value="24" enum="Feature">
 			Display server supports spawning dialogs for selecting files or directories using the operating system's native look-and-feel. See [method file_dialog_show]. [b]Windows, macOS, Linux (X11/Wayland), Android[/b]
 		</constant>
-		<constant name="FEATURE_NATIVE_DIALOG_FILE_EXTRA" value="26" enum="Feature">
+		<constant name="FEATURE_NATIVE_DIALOG_FILE_EXTRA" value="25" enum="Feature">
 			The display server supports all features of [constant FEATURE_NATIVE_DIALOG_FILE], with the added functionality of Options and native dialog file access to [code]res://[/code] and [code]user://[/code] paths. See [method file_dialog_show] and [method file_dialog_with_options_show]. [b]Windows, macOS, Linux (X11/Wayland)[/b]
 		</constant>
-		<constant name="FEATURE_WINDOW_DRAG" value="27" enum="Feature">
+		<constant name="FEATURE_WINDOW_DRAG" value="26" enum="Feature">
 			The display server supports initiating window drag and resize operations on demand. See [method window_start_drag] and [method window_start_resize].
 		</constant>
-		<constant name="FEATURE_SCREEN_EXCLUDE_FROM_CAPTURE" value="28" enum="Feature">
+		<constant name="FEATURE_SCREEN_EXCLUDE_FROM_CAPTURE" value="27" enum="Feature">
 			Display server supports [constant WINDOW_FLAG_EXCLUDE_FROM_CAPTURE] window flag.
 		</constant>
-		<constant name="FEATURE_WINDOW_EMBEDDING" value="29" enum="Feature">
+		<constant name="FEATURE_WINDOW_EMBEDDING" value="28" enum="Feature">
 			Display server supports embedding a window from another process. [b]Windows, Linux (X11)[/b]
 		</constant>
-		<constant name="FEATURE_NATIVE_DIALOG_FILE_MIME" value="30" enum="Feature">
+		<constant name="FEATURE_NATIVE_DIALOG_FILE_MIME" value="29" enum="Feature">
 			Native file selection dialog supports MIME types as filters.
 		</constant>
-		<constant name="FEATURE_EMOJI_AND_SYMBOL_PICKER" value="31" enum="Feature">
+		<constant name="FEATURE_EMOJI_AND_SYMBOL_PICKER" value="30" enum="Feature">
 			Display server supports system emoji and symbol picker. [b]Windows, macOS[/b]
 		</constant>
 		<constant name="MOUSE_MODE_VISIBLE" value="0" enum="MouseMode">
