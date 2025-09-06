@@ -1814,6 +1814,9 @@ void Viewport::_gui_input_event(Ref<InputEvent> p_event) {
 				}
 			}
 			DEV_ASSERT(gui.mouse_focus);
+			if (!gui.mouse_focus) {
+				return;
+			}
 
 			mb = mb->xformed_by(Transform2D()); // Make a copy of the event.
 
