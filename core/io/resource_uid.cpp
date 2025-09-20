@@ -201,6 +201,17 @@ String ResourceUID::get_id_path(ID p_id) const {
 	return String::utf8(cs.ptr());
 }
 
+ResourceUID::ID ResourceUID::get_path_id(const String &p_path) const {
+	MutexLock l(mutex);
+	for (const KeyValue<ID, Cache> &E : unique_ids) {
+		const CharString &cs = E.value.cs;
+		if (cs == p_path.utf8()) {
+			return E.key;
+		}
+	}
+	return INVALID_ID;
+}
+
 void ResourceUID::remove_id(ID p_id) {
 	MutexLock l(mutex);
 	ERR_FAIL_COND(!unique_ids.has(p_id));

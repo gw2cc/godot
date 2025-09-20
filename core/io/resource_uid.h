@@ -75,6 +75,7 @@ public:
 	void add_id(ID p_id, const String &p_path);
 	void set_id(ID p_id, const String &p_path);
 	String get_id_path(ID p_id) const;
+	ID get_path_id(const String &p_path) const;
 	void remove_id(ID p_id);
 
 	static String uid_to_path(const String &p_uid);
