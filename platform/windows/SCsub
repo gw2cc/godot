@@ -85,6 +85,7 @@ for lib in env["LIBS"]:
 prog = env.add_library("#bin/godot", sources + libs, PROGSUFFIX=env["PROGSUFFIX"])
 arrange_program_clean(prog)
 
+env.Depends(prog, "godot.manifest")
 if env.msvc:
     env.Depends(prog, "godot.natvis")
 
