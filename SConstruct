@@ -760,6 +760,7 @@ if env.msvc:
     if env["debug_symbols"]:
         env.AppendUnique(CCFLAGS=["/Zi", "/FS"])
         env.AppendUnique(LINKFLAGS=["/DEBUG:FULL"])
+        env.AppendUnique(CCFLAGS=["/Fdbin/obj/godot.pdb"])
     else:
         env.AppendUnique(LINKFLAGS=["/DEBUG:NONE"])
 

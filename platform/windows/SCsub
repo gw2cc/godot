@@ -83,6 +83,54 @@ for lib in env["LIBS"]:
     libs.append(lib)
 
 prog = env.add_library("#bin/godot", sources + libs, PROGSUFFIX=env["PROGSUFFIX"])
+
+if env.msvc and env["debug_symbols"]:
+    import shutil
+    
+    pdb_file = env.File("#bin/obj/godot.pdb")
+    
+    # Get cache directory from environment
+    cache_dir = os.environ.get('SCONS_CACHE', None)
+    if cache_dir:
+        cache_dir = env.Dir(cache_dir)
+    elif env.get('cache_path'):
+        cache_dir = env.Dir(env['cache_path'])
+    
+    if cache_dir:
+        # Simple cache path - just use godot.pdb in cache
+        cached_pdb_path = cache_dir.File("godot.pdb")
+        
+        # IMMEDIATE restore: Run this NOW, not as a pre-action
+        pdb_path = pdb_file.abspath
+        cache_path = cached_pdb_path.abspath
+        
+        if os.path.exists(cache_path) and not os.path.exists(pdb_path):
+            print(f"[CACHE] Restoring PDB from cache")
+            os.makedirs(os.path.dirname(pdb_path), exist_ok=True)
+            shutil.copy2(cache_path, pdb_path)
+        
+        # Post-build: Store PDB to manual cache
+        def store_pdb_to_cache(target, source, env):
+            pdb_path = pdb_file.abspath
+            cache_path = cached_pdb_path.abspath
+            
+            if os.path.exists(pdb_path):
+                print(f"[CACHE] Storing PDB to cache {cache_path}")
+                os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+                shutil.copy2(pdb_path, cache_path)
+            else:
+                print(f"[CACHE] Warning: PDB not found at {pdb_path}")
+            return None
+        
+        # Add only the post-build action
+        env.AddPostAction(prog, env.Action(store_pdb_to_cache, None))
+        
+        # Tell SCons the PDB is a side effect (for dependency tracking)
+        env.SideEffect(pdb_file, prog)
+        
+        # Clean the PDB (but not the cache)
+        env.Clean(prog, pdb_file)
+
 arrange_program_clean(prog)
 
 env.Depends(prog, "godot.manifest")
