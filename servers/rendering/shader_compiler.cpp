@@ -1168,6 +1168,7 @@ String ShaderCompiler::_dump_node_code(const SL::Node *p_node, int p_level, Gene
 
 					bool is_texture_func = false;
 					bool is_screen_texture = false;
+					bool is_radiance_texture = false;
 					bool texture_func_no_uv = false;
 					bool texture_func_returns_data = false;
 
@@ -1314,10 +1315,16 @@ String ShaderCompiler::_dump_node_code(const SL::Node *p_node, int p_level, Gene
 									}
 								}
 
+								if (texture_uniform == SNAME("RADIANCE")) {
+									is_radiance_texture = true;
+								}
+
 								String data_type_name = "";
 								if (actions.check_multiview_samplers && (is_screen_texture || is_depth_texture || is_normal_roughness_texture)) {
 									data_type_name = "multiviewSampler";
 									multiview_uv_needed = true;
+								} else if (is_radiance_texture) {
+									data_type_name = "sampler2D";
 								} else {
 									data_type_name = ShaderLanguage::get_datatype_name(onode->arguments[i]->get_datatype());
 								}
@@ -1351,6 +1358,10 @@ String ShaderCompiler::_dump_node_code(const SL::Node *p_node, int p_level, Gene
 							node_code = "multiview_uv(" + node_code + ".xy)";
 
 							code += node_code;
+						} else if (is_radiance_texture && !texture_func_no_uv && i == 2) {
+							node_code = "vec3_to_oct_with_border(" + node_code + ", params.border_size)";
+
+							code += node_code;
 						} else {
 							code += node_code;
 						}
@@ -1358,7 +1369,7 @@ String ShaderCompiler::_dump_node_code(const SL::Node *p_node, int p_level, Gene
 					code += ")";
 					if (is_screen_texture && !texture_func_returns_data && actions.apply_luminance_multiplier) {
 						if (RS::get_singleton()->is_low_end()) {
-							code = "(" + code + " / vec4(vec3(scene_data.luminance_multiplier), 1.0))";
+							code = "(" + code + " / vec4(vec3(scene_data_block.data.luminance_multiplier), 1.0))";
 						} else {
 							code = "(" + code + " * vec4(vec3(sc_luminance_multiplier()), 1.0))";
 						}
@@ -1528,6 +1539,17 @@ Error ShaderCompiler::compile(RS::ShaderMode p_mode, const String &p_code, Ident
 
 		// Print the files.
 		for (const KeyValue<String, Vector<String>> &E : includes) {
+			int err_line = -1;
+			for (const ShaderLanguage::FilePosition &include_position : include_positions) {
+				if (include_position.file == E.key) {
+					err_line = include_position.line;
+				}
+			}
+			if (err_line < 0) {
+				// Skip files that don't contain errors.
+				continue;
+			}
+
 			if (E.key.is_empty()) {
 				if (p_path == "") {
 					print_line("--Main Shader--");
@@ -1537,19 +1559,14 @@ Error ShaderCompiler::compile(RS::ShaderMode p_mode, const String &p_code, Ident
 			} else {
 				print_line("--" + E.key + "--");
 			}
-			int err_line = -1;
-			for (int i = 0; i < include_positions.size(); i++) {
-				if (include_positions[i].file == E.key) {
-					err_line = include_positions[i].line;
-				}
-			}
 			const Vector<String> &V = E.value;
 			for (int i = 0; i < V.size(); i++) {
 				if (i == err_line - 1) {
 					// Mark the error line to be visible without having to look at
 					// the trace at the end.
 					print_line(vformat("E%4d-> %s", i + 1, V[i]));
-				} else {
+				} else if ((i == err_line - 3) || (i == err_line - 2) || (i == err_line) || (i == err_line + 1)) {
+					// Print 4 lines around the error line.
 					print_line(vformat("%5d | %s", i + 1, V[i]));
 				}
 			}

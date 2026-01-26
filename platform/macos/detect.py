@@ -29,6 +29,7 @@ def get_opts():
 
     return [
         ("osxcross_sdk", "OSXCross SDK version", "darwin16"),
+        ("SWIFT_FRONTEND", "Path to the swift-frontend binary", ""),
         ("MACOS_SDK_PATH", "Path to the macOS SDK", ""),
         ("vulkan_sdk_path", "Path to the Vulkan SDK", ""),
         EnumVariable("macports_clang", "Build using Clang from MacPorts", "no", ["no", "5.0", "devel"], ignorecase=2),
@@ -61,7 +62,7 @@ def get_flags():
         "arch": detect_arch(),
         "use_volk": False,
         "metal": True,
-        "supported": ["metal", "mono"],
+        "supported": ["library", "metal", "mono"],
     }
 
 
@@ -153,7 +154,7 @@ def configure(env: "SConsEnvironment"):
 
     if env["use_ubsan"] or env["use_asan"] or env["use_tsan"]:
         env.extra_suffix += ".san"
-        env.Append(CCFLAGS=["-DSANITIZERS_ENABLED"])
+        env.Append(CPPDEFINES=["SANITIZERS_ENABLED"])
 
         if env["use_ubsan"]:
             env.Append(
@@ -172,8 +173,9 @@ def configure(env: "SConsEnvironment"):
             env.Append(CCFLAGS=["-fsanitize=thread"])
             env.Append(LINKFLAGS=["-fsanitize=thread"])
 
-        env.Append(LINKFLAGS=["-Wl,-stack_size," + hex(STACK_SIZE_SANITIZERS)])
-    else:
+        if env["library_type"] == "executable":
+            env.Append(LINKFLAGS=["-Wl,-stack_size," + hex(STACK_SIZE_SANITIZERS)])
+    elif env["library_type"] == "executable":
         env.Append(LINKFLAGS=["-Wl,-stack_size," + hex(STACK_SIZE)])
 
     if env["use_coverage"]:

@@ -36,8 +36,8 @@
 
 #include "drivers/gles3/effects/copy_effects.h"
 #include "drivers/gles3/storage/texture_storage.h"
+#include "servers/rendering/rendering_server.h"
 #include "servers/rendering/rendering_server_globals.h"
-#include "servers/rendering_server.h"
 
 // OpenXR requires us to submit sRGB textures so that it recognizes the content
 // as being in sRGB color space. We do fall back on "normal" textures but this
@@ -56,7 +56,7 @@
 // feature off.
 // See: https://registry.khronos.org/OpenGL/extensions/EXT/EXT_sRGB_write_control.txt
 
-HashMap<String, bool *> OpenXROpenGLExtension::get_requested_extensions() {
+HashMap<String, bool *> OpenXROpenGLExtension::get_requested_extensions(XrVersion p_version) {
 	HashMap<String, bool *> request_extensions;
 
 #ifdef ANDROID_ENABLED

@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "core/extension/gdextension_interface.h"
+#include "core/extension/gdextension_interface.gen.h"
 #include "core/extension/gdextension_loader.h"
 #include "core/io/config_file.h"
 #include "core/io/resource_loader.h"
@@ -177,13 +177,14 @@ public:
 	static void initialize_gdextensions();
 	static void finalize_gdextensions();
 
-	GDExtension();
 	~GDExtension();
 };
 
 VARIANT_ENUM_CAST(GDExtension::InitializationLevel)
 
 class GDExtensionResourceLoader : public ResourceFormatLoader {
+	GDSOFTCLASS(GDExtensionResourceLoader, ResourceFormatLoader);
+
 public:
 	static Error load_gdextension_resource(const String &p_path, Ref<GDExtension> &p_extension);
 
