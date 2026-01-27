@@ -283,30 +283,28 @@ Error ResourceUID::load_from_cache(bool p_reset) {
 		return ERR_CANT_OPEN;
 	}
 
+	return load_from_cache(f, p_reset);
+}
+
+Error ResourceUID::load_from_cache(Ref<FileAccess> &p_cache_file, bool p_reset) {
 	MutexLock l(mutex);
 	if (p_reset) {
-		if (use_reverse_cache) {
-			reverse_cache.clear();
-		}
 		unique_ids.clear();
 	}
 
-	uint32_t entry_count = f->get_32();
+	uint32_t entry_count = p_cache_file->get_32();
 	for (uint32_t i = 0; i < entry_count; i++) {
-		int64_t id = f->get_64();
-		int32_t len = f->get_32();
+		int64_t id = p_cache_file->get_64();
+		int32_t len = p_cache_file->get_32();
 		Cache c;
 		c.cs.resize_uninitialized(len + 1);
 		ERR_FAIL_COND_V(c.cs.size() != len + 1, ERR_FILE_CORRUPT); // Out of memory.
 		c.cs[len] = 0;
-		int32_t rl = f->get_buffer((uint8_t *)c.cs.ptrw(), len);
+		int32_t rl = p_cache_file->get_buffer((uint8_t *)c.cs.ptrw(), len);
 		ERR_FAIL_COND_V(rl != len, ERR_FILE_CORRUPT);
 
 		c.saved_to_cache = true;
 		unique_ids[id] = c;
-		if (use_reverse_cache) {
-			reverse_cache[c.cs] = id;
-		}
 	}
 
 	cache_entries = entry_count;
