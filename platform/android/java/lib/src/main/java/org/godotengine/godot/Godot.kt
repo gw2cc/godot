@@ -120,6 +120,15 @@ class Godot private constructor(val context: Context) {
 		internal fun isEditorBuild() = BuildConfig.FLAVOR == EDITOR_FLAVOR
 	}
 
+	/**
+	 * Describes the engine current run status.
+	 */
+	enum class RunStatus {
+		INITIALIZING,
+		STARTED,
+		TERMINATING
+	}
+
 	private val mSensorManager: SensorManager? by lazy { context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager }
 	private val mClipboard: ClipboardManager? by lazy { context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager }
 	private val vibratorService: Vibrator? by lazy { context.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator }
@@ -184,9 +193,11 @@ class Godot private constructor(val context: Context) {
 	private var resumed = false
 
 	/**
-	 * Tracks whether [onGodotSetupCompleted] fired.
+	 * Tracks the engine's run status.
 	 */
-	private val godotMainLoopStarted = AtomicBoolean(false)
+	private val _runStatus = AtomicReference<RunStatus>(RunStatus.INITIALIZING)
+	val runStatus: RunStatus
+		get() = _runStatus.get()
 
 	val io = GodotIO(this)
 
@@ -701,7 +712,7 @@ class Godot private constructor(val context: Context) {
 	}
 
 	private fun registerSensorsIfNeeded() {
-		if (!resumed || !godotMainLoopStarted.get()) {
+		if (!resumed || runStatus != RunStatus.STARTED) {
 			return
 		}
 
@@ -790,10 +801,8 @@ class Godot private constructor(val context: Context) {
 		for (plugin in pluginRegistry.allPlugins) {
 			plugin.onMainActivityResult(requestCode, resultCode, data)
 		}
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			runOnRenderThread {
-				FilePicker.handleActivityResult(context, requestCode, resultCode, data)
-			}
+		runOnRenderThread {
+			FilePicker.handleActivityResult(context, requestCode, resultCode, data)
 		}
 	}
 
@@ -856,7 +865,7 @@ class Godot private constructor(val context: Context) {
 	 */
 	private fun onGodotMainLoopStarted() {
 		Log.v(TAG, "OnGodotMainLoopStarted")
-		godotMainLoopStarted.set(true)
+		_runStatus.set(RunStatus.STARTED)
 
 		accelerometerEnabled.set(java.lang.Boolean.parseBoolean(GodotLib.getGlobal("input_devices/sensors/enable_accelerometer")))
 		gravityEnabled.set(java.lang.Boolean.parseBoolean(GodotLib.getGlobal("input_devices/sensors/enable_gravity")))
@@ -879,6 +888,11 @@ class Godot private constructor(val context: Context) {
 	@Keep
 	private fun onGodotTerminating() {
 		Log.v(TAG, "OnGodotTerminating")
+		_runStatus.set(RunStatus.TERMINATING)
+
+		for (plugin in pluginRegistry.allPlugins) {
+			plugin.onGodotTerminating()
+		}
 		runOnTerminate.get()?.run()
 	}
 
@@ -1041,9 +1055,7 @@ class Godot private constructor(val context: Context) {
 
 	@Keep
 	private fun showFilePicker(currentDirectory: String, filename: String, fileMode: Int, filters: Array<String>) {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-			FilePicker.showFilePicker(context, getActivity(), currentDirectory, filename, fileMode, filters)
-		}
+		FilePicker.showFilePicker(context, getActivity(), currentDirectory, filename, fileMode, filters)
 	}
 
 	/**

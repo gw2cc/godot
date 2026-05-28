@@ -644,6 +644,9 @@ AnimationNode::NodeTimeInfo AnimationNodeOneShot::_process(const AnimationMixer:
 		set_parameter(request, ONE_SHOT_REQUEST_NONE);
 		set_parameter(internal_active, true);
 		set_parameter(active, true);
+		// Clear fade-out.
+		is_fading_out = false;
+		cur_fade_out_remaining = 0;
 	}
 
 	real_t blend = 1.0;
@@ -1590,7 +1593,8 @@ void AnimationNodeBlendTree::rename_node(const StringName &p_name, const StringN
 
 	nodes[p_name].node->disconnect_changed(callable_mp(this, &AnimationNodeBlendTree::_node_changed));
 
-	nodes[p_new_name] = nodes[p_name];
+	const Node temp_copy = nodes[p_name];
+	nodes[p_new_name] = temp_copy; // might realloc
 	nodes.erase(p_name);
 
 	// Rename connections.

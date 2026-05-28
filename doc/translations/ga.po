@@ -119766,9 +119766,6 @@ msgstr ""
 "Feabhsóidh an luach seo a mhéadú an insamhalta mar thoradh air, ach is féidir "
 "leis tionchar a imirt ar fheidhmíocht. Bain úsáid as go cúramach."
 
-msgid "The SoftBody3D's mass."
-msgstr "mais an SoftBody3D."
-
 msgid ""
 "When [member Node.process_mode] is set to [constant "
 "Node.PROCESS_MODE_DISABLED], remove from the physics simulation to stop all "

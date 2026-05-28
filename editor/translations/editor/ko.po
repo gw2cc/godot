@@ -86,7 +86,7 @@ msgstr ""
 "Project-Id-Version: Godot Engine editor interface\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-01-22 20:12+0000\n"
+"PO-Revision-Date: 2026-02-09 12:49+0000\n"
 "Last-Translator: Myeongjin <aranet100@gmail.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/godot-engine/godot/"
 "ko/>\n"
@@ -110,13 +110,13 @@ msgid "Unconfigured"
 msgstr "구성되지 않음"
 
 msgid "Unauthorized"
-msgstr "인증되지 않음"
+msgstr "권한 없음"
 
 msgid "Parameter out of range"
 msgstr "매개변수 범위를 벗어남"
 
 msgid "Out of memory"
-msgstr "메모리 초과"
+msgstr "메모리 부족"
 
 msgid "File not found"
 msgstr "파일을 찾을 수 없음"
@@ -146,10 +146,10 @@ msgid "File unrecognized"
 msgstr "파일을 인식할 수 없음"
 
 msgid "File corrupt"
-msgstr "파일이 손상됨"
+msgstr "파일 손상"
 
 msgid "Missing dependencies for file"
-msgstr "파일에 종속성이 누락됨"
+msgstr "파일에 종속성 누락"
 
 msgid "End of file"
 msgstr "파일의 끝"
@@ -161,7 +161,7 @@ msgid "Can't create"
 msgstr "만들 수 없음"
 
 msgid "Query failed"
-msgstr "요청 실패"
+msgstr "쿼리 실패"
 
 msgid "Already in use"
 msgstr "이미 사용 중"
@@ -182,7 +182,7 @@ msgid "Connection error"
 msgstr "연결 오류"
 
 msgid "Can't acquire resource"
-msgstr "리소스를 획득할 수 없음"
+msgstr "리소스를 얻을 수 없음"
 
 msgid "Can't fork"
 msgstr "포크할 수 없음"
@@ -960,7 +960,7 @@ msgid "Invert Filter Selection"
 msgstr "필터 선택 반전"
 
 msgid "Clear Filter Selection"
-msgstr "필터 선택 해제"
+msgstr "필터 선택 비우기"
 
 msgid ""
 "Animation player has no valid root node path, so unable to retrieve track "
@@ -985,7 +985,7 @@ msgid "Edit Filtered Tracks:"
 msgstr "필터 트랙 편집:"
 
 msgid "Node Renamed"
-msgstr "노드 이름 바뀜"
+msgstr "노드 이름 바꿈"
 
 msgid "Add Node..."
 msgstr "노드 추가..."
@@ -1024,7 +1024,7 @@ msgid "Library Name:"
 msgstr "라이브러리 이름:"
 
 msgid "Animation name can't be empty."
-msgstr "애니메이션 이름은 비워둘 수 없습니다."
+msgstr "애니메이션 이름은 비워 둘 수 없습니다."
 
 msgid "Animation name contains invalid characters: '/', ':', ',' or '['."
 msgstr "애니메이션 이름에 잘못된 문자가 있습니다: '/', ':', ',', '['."
@@ -2021,7 +2021,7 @@ msgid "Seconds"
 msgstr "초"
 
 msgid "FPS"
-msgstr "초당 프레임"
+msgstr "FPS"
 
 msgid "Snap Mode"
 msgstr "스냅 모드"
@@ -2909,8 +2909,8 @@ msgid ""
 "visible (as a short flash) in the running project.\n"
 "This is useful to troubleshoot low processor mode."
 msgstr ""
-"이 옵션이 활성화되면 실행 중인 프로젝트에서 2D 오브젝트의 다시 그리기 요청이 "
-"(짧은 섬광으로) 시각화됩니다.\n"
+"이 옵션이 활성화되면 실행 중인 프로젝트에서 2D 오브젝트의 리드로우 요청이 (짧"
+"은 섬광으로) 시각화됩니다.\n"
 "이 설정은 저사양 모드에서의 문제 해결에 유용합니다."
 
 msgid "Synchronize Scene Changes"
@@ -3381,7 +3381,7 @@ msgstr ""
 "color]하여 우리를 도와주세요!"
 
 msgid "Top"
-msgstr "위쪽"
+msgstr "위"
 
 msgid "Class:"
 msgstr "클래스:"
@@ -4153,7 +4153,7 @@ msgid "Delete group \"%s\" and all its references?"
 msgstr "그룹 \"%s\"과(와) 모든 참조를 삭제하시겠습니까?"
 
 msgid "Group can't be empty."
-msgstr "그룹은 비워둘 수 없습니다."
+msgstr "그룹은 비워 둘 수 없습니다."
 
 msgid "Group already exists."
 msgstr "그룹이 이미 존재합니다."
@@ -4165,7 +4165,7 @@ msgid "Add a new group."
 msgstr "새로운 그룹을 추가합니다."
 
 msgid "Filter Groups"
-msgstr "그룹 필터링"
+msgstr "그룹 필터"
 
 msgid "Select one or more nodes to edit their groups."
 msgstr "그룹을 편집할 하나 이상의 노드를 선택하세요."
@@ -4595,7 +4595,7 @@ msgid "Sub-Resources"
 msgstr "하위 리소스"
 
 msgid "Access as Unique Name"
-msgstr "고유 이름으로 액세스"
+msgstr "고유 이름으로 접근"
 
 msgid "Clear Inheritance"
 msgstr "상속 비우기"
@@ -4685,7 +4685,7 @@ msgid "Paste Node(s) as Root"
 msgstr "노드를 루트가 되게 붙여넣기"
 
 msgid "<Unnamed> at %s"
-msgstr "%s의 <이름 없음>"
+msgstr "%s에서 <이름 없음>"
 
 msgid "(used %d times)"
 msgstr "(%d회 사용됨)"
@@ -5890,7 +5890,7 @@ msgid "Storing File:"
 msgstr "파일 저장 중:"
 
 msgid "No export template found at the expected path:"
-msgstr "예상된 경로에서 내보내기 템플릿을 찾지 못했습니다:"
+msgstr "예상된 경로에서 찾은 내보내기 템플릿이 없습니다:"
 
 msgid ""
 "Using user provided text server data, text display in the exported project "
@@ -5953,13 +5953,13 @@ msgid "Invalid Identifier:"
 msgstr "잘못된 식별자:"
 
 msgid "At least one file timestamp access reason should be selected."
-msgstr "최소한 하나의 파일 타임스탬프 액세스 이유를 선택해야 합니다."
+msgstr "최소한 하나의 파일 타임스탬프 접근 이유를 선택해야 합니다."
 
 msgid "At least one disk space access reason should be selected."
-msgstr "최소한 하나의 디스크 공간 액세스 이유를 선택해야 합니다."
+msgstr "최소한 하나의 디스크 공간 접근 이유를 선택해야 합니다."
 
 msgid "At least one system boot time access reason should be selected."
-msgstr "최소한 하나의 시스템 부팅 시간 액세스 이유를 선택해야 합니다."
+msgstr "최소한 하나의 시스템 부팅 시간 접근 이유를 선택해야 합니다."
 
 msgid "\"Shader Baker\" doesn't work with the Compatibility renderer."
 msgstr "\"셰이더 베이커\"는 호환성 렌더러로 작동되지 않습니다."
@@ -6029,7 +6029,7 @@ msgid "Could not copy a file at path \"%s\" to \"%s\"."
 msgstr "\"%s\"에서 \"%s\"(으)로 파일을 복사할 수 없습니다."
 
 msgid "Could not access the filesystem."
-msgstr "파일시스템에 액세스할 수 없었습니다."
+msgstr "파일시스템에 접근할 수 없었습니다."
 
 msgid "Failed to create a file at path \"%s\" with code %d."
 msgstr "경로 \"%s\"에서 파일을 만드는 데 코드 %d(으)로 실패했습니다."
@@ -6981,7 +6981,7 @@ msgid "Thank you for choosing Godot Engine!"
 msgstr "Godot 엔진을 선택해주셔서 고맙습니다!"
 
 msgid "Name cannot be empty."
-msgstr "이름은 비워둘 수 없습니다."
+msgstr "이름은 비워 둘 수 없습니다."
 
 msgid "File name can't end with /."
 msgstr "파일 이름은 /로 끝날 수 없습니다."
@@ -6990,7 +6990,7 @@ msgid "File name cannot be empty."
 msgstr "파일 이름은 비워 둘 수 없습니다."
 
 msgid "Folder name cannot be empty."
-msgstr "폴더 이름은 비워둘 수 없습니다."
+msgstr "폴더 이름은 비워 둘 수 없습니다."
 
 msgid "File name contains invalid characters."
 msgstr "파일 이름에 잘못된 문자가 포함되어 있습니다."
@@ -7653,7 +7653,7 @@ msgid "Add Metadata Property for \"%s\""
 msgstr "\"%s\"에 메타데이터 추가하기"
 
 msgid "Metadata name can't be empty."
-msgstr "메타데이터 이름은 비워둘 수 없습니다."
+msgstr "메타데이터 이름은 비워 둘 수 없습니다."
 
 msgid "Metadata name must be a valid identifier."
 msgstr "메타데이터 이름은 올바른 식별자여야 합니다."
@@ -7852,7 +7852,7 @@ msgid "Layer %d"
 msgstr "레이어 %d"
 
 msgid "No Named Layers"
-msgstr "이름붙인 레이어 없음"
+msgstr "이름 붙은 레이어 없음"
 
 msgid "Edit Layer Names"
 msgstr "레이어 이름 변경"
@@ -8151,7 +8151,7 @@ msgid "Create New Plugin"
 msgstr "새 플러그인 만들기"
 
 msgid "Enabled"
-msgstr "활성화됨"
+msgstr "활성화"
 
 msgid "Version"
 msgstr "버전"
@@ -8188,7 +8188,7 @@ msgid "Plugin Name:"
 msgstr "플러그인 이름:"
 
 msgid "Required. This name will be displayed in the list of plugins."
-msgstr "필수. 플러그인 목록에 표시할 이름입니다."
+msgstr "필수. 이 이름은 플러그인의 목록에 표시됩니다."
 
 msgid "Subfolder:"
 msgstr "하위 폴더:"
@@ -8199,28 +8199,28 @@ msgid ""
 "If left empty, the folder will be named after the plugin name converted to "
 "`snake_case`."
 msgstr ""
-"선택. 폴더 이름에는 보통 스네이크 표기법( `snake_case` ) 을 사용하며 띄어쓰기"
-"나 특수문자 사용은 피합니다.\n"
-"공란일 경우, 폴더 이름으로는 스네이크 표기법으로 치환된 플러그인 이름을 사용합"
-"니다."
+"선택. 폴더 이름은 일반적으로 스네이크_표기법(`snake_case`)을 사용해야 합니다 "
+"(띄어쓰기나 특수 문자를 피하세요).\n"
+"비워 두면 플러그인 이름이 `snake_case`로 변환되고 나서 폴더 이름이 됩니다."
 
 msgid ""
 "Optional. This description should be kept relatively short (up to 5 lines).\n"
 "It will display when hovering the plugin in the list of plugins."
 msgstr ""
-"선택. 설명은 최대 5줄 내로 간결하게 작성하여야 합니다.\n"
-"이 설명은 플러그인 목록에서 마우스를 올릴 때 표시됩니다."
+"선택. 이 설명은 비교적 간결하게 (최대 5줄) 유지해야 합니다.\n"
+"이는 플러그인의 목록에서 호버할 때 표시됩니다."
 
 msgid "Author:"
 msgstr "저자:"
 
 msgid "Optional. The author's username, full name, or organization name."
-msgstr "선택. 제작자의 닉네임이나 풀 네임 또는 만든 조직의 이름입니다."
+msgstr "선택. 저자의 사용자 이름, 성명, 또는 조직 이름입니다."
 
 msgid ""
 "Optional. A human-readable version identifier used for informational purposes "
 "only."
-msgstr "선택. 사람이 읽을 수 있는 버전 식별자입니다. 설명 용도로만 사용됩니다."
+msgstr ""
+"선택. 사람이 읽을 수 있는 버전 식별자로 정보 제공 목적으로만 사용됩니다."
 
 msgid "Language:"
 msgstr "언어:"
@@ -8231,7 +8231,7 @@ msgid ""
 "to the plugin."
 msgstr ""
 "필수. 스크립트에 사용할 스크립팅 언어입니다.\n"
-"플러그인에 여러 스크립트를 추가하여 여러 언어를 사용할 수도 있습니다."
+"플러그인에 스크립트를 더 추가하여 여러 언어를 사용할 수도 있음을 참고하세요."
 
 msgid "Script Name:"
 msgstr "스크립트 이름:"
@@ -8240,8 +8240,7 @@ msgid ""
 "Optional. The name of the script file. If left empty, will default to the "
 "subfolder name."
 msgstr ""
-"선택 사항. 스크립트 파일의 이름입니다. 비어 있다면 하위 폴더 이름을 디폴트로 "
-"사용합니다."
+"선택. 스크립트 파일의 이름입니다. 비어 두면 하위 폴더 이름이 디폴트가 됩니다."
 
 msgid "Plugin name is valid."
 msgstr "플러그인 이름이 올바릅니다."
@@ -8796,7 +8795,7 @@ msgstr ""
 "니다."
 
 msgid "Tag name can't be empty."
-msgstr "태그 이름은 비워둘 수 없습니다."
+msgstr "태그 이름은 비워 둘 수 없습니다."
 
 msgid "Tag name can't begin or end with underscore."
 msgstr "태그 이름은 밑줄로 시작하거나 끝날 수 없습니다."
@@ -10035,7 +10034,7 @@ msgid "Painting Tiles Property"
 msgstr "칠하는 타일 속성"
 
 msgid "Painting:"
-msgstr "칠하는 중:"
+msgstr "칠하기:"
 
 msgid "No terrains"
 msgstr "지형 없음"
@@ -10044,16 +10043,16 @@ msgid "No terrain"
 msgstr "지형 없음"
 
 msgid "Painting Terrain Set"
-msgstr "지형 세트 칠하는 중"
+msgstr "지형 세트 칠하기"
 
 msgid "Painting Terrain"
-msgstr "지형 칠하는 중"
+msgstr "지형 칠하기"
 
 msgid "Pick"
 msgstr "집기"
 
 msgid "Drawing Rect:"
-msgstr "사각형 그리는 중:"
+msgstr "사각형 그리기:"
 
 msgid "Can't rotate patterns when using non-square tile grid."
 msgstr "정사각형이 아닌 타일 격자를 사용할 때는 패턴을 회전할 수 없습니다."
@@ -10689,7 +10688,7 @@ msgid ""
 "Would you like to automatically create tiles in the atlas?"
 msgstr ""
 "아틀라스의 텍스처가 수정되었습니다.\n"
-"아틀라스에서 자동으로 타일을 만드시길 원하십니까?"
+"아틀라스에서 자동으로 타일을 만들길 원하십니까?"
 
 msgid "Yes"
 msgstr "예"
@@ -13298,7 +13297,7 @@ msgid "Set Group Description"
 msgstr "그룹 설명 설정"
 
 msgid "Invalid group name. It cannot be empty."
-msgstr "그룹 이름은 비워둘 수 없습니다."
+msgstr "그룹 이름은 비워 둘 수 없습니다."
 
 msgid "A group with the name '%s' already exists."
 msgstr "이름 '%s'을(를) 가진 그룹이 이미 존재합니다."
@@ -14024,7 +14023,7 @@ msgid "Checked Radio Item"
 msgstr "체크된 라디오 항목"
 
 msgid "Named Separator"
-msgstr "이름 있는 분리자"
+msgstr "이름 붙은 분리자"
 
 msgid "Submenu"
 msgstr "하위 메뉴"
@@ -14314,7 +14313,7 @@ msgid ""
 "This node can be accessed from anywhere within the scene it belongs to by "
 "using the '%s' prefix in the node path."
 msgstr ""
-"이 노드는 경로 앞에 '%s' 접두사를 붙이면 씬의 어느 곳에서나 액세스할 수 있습니"
+"이 노드는 경로 앞에 '%s' 접두사를 붙이면 씬의 어느 곳에서나 접근할 수 있습니"
 "다."
 
 msgid "Click to disable this."
@@ -14545,34 +14544,34 @@ msgid "By Row"
 msgstr "행을 기준으로"
 
 msgid "Left to Right, Top to Bottom"
-msgstr "좌에서 우로, 상에서 하로"
+msgstr "왼쪽에서 오른쪽으로, 위에서 아래로"
 
 msgid "Left to Right, Bottom to Top"
-msgstr "좌에서 우로, 하에서 상으로"
+msgstr "왼쪽에서 오른쪽으로, 아래에서 위로"
 
 msgid "Right to Left, Top to Bottom"
-msgstr "우에서 좌로, 상에서 하로"
+msgstr "오른쪽에서 왼쪽으로, 위에서 아래로"
 
 msgid "Right to Left, Bottom to Top"
-msgstr "우에서 좌로, 하에서 상으로"
+msgstr "오른쪽에서 왼쪽으로, 아래에서 위로"
 
 msgid "By Column"
 msgstr "열을 기준으로"
 
 msgid "Top to Bottom, Left to Right"
-msgstr "상에서 하로, 좌에서 우로"
+msgstr "위에서 아래로, 왼쪽에서 오른쪽으로"
 
 msgid "Top to Bottom, Right to Left"
-msgstr "상에서 하로, 우에서 좌로"
+msgstr "위에서 아래로, 오른쪽에서 왼쪽으로"
 
 msgid "Bottom to Top, Left to Right"
-msgstr "하에서 상으로, 좌에서 우로"
+msgstr "아래에서 위로, 왼쪽에서 오른쪽으로"
 
 msgid "Bottom to Top, Right to Left"
-msgstr "하에서 상으로, 우에서 좌로"
+msgstr "아래에서 위로, 오른쪽에서 왼쪽으로"
 
 msgid "Select None"
-msgstr "선택 해제"
+msgstr "없음 선택"
 
 msgid "Toggle Settings Panel"
 msgstr "설정 패널 토글"
@@ -15253,7 +15252,7 @@ msgid "Action %s"
 msgstr "액션 %s"
 
 msgid "Cannot Revert - Action is same as initial"
-msgstr "되돌릴 수 없습니다 - 액션이 초기와 같습니다"
+msgstr "되돌릴 수 없음 - 액션이 초기와 같습니다"
 
 msgid "Revert Action"
 msgstr "액션 되돌리기"
@@ -15265,7 +15264,7 @@ msgid "Remove Action"
 msgstr "액션 제거"
 
 msgid "Cannot Remove Action"
-msgstr "액션을 제거할 수 없습니다"
+msgstr "액션을 제거할 수 없음"
 
 msgid "Edit Event"
 msgstr "이벤트 편집"
@@ -15343,7 +15342,7 @@ msgid "Autoload Path"
 msgstr "오토로드 경로"
 
 msgid "Set path or press \"Add\" to create a script."
-msgstr "경로를 설정하거나 \"추가\"를 눌러 스크립트를 만드세요."
+msgstr "경로를 설정하거나 \"추가\"를 눌러 스크립트를 만듭니다."
 
 msgid "Select Autoload Path"
 msgstr "오토로드 경로 선택"
@@ -15623,10 +15622,10 @@ msgstr ""
 "%s."
 
 msgid "Filter Commands"
-msgstr "명령어 필터"
+msgstr "명령 필터"
 
 msgid "Filter by Name"
-msgstr "이름으로 필터링"
+msgstr "이름으로 필터"
 
 msgid "Action Event"
 msgstr "액션 이벤트"
@@ -15913,13 +15912,13 @@ msgid "Device"
 msgstr "기기"
 
 msgid "Listening for Input. Hold %s to release focus."
-msgstr "입력을 기다립니다. %s을(를) 눌러 포커스를 놓으세요."
+msgstr "입력을 받는 중입니다. %s을(를) 눌러 포커스를 놓으세요."
 
 msgid "Listening for Input"
-msgstr "입력 대기 중"
+msgstr "입력을 받는 중"
 
 msgid "Filter by Event"
-msgstr "이벤트로 필터링"
+msgstr "이벤트로 필터"
 
 msgid "No Event Configured"
 msgstr "구성된 이벤트 없음"
@@ -17764,7 +17763,7 @@ msgid "Modified"
 msgstr "수정됨"
 
 msgid "Renamed"
-msgstr "이름 변경됨"
+msgstr "이름 바꿈"
 
 msgid "Deleted"
 msgstr "삭제됨"
@@ -18364,7 +18363,7 @@ msgid "The MultiplayerSynchronizer needs a root path."
 msgstr "MultiplayerSynchronizer는 루트 경로가 있어야 합니다."
 
 msgid "Property/path must not be empty."
-msgstr "속성/경로는 비워둘 수 없습니다."
+msgstr "속성/경로는 비워 두면 안 됩니다."
 
 msgid "Invalid property path: '%s'"
 msgstr "잘못된 속성 경로: '%s'"
@@ -19939,10 +19938,10 @@ msgid "Invalid icon file \"%s\"."
 msgstr "아이콘 파일 \"%s\"이(가) 올바르지 않습니다."
 
 msgid "Could not find signtool executable at \"%s\"."
-msgstr "\"%s\"에서 signtool 실행 파일을 찾지 못했습니다."
+msgstr "\"%s\"에서 signtool 실행 파일을 찾을 수 없었습니다."
 
 msgid "Could not find osslsigncode executable at \"%s\"."
-msgstr "\"%s\"에서 osslsigncode 실행 파일을 찾지 못했습니다."
+msgstr "\"%s\"에서 osslsigncode 실행 파일을 찾을 수 없었습니다."
 
 msgid "No identity found."
 msgstr "식별자를 찾을 수 없습니다."
@@ -21062,10 +21061,10 @@ msgstr ""
 "초기 값인 `CURSOR_ARROW`로 두는 것이 좋습니다."
 
 msgid "Cell %d x %d: either text or alternative text must not be empty."
-msgstr "셀 %d x %d: 텍스트 또는 대체 텍스트는 비워 둘 수 없습니다."
+msgstr "셀 %d x %d: 텍스트 또는 대체 텍스트는 비워 두면 안 됩니다."
 
 msgid "Button %d in %d x %d: alternative text must not be empty."
-msgstr "버튼 %d (셀 %d x %d): 대체 텍스트는 비워 둘 수 없습니다."
+msgstr "버튼 %d (셀 %d x %d): 대체 텍스트는 비워 두면 안 됩니다."
 
 msgid ""
 "Ancestor \"%s\" clips its children, so this node will not be able to clip its "

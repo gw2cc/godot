@@ -50,13 +50,14 @@
 # Mahan Khalili <mkh-user@users.noreply.hosted.weblate.org>, 2025.
 # ali zia <sampadpars@gmail.com>, 2025.
 # نام <z.xp.xp.900@gmail.com>, 2025.
+# Sajjad Zavar <zavarsajjad98@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine properties\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-12-23 01:01+0000\n"
-"Last-Translator: نام <z.xp.xp.900@gmail.com>\n"
+"PO-Revision-Date: 2026-02-12 14:11+0000\n"
+"Last-Translator: Sajjad Zavar <zavarsajjad98@gmail.com>\n"
 "Language-Team: Persian <https://hosted.weblate.org/projects/godot-engine/"
 "godot-properties/fa/>\n"
 "Language: fa\n"
@@ -64,7 +65,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 msgid "Application"
 msgstr "برنامه"
@@ -113,6 +114,9 @@ msgstr "نام دلخواه برای پوشه‌دان کاربر"
 
 msgid "Project Settings Override"
 msgstr "لغو تنظیمات پروژه"
+
+msgid "Disable Project Settings Override"
+msgstr "غیرفعال کردن Override تنظیمات پروژه"
 
 msgid "Main Loop Type"
 msgstr "گونهٔ چرخهٔ اصلی"
@@ -216,6 +220,9 @@ msgstr "بررسی ناسازگاری نوع درون‌یابی زاویه"
 msgid "Compatibility"
 msgstr "سازگاری"
 
+msgid "Default Parent Skeleton in Mesh Instance 3D"
+msgstr "والد پیش‌فرض اسکلت در Mesh Instance 3D"
+
 msgid "Audio"
 msgstr "صدا"
 
@@ -242,6 +249,9 @@ msgstr "آی‌او‌اس"
 
 msgid "Session Category"
 msgstr "دسته‌بندی نشست"
+
+msgid "Mix with Others"
+msgstr "مخلوط با سایرین"
 
 msgid "Subwindows"
 msgstr "زیر پنجره ها"

@@ -938,7 +938,7 @@ void TextEdit::_notification(int p_what) {
 			int left_margin = Math::ceil(style->get_margin(SIDE_LEFT));
 			int xmargin_beg = left_margin + gutters_width + gutter_padding;
 
-			int xmargin_end = size.width - Math::ceil(style->get_margin(SIDE_RIGHT));
+			int xmargin_end = size.width - Math::floor(style->get_margin(SIDE_RIGHT));
 			if (draw_minimap) {
 				xmargin_end -= minimap_width;
 			}
@@ -1403,9 +1403,9 @@ void TextEdit::_notification(int p_what) {
 					// Draw current line highlight.
 					if (highlight_current_line && highlighted_lines.has(Pair<int, int>(line, line_wrap_index))) {
 						if (rtl) {
-							RS::get_singleton()->canvas_item_add_rect(text_ci, Rect2(size.width - xmargin_end, ofs_y, xmargin_end - xmargin_beg, row_height), theme_cache.current_line_color);
+							RS::get_singleton()->canvas_item_add_rect(text_ci, Rect2(size.width - xmargin_end, ofs_y, xmargin_end, row_height), theme_cache.current_line_color);
 						} else {
-							RS::get_singleton()->canvas_item_add_rect(text_ci, Rect2(xmargin_beg, ofs_y, xmargin_end - xmargin_beg, row_height), theme_cache.current_line_color);
+							RS::get_singleton()->canvas_item_add_rect(text_ci, Rect2(0, ofs_y, xmargin_end, row_height), theme_cache.current_line_color);
 						}
 					}
 
@@ -3606,7 +3606,7 @@ Control::CursorShape TextEdit::get_cursor_shape(const Point2 &p_pos) const {
 		return CURSOR_ARROW;
 	}
 
-	int xmargin_end = get_size().width - Math::ceil(style->get_margin(SIDE_RIGHT));
+	int xmargin_end = get_size().width - Math::floor(style->get_margin(SIDE_RIGHT));
 	if (draw_minimap && p_pos.x > xmargin_end - minimap_width && p_pos.x <= xmargin_end) {
 		return CURSOR_ARROW;
 	}
@@ -4972,7 +4972,7 @@ String TextEdit::get_word(int p_line, int p_column) const {
 	}
 	ERR_FAIL_INDEX_V(p_line, text.size(), String());
 
-	const String &text_line = text[p_line];
+	const String &text_line = text.get_text_with_ime(p_line);
 	if (text_line.is_empty()) {
 		return String();
 	}
@@ -6389,24 +6389,20 @@ int TextEdit::get_line_wrap_count(int p_line) const {
 int TextEdit::get_line_wrap_index_at_column(int p_line, int p_column) const {
 	ERR_FAIL_INDEX_V(p_line, text.size(), 0);
 	ERR_FAIL_COND_V(p_column < 0, 0);
-	ERR_FAIL_COND_V(p_column > text[p_line].length(), 0);
+	ERR_FAIL_COND_V(p_column > text.get_text_with_ime(p_line).length(), 0);
 
 	if (!is_line_wrapped(p_line)) {
 		return 0;
 	}
 
-	/* Loop through wraps in the line text until we get to the column. */
-	int wrap_index = 0;
-	int col = 0;
-	Vector<String> lines = get_line_wrapped_text(p_line);
-	for (int i = 0; i < lines.size(); i++) {
-		wrap_index = i;
-		col += lines[wrap_index].length();
-		if (col > p_column) {
-			break;
+	// Loop through wraps in the line text until we get to the column.
+	const Vector<Vector2i> line_ranges = text.get_line_wrap_ranges(p_line);
+	for (int i = 0; i < line_ranges.size(); i++) {
+		if (line_ranges[i].y > p_column) {
+			return i;
 		}
 	}
-	return wrap_index;
+	return line_ranges.is_empty() ? 0 : line_ranges.size() - 1;
 }
 
 Vector<String> TextEdit::get_line_wrapped_text(int p_line) const {
@@ -6414,12 +6410,13 @@ Vector<String> TextEdit::get_line_wrapped_text(int p_line) const {
 
 	Vector<String> lines;
 	if (!is_line_wrapped(p_line)) {
-		lines.push_back(text[p_line]);
+		lines.push_back(text.get_text_with_ime(p_line));
 		return lines;
 	}
 
-	const String &line_text = text[p_line];
-	Vector<Vector2i> line_ranges = text.get_line_wrap_ranges(p_line);
+	const String &line_text = text.get_text_with_ime(p_line);
+	const Vector<Vector2i> line_ranges = text.get_line_wrap_ranges(p_line);
+	lines.reserve(line_ranges.size());
 	for (int i = 0; i < line_ranges.size(); i++) {
 		lines.push_back(line_text.substr(line_ranges[i].x, line_ranges[i].y - line_ranges[i].x));
 	}
@@ -8890,7 +8887,7 @@ void TextEdit::_adjust_viewport_to_caret_horizontally(int p_caret, bool p_maximi
 
 void TextEdit::_update_minimap_hover() {
 	const Point2 mp = get_local_mouse_pos();
-	const int xmargin_end = get_size().width - Math::ceil(_get_current_stylebox()->get_margin(SIDE_RIGHT));
+	const int xmargin_end = get_size().width - Math::floor(_get_current_stylebox()->get_margin(SIDE_RIGHT));
 
 	bool hovering_sidebar = mp.x > xmargin_end - minimap_width && mp.x < xmargin_end;
 	if (!hovering_sidebar) {
@@ -8917,7 +8914,7 @@ void TextEdit::_update_minimap_hover() {
 void TextEdit::_update_minimap_click() {
 	Point2 mp = get_local_mouse_pos();
 
-	int xmargin_end = get_size().width - Math::ceil(_get_current_stylebox()->get_margin(SIDE_RIGHT));
+	int xmargin_end = get_size().width - Math::floor(_get_current_stylebox()->get_margin(SIDE_RIGHT));
 	if (!dragging_minimap && (mp.x < xmargin_end - minimap_width || mp.x > xmargin_end)) {
 		minimap_clicked = false;
 		return;

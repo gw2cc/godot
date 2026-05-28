@@ -89752,9 +89752,6 @@ msgid ""
 "performance. Use with care."
 msgstr "增加這個值會改善模擬結果，但會影響性能。請小心使用。"
 
-msgid "The SoftBody3D's mass."
-msgstr "該 SoftBody3D 的品質。"
-
 msgid ""
 "When [member Node.process_mode] is set to [constant "
 "Node.PROCESS_MODE_DISABLED], remove from the physics simulation to stop all "

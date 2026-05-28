@@ -61,13 +61,14 @@
 # "Mahdi B. Jahani" <kelbowonl@gmail.com>, 2025.
 # "A Thousand Ships (she/her)" <over999ships@gmail.com>, 2025.
 # Mazdak Parnian <mazdak.parniandg@gmail.com>, 2025.
+# Sajjad Zavar <zavarsajjad98@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine editor interface\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2025-12-10 16:35+0000\n"
-"Last-Translator: John Smith <pkafsharix@gmail.com>\n"
+"PO-Revision-Date: 2026-02-12 03:10+0000\n"
+"Last-Translator: Sajjad Zavar <zavarsajjad98@gmail.com>\n"
 "Language-Team: Persian <https://hosted.weblate.org/projects/godot-engine/"
 "godot/fa/>\n"
 "Language: fa\n"
@@ -75,16 +76,157 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 msgid "OK"
 msgstr "باشه"
 
+msgid "Failed"
+msgstr "ناموفق"
+
+msgid "Unavailable"
+msgstr "در دسترس نیست"
+
+msgid "Unconfigured"
+msgstr "پیکربندی‌نشده"
+
+msgid "Unauthorized"
+msgstr "غیرمجاز"
+
+msgid "Parameter out of range"
+msgstr "پارامتر خارج از محدوده"
+
+msgid "Out of memory"
+msgstr "کمبود حافظه"
+
+msgid "File not found"
+msgstr "فایل پیدا نشد"
+
+msgid "File: Bad drive"
+msgstr "فایل: درایو نامعتبر"
+
+msgid "File: Bad path"
+msgstr "فایل: مسیر نامعتبر"
+
+msgid "File: Permission denied"
+msgstr "فایل: دسترسی رد شد"
+
+msgid "File already in use"
+msgstr "فایل در حال استفاده است"
+
+msgid "Can't open file"
+msgstr "نمی‌توان فایل را باز کرد"
+
+msgid "Can't write file"
+msgstr "نمی‌توان در فایل نوشت"
+
+msgid "Can't read file"
+msgstr "نمی‌توان فایل را خواند"
+
+msgid "File unrecognized"
+msgstr "فایل ناشناخته است"
+
+msgid "File corrupt"
+msgstr "فایل خراب است"
+
+msgid "Missing dependencies for file"
+msgstr "وابستگی‌های لازم برای فایل وجود ندارد"
+
+msgid "End of file"
+msgstr "پایان فایل"
+
+msgid "Can't open"
+msgstr "نمی‌توان باز کرد"
+
+msgid "Can't create"
+msgstr "نمی‌توان ایجاد کرد"
+
+msgid "Query failed"
+msgstr "کوئری ناموفق"
+
+msgid "Already in use"
+msgstr "در حال استفاده است"
+
 msgid "Locked"
-msgstr "قفلیده"
+msgstr "قفل شده"
+
+msgid "Timeout"
+msgstr "مهلت تمام شد"
+
+msgid "Can't connect"
+msgstr "نمی‌توان اتصال برقرار کرد"
+
+msgid "Can't resolve"
+msgstr "نمی‌توان حل کرد"
+
+msgid "Connection error"
+msgstr "خطای اتصال"
+
+msgid "Can't acquire resource"
+msgstr "نمی‌توان منبع را به‌دست آورد"
+
+msgid "Can't fork"
+msgstr "نمی‌توان فرآیند جدید ایجاد کرد"
+
+msgid "Invalid data"
+msgstr "داده نامعتبر است"
+
+msgid "Invalid parameter"
+msgstr "پارامتر نامعتبر است"
+
+msgid "Already exists"
+msgstr "از قبل وجود دارد"
+
+msgid "Does not exist"
+msgstr "وجود ندارد"
+
+msgid "Can't read database"
+msgstr "نمی‌توان پایگاه‌داده را خواند"
+
+msgid "Can't write database"
+msgstr "نمی‌توان در پایگاه‌داده نوشت"
+
+msgid "Compilation failed"
+msgstr "کامپایل ناموفق بود"
+
+msgid "Method not found"
+msgstr "متد پیدا نشد"
+
+msgid "Link failed"
+msgstr "لینک ناموفق بود"
+
+msgid "Script failed"
+msgstr "اجرای اسکریپت ناموفق بود"
+
+msgid "Cyclic link detected"
+msgstr "پیوند چرخه‌ای شناسایی شد"
+
+msgid "Invalid declaration"
+msgstr "اعلان نامعتبر است"
+
+msgid "Duplicate symbol"
+msgstr "نماد تکراری"
+
+msgid "Parse error"
+msgstr "خطای تجزیه"
+
+msgid "Busy"
+msgstr "مشغول است"
+
+msgid "Skip"
+msgstr "رد شد"
 
 msgid "Help"
 msgstr "راهنما"
+
+msgid "Bug"
+msgstr "باگ"
+
+msgid "Printer on fire"
+msgstr "چاپگر آتش گرفته است"
+
+msgid "unset"
+msgstr "تنظیم نشده"
 
 msgid "Physical"
 msgstr "فیزیکی"
@@ -96,19 +238,19 @@ msgid "Right Mouse Button"
 msgstr "دکمهٔ راست موس"
 
 msgid "Middle Mouse Button"
-msgstr "دکمهٔ میانی موس"
+msgstr "دکمهٔ وسط موس"
 
 msgid "Mouse Wheel Up"
-msgstr "بالا غلتاندن موس"
+msgstr "چرخ ماوس به بالا"
 
 msgid "Mouse Wheel Down"
-msgstr "پایین غلتاندن موس"
+msgstr "چرخ ماوس به پایین"
 
 msgid "Mouse Wheel Left"
-msgstr "چپ غلتاندن موس"
+msgstr "چرخ ماوس به چپ"
 
 msgid "Mouse Wheel Right"
-msgstr "راست غلتاندن موس"
+msgstr "چرخ ماوس به راست"
 
 msgid "Mouse Thumb Button 1"
 msgstr "دکمه شست موس ۱"
@@ -120,112 +262,112 @@ msgid "Button"
 msgstr "دکمه"
 
 msgid "Double Click"
-msgstr "جفت کلیک"
+msgstr "دوبار کلیک"
 
 msgid "Mouse motion at position (%s) with velocity (%s)"
-msgstr "جنبش موس در نهشت (%s) با شتاب (%s)"
+msgstr "حرکت ماوس در موقعیت (%s) با سرعت (%s)"
 
 msgid "Left Stick X-Axis, Joystick 0 X-Axis"
-msgstr "محور X استیک چپ، محور X اهرمک ۰"
+msgstr "محور X استیک چپ، محور X جوی‌استیک ۰"
 
 msgid "Left Stick Y-Axis, Joystick 0 Y-Axis"
-msgstr "محور Y استیک چپ، محور Y اهرمک ۰"
+msgstr "محور Y استیک چپ، محور Y جوی‌استیک ۰"
 
 msgid "Right Stick X-Axis, Joystick 1 X-Axis"
-msgstr "محور X استیک راست، محور X اهرمک ۱"
+msgstr "محور X استیک راست، محور X جوی‌استیک ۱"
 
 msgid "Right Stick Y-Axis, Joystick 1 Y-Axis"
-msgstr "محور Y استیک چپ، محور Y اهرمک ۱"
+msgstr "محور Y استیک راست، محور Y جوی‌استیک ۱"
 
 msgid "Joystick 2 X-Axis, Left Trigger, Sony L2, Xbox LT"
-msgstr "محور X اهرمک ۲، تریگر چپ، L2 سونی، LT اکس‌باکس"
+msgstr "محور X جوی‌استیک ۲، تریگر چپ، سونی L2، ایکس‌باکس LT"
 
 msgid "Joystick 2 Y-Axis, Right Trigger, Sony R2, Xbox RT"
-msgstr "محور Y اهرمک ۲، تریگر چپ، R2 سونی، RT اکس‌باکس"
+msgstr "محور Y جوی‌استیک ۲، تریگر راست، سونی R2، ایکس‌باکس RT"
 
 msgid "Joystick 3 X-Axis"
-msgstr "محور X اهرمک ۳"
+msgstr "محور X جوی‌استیک ۳"
 
 msgid "Joystick 3 Y-Axis"
-msgstr "محور Y اهرمک ۳"
+msgstr "محور X جوی‌استیک ۳"
 
 msgid "Joystick 4 X-Axis"
-msgstr "محور X اهرمک ۴"
+msgstr "محور X جوی‌استیک ۴"
 
 msgid "Joystick 4 Y-Axis"
-msgstr "محور Y اهرمک ۴"
+msgstr "محور Y جوی‌استیک ۴"
 
 msgid "Unknown Joypad Axis"
-msgstr "محور ناشناخته دسته بازی"
+msgstr "محور ناشناختهٔ جوی‌استیک"
 
 msgid "Joypad Motion on Axis %d (%s) with Value %.2f"
-msgstr "جنبش دستهٔ بازی روی محور %d (%s) با ارزش %.2f"
+msgstr "حرکت جوی‌استیک روی محور %d (%s) با مقدار %.2f"
 
 msgid "Bottom Action, Sony Cross, Xbox A, Nintendo B"
-msgstr "کنش پایین، کراس سونی، اکس‌باکس A, نینتندو B"
+msgstr "دکمهٔ پایینی، سونی Cross، ایکس‌باکس A، نینتندو B"
 
 msgid "Right Action, Sony Circle, Xbox B, Nintendo A"
-msgstr "کنش راست، دایره سونی، اکس‌باکس B, نینتندو A"
+msgstr "دکمهٔ راست، سونی Circle، ایکس‌باکس B، نینتندو A"
 
 msgid "Left Action, Sony Square, Xbox X, Nintendo Y"
-msgstr "کنش چپ، مربع سونی، اکس‌باکس X, نینتندو Y"
+msgstr "دکمهٔ چپ، سونی Square، ایکس‌باکس X، نینتندو Y"
 
 msgid "Top Action, Sony Triangle, Xbox Y, Nintendo X"
-msgstr "کنش بالا،مثلث سونی، اکس‌باکس Y، نینتندو X"
+msgstr "دکمهٔ بالا، سونی Triangle، ایکس‌باکس Y، نینتندو X"
 
 msgid "Back, Sony Select, Xbox Back, Nintendo -"
-msgstr "بازگشت، Select سونی، Back اکس‌باکس، - نینتندو"
+msgstr "دکمهٔ Back، سونی Select، ایکس‌باکس Back، نینتندو -"
 
 msgid "Guide, Sony PS, Xbox Home"
-msgstr "راهنما، PS سونی، Home اکس‌باکس"
+msgstr "دکمهٔ Guide، سونی PS، ایکس‌باکس Home"
 
 msgid "Start, Xbox Menu, Nintendo +"
-msgstr "آغاز، گزینگان اکس‌باکس، نینتندو +"
+msgstr "دکمهٔ Start، ایکس‌باکس Menu، نینتندو +"
 
 msgid "Left Stick, Sony L3, Xbox L/LS"
-msgstr "استیک چپ، سونی L3، اکس‌باکس L/LS"
+msgstr "استیک چپ، سونی L3، ایکس‌باکس L/LS"
 
 msgid "Right Stick, Sony R3, Xbox R/RS"
-msgstr "استیک راست، سونی R3، اکس‌باکس R/RS"
+msgstr "استیک راست، سونی R3، ایکس‌باکس R/RS"
 
 msgid "Left Shoulder, Sony L1, Xbox LB"
-msgstr "شانه چپ، سونی L1، اکس‌باکس LB"
+msgstr "شانهٔ چپ، سونی L1، ایکس‌باکس LB"
 
 msgid "Right Shoulder, Sony R1, Xbox RB"
-msgstr "شانه راست، سونی R1، اکس‌باکس RB"
+msgstr "شانهٔ راست، سونی R1، ایکس‌باکس RB"
 
 msgid "D-pad Up"
-msgstr "دی-پد بالا"
+msgstr "جهت‌بالا (D‑pad Up)"
 
 msgid "D-pad Down"
-msgstr "دی-پد پایین"
+msgstr "جهت‌پایین (D‑pad Down)"
 
 msgid "D-pad Left"
-msgstr "دی-پد چپ"
+msgstr "جهت‌چپ (D‑pad Left)"
 
 msgid "D-pad Right"
-msgstr "دی-پد راست"
+msgstr "جهت‌راست (D‑pad Right)"
 
 msgid "Xbox Share, PS5 Microphone, Nintendo Capture"
-msgstr "اکس‌باکس Share, میکروفون پی‌اس۵، نینتندو کپچر"
+msgstr "ایکس‌باکس Share، پلی‌استیشن Microphone، نینتندو Capture"
 
 msgid "Xbox Paddle 1"
-msgstr "اکس‌باکس پدل 1"
+msgstr "پدل ۱ ایکس‌باکس (Xbox Paddle 1)"
 
 msgid "Xbox Paddle 2"
-msgstr "اکس‌باکس پدل 2"
+msgstr "پدل ۲ ایکس‌باکس (Xbox Paddle 2)"
 
 msgid "Xbox Paddle 3"
-msgstr "اکس‌باکس پدل 3"
+msgstr "پدل ۳ ایکس‌باکس (Xbox Paddle 3)"
 
 msgid "Xbox Paddle 4"
-msgstr "اکس‌باکس پدل 4"
+msgstr "پدل ۴ ایکس‌باکس (Xbox Paddle 4)"
 
 msgid "PS4/5 Touchpad"
-msgstr "تاچ‌پدPS4/5"
+msgstr "تاچ‌پد پلی‌استیشن (PS4/PS5 Touchpad)"
 
 msgid "Joypad Button %d"
-msgstr "دکمهٔ %d دستهٔ بازی"
+msgstr "دکمهٔ شمارهٔ %d جوی‌پد"
 
 msgid "Pressure:"
 msgstr "فشار:"
@@ -240,29 +382,29 @@ msgid "released"
 msgstr "منتشر شد"
 
 msgid "Screen %s at (%s) with %s touch points"
-msgstr "نقاط لمس صفحه %s در (%s) با %s"
+msgstr "صفحهٔ %s در مختصات (%s) با %s نقطهٔ لمس"
 
 msgid ""
 "Screen dragged with %s touch points at position (%s) with velocity of (%s)"
-msgstr "صفحه با نقاط لمسی %s در موقعیت (%s) با شتاب (%s) کشیده شد"
+msgstr "صفحه با %s نقطهٔ لمس در موقعیت (%s) کشیده شد و دارای سرعت (%s) بود"
 
 msgid "Magnify Gesture at (%s) with factor %s"
-msgstr "بزرگنمایی ژست در (%s) با فاکتور %s"
+msgstr "ژست بزرگ‌نمایی در مختصات (%s) با ضریب %s"
 
 msgid "Pan Gesture at (%s) with delta (%s)"
-msgstr "ژست قلم در (%s) با دلتای (%s)"
+msgstr "ژست پن در مختصات (%s) با دلتا (%s)"
 
 msgid "MIDI Input on Channel=%s Message=%s"
-msgstr "ورودی MIDI در کانال=%s پیام=%s"
+msgstr "ورودی MIDI در کانال = %s با پیام = %s"
 
 msgid "Input Event with Shortcut=%s"
-msgstr "رویداد درونداد با میانبر=%s"
+msgstr "رویداد ورودی با میان‌بُر = %s"
 
 msgid " or "
 msgstr " یا "
 
 msgid "Action has no bound inputs"
-msgstr "عمل هیچ ورودی محدودی ندارد"
+msgstr "اکشن هیچ ورودیِ متصل‌شده‌ای ندارد"
 
 msgid "Accept"
 msgstr "پذیرش"
@@ -273,11 +415,14 @@ msgstr "انتخاب"
 msgid "Cancel"
 msgstr "لغو"
 
+msgid "Close Dialog"
+msgstr "بستن دیالوگ"
+
 msgid "Focus Next"
-msgstr "تمرکز بعدی"
+msgstr "رفتن به مورد بعدی"
 
 msgid "Focus Prev"
-msgstr "تمرکز قبلی"
+msgstr "رفتن به مورد قبلی"
 
 msgid "Left"
 msgstr "چپ"
@@ -292,28 +437,28 @@ msgid "Down"
 msgstr "پایین"
 
 msgid "Page Up"
-msgstr "Page Up"
+msgstr "صفحه‌بالا (Page Up)"
 
 msgid "Page Down"
-msgstr "Page Down"
+msgstr "صفحه‌پایین (Page Down)"
 
 msgid "Home"
-msgstr "خانه"
+msgstr "خانه (Home)"
 
 msgid "End"
-msgstr "پایان"
+msgstr "پایان (End)"
 
 msgid "Cut"
-msgstr "برش"
+msgstr "بُرش (Cut)"
 
 msgid "Copy"
-msgstr "روگرفت"
+msgstr "کپی (Copy)"
 
 msgid "Paste"
-msgstr "چسباندن"
+msgstr "چسباندن (Paste)"
 
 msgid "Toggle Tab Focus Mode"
-msgstr "روشن/خاموش کردن حالت تمرکز زبانه"
+msgstr "تغییر حالت فوکوس تب"
 
 msgid "Undo"
 msgstr "بازگردانی"
@@ -1201,11 +1346,26 @@ msgstr "زمان درآمیزی:"
 msgid "Next (Auto Queue):"
 msgstr "بعدی (صف خودکار):"
 
+msgid "Reconnect Transition"
+msgstr "اتصال دوبارهٔ گذار"
+
 msgid "Move Node"
 msgstr "حرکت دادن گره"
 
 msgid "Transition exists!"
 msgstr "گذار وجود دارد!"
+
+msgid "Cannot transition to self!"
+msgstr "نمی‌توان به خودِ همان حالت گذار کرد!"
+
+msgid "Cannot transition to \"Start\"!"
+msgstr "نمی‌توان به \"Start\" گذار کرد!"
+
+msgid "Cannot transition from \"End\"!"
+msgstr "نمی‌توان از \"End\" گذار کرد!"
+
+msgid "Transition from \"%s\" to \"%s\" already exists!"
+msgstr "گذار از \"%s\" به \"%s\" از قبل وجود دارد!"
 
 msgid "Play/Travel to %s"
 msgstr "پخش/سفر به %s"
@@ -1215,6 +1375,9 @@ msgstr "ویرایش %s"
 
 msgid "Add Node and Transition"
 msgstr "افزودن گره و گذار"
+
+msgid "Transition already exists!"
+msgstr "گذار وجود دارد!"
 
 msgid "Add Transition"
 msgstr "افزودن گذار"
@@ -1252,7 +1415,7 @@ msgstr ""
 "بی‌گره را برگزینید گره‌ای نو می‌سازد."
 
 msgid "Select and move nodes."
-msgstr "انتخاب و جابجایی گره‌ها"
+msgstr "انتخاب و جابجایی گره‌ها."
 
 msgid "Create new nodes."
 msgstr "ساخت گره‌های جدید."
@@ -6176,6 +6339,13 @@ msgstr "توکن‌های دودویی (بارگیری تندتر)"
 msgid "Compressed binary tokens (smaller files)"
 msgstr "توکن‌های دودویی فشرده (پرونده‌های کوچکتر)"
 
+msgid ""
+"No presets found.\n"
+"Create one so that its parameters can be edited here."
+msgstr ""
+"هیچ پریستی پیدا نشد.\n"
+"یکی بسازید تا بتوان پارامترهایش را اینجا ویرایش کرد."
+
 msgid "Export PCK/ZIP..."
 msgstr "برون‌برد PCK/ZIP..."
 
@@ -6220,8 +6390,23 @@ msgstr "مدیریت قالب‌های برون‌برد"
 msgid "Baking shaders"
 msgstr "در حال پخت سایه‌زن‌ها"
 
+msgid "Search Replacement For: %s"
+msgstr "جستجوی جایگزین برای: %s"
+
 msgid "Dependencies For:"
 msgstr "بستگی‌ها برای:"
+
+msgid ""
+"Scene \"%s\" is currently being edited. Changes will only take effect when "
+"reloaded."
+msgstr ""
+"صحنهٔ \"%s\" در حال حاضر در حال ویرایش است. تغییرات فقط پس از بارگذاری دوباره "
+"اعمال می‌شوند."
+
+msgid "Resource \"%s\" is in use. Changes will only take effect when reloaded."
+msgstr ""
+"منبع \"%s\" در حال استفاده است. تغییرات فقط پس از بارگذاری دوباره اعمال "
+"می‌شوند."
 
 msgid "Dependencies"
 msgstr "وابستگی‌ها"
@@ -6238,11 +6423,17 @@ msgstr "ویراستار وابستگی"
 msgid "Owners of: %s (Total: %d)"
 msgstr "صاحبان: %s (کل: %d)"
 
+msgid "No owners found for: %s"
+msgstr "هیچ مالکی برای %s پیدا نشد"
+
+msgid "Owners List"
+msgstr "فهرست مالکان"
+
 msgid "Localization remap"
-msgstr "بازنهادن بومی‌سازی"
+msgstr "بازنگاشت بومی‌سازی"
 
 msgid "Localization remap for path '%s' and locale '%s'."
-msgstr "بازنهادن بومی‌سازی برای مسیر '%s' و بوم '%s'."
+msgstr "بازنگاشت بومی‌سازی برای مسیر '%s' و بوم '%s'."
 
 msgid ""
 "Remove the selected files from the project? (Cannot be undone.)\n"
@@ -6274,6 +6465,12 @@ msgstr "پرونده‌ها برای زدوده شدن:"
 
 msgid "Dependencies of files to be deleted:"
 msgstr "وابستگی‌های پرونده‌ها برای زدوده شدن:"
+
+msgid "Error loading: %s"
+msgstr "خطا در بارگذاری: %s"
+
+msgid "Referenced by %s"
+msgstr "ارجاع‌شده توسط %s"
 
 msgid "Fix Dependencies"
 msgstr "بستگی‌ها را تعمیر کن"
@@ -18392,6 +18589,9 @@ msgstr "نبود شرط."
 msgid "Condition evaluation error."
 msgstr "خطای ارزیابی شرط."
 
+msgid "Invalid '%s' directive."
+msgstr "دستورِ '%s' نامعتبر است."
+
 msgid "Shader include file does not exist:"
 msgstr "فایل سایه‌زن موجود نیست:"
 
@@ -18425,6 +18625,9 @@ msgstr "تعداد آرگومان کوچک نامعتبر."
 
 msgid "Can't find matching branch directive."
 msgstr "دستور شاخه‌ی تطبیق یافت نشد."
+
+msgid "Invalid symbols placed before directive."
+msgstr "نمادهای نامعتبر پیش از دستور قرار گرفته‌اند."
 
 msgid "Unmatched conditional statement."
 msgstr "بیانیه شرطی تطابق ندارد."

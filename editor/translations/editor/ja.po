@@ -92,13 +92,15 @@
 # kakeudon17 <tazayuu17@gmail.com>, 2025.
 # Amir Sabbagh <amir420c@gmail.com>, 2025.
 # Acotto <perc.fg.music@gmail.com>, 2025.
+# Rudeus <95301440+7Luminaries@users.noreply.github.com>, 2026.
+# Eloy Robillard <eloy.robillard@proton.me>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine editor interface\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-01-15 02:11+0000\n"
-"Last-Translator: Myeongjin <aranet100@gmail.com>\n"
+"PO-Revision-Date: 2026-02-05 19:02+0000\n"
+"Last-Translator: Eloy Robillard <eloy.robillard@proton.me>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/godot-engine/"
 "godot/ja/>\n"
 "Language: ja\n"
@@ -106,16 +108,124 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 msgid "OK"
 msgstr "OK"
 
+msgid "Failed"
+msgstr "失敗"
+
+msgid "Unavailable"
+msgstr "利用不可"
+
+msgid "File: Bad drive"
+msgstr "ファイル：ドライブエラー"
+
+msgid "File: Bad path"
+msgstr "ファイル：パスエラー"
+
+msgid "File: Permission denied"
+msgstr "ファイル：アクセス拒否"
+
+msgid "Can't open file"
+msgstr "ファイルを開けません"
+
+msgid "Can't write file"
+msgstr "ファイルの書き込みができません"
+
+msgid "Can't read file"
+msgstr "ファイルの読み込みができません"
+
+msgid "File unrecognized"
+msgstr "未認識のファイル"
+
+msgid "File corrupt"
+msgstr "ファイル破損"
+
+msgid "End of file"
+msgstr "ファイル終端"
+
+msgid "Can't open"
+msgstr "開けません"
+
+msgid "Can't create"
+msgstr "作成不可"
+
+msgid "Query failed"
+msgstr "クエリは失敗しました"
+
+msgid "Already in use"
+msgstr "すでに使用中です"
+
 msgid "Locked"
 msgstr "ロック済み"
 
+msgid "Timeout"
+msgstr "タイムアウト"
+
+msgid "Can't connect"
+msgstr "接続できません"
+
+msgid "Can't resolve"
+msgstr "解決できません"
+
+msgid "Can't acquire resource"
+msgstr "リソースは取得できません"
+
+msgid "Can't fork"
+msgstr "フォークできません"
+
+msgid "Invalid data"
+msgstr "無効なデータ"
+
+msgid "Invalid parameter"
+msgstr "無効な引数"
+
+msgid "Already exists"
+msgstr "すでに存在しています"
+
+msgid "Does not exist"
+msgstr "存在しません"
+
+msgid "Can't read database"
+msgstr "データベースの読み込みができません"
+
+msgid "Can't write database"
+msgstr "データベース書き込み不可"
+
+msgid "Compilation failed"
+msgstr "コンパイルに失敗しました"
+
+msgid "Method not found"
+msgstr "メソッドが見つかりませんでした"
+
+msgid "Link failed"
+msgstr "リンクに失敗しました"
+
+msgid "Script failed"
+msgstr "スクリプトが失敗しました"
+
+msgid "Invalid declaration"
+msgstr "無効な宣言"
+
+msgid "Duplicate symbol"
+msgstr "識別子が重複しています"
+
+msgid "Parse error"
+msgstr "解析エラー"
+
+msgid "Busy"
+msgstr "使用中"
+
+msgid "Skip"
+msgstr "スキップ"
+
 msgid "Help"
 msgstr "ヘルプ"
+
+msgid "Bug"
+msgstr "不具合"
 
 msgid "Printer on fire"
 msgstr "プリンター発火"
@@ -1243,6 +1353,18 @@ msgstr "ノードを移動"
 msgid "Transition exists!"
 msgstr "トランジションが存在しています！"
 
+msgid "Cannot transition to self!"
+msgstr "自分自身へのトランザクションは不可能！"
+
+msgid "Cannot transition to \"Start\"!"
+msgstr "\"Start\" へのトランザクションは不可能！"
+
+msgid "Cannot transition from \"End\"!"
+msgstr "\"End\" へのトランザクションは不可能！"
+
+msgid "Transition from \"%s\" to \"%s\" already exists!"
+msgstr "\"%s\" から \"%s\" へのトランザクションは既に存在します！"
+
 msgid "Play/Travel to %s"
 msgstr "再生/移動 %s"
 
@@ -1546,6 +1668,9 @@ msgstr "キーを切り取り"
 
 msgid "Copy Key(s)"
 msgstr "キーをコピー"
+
+msgid "Send Key(s) to RESET"
+msgstr "キーをRESETに送信"
 
 msgid "Delete Key(s)"
 msgstr "キーを削除"
@@ -1883,6 +2008,9 @@ msgstr "次のキーフレームに移動"
 
 msgid "Go to Previous Keyframe"
 msgstr "前のキーフレームに移動"
+
+msgid "Add tracks to RESET"
+msgstr "RESETにトラックを追加"
 
 msgid "Bake Animation..."
 msgstr "アニメーションをベイク…"
@@ -4389,6 +4517,13 @@ msgstr ""
 msgid "Filter by Type"
 msgstr "型で絞り込む"
 
+msgid ""
+"Selects all Nodes of the given type.\n"
+"Inserts \"type:\". You can also use the shorthand \"t:\"."
+msgstr ""
+"特定の型に該当するノードをすべて選択します。\n"
+"\"type:\"を挿入します。\"t:\"で略すこともできす。"
+
 msgid "Filter by Group"
 msgstr "グループで絞り込む"
 
@@ -6182,6 +6317,9 @@ msgstr ""
 "プロジェクトからファイル/フォルダーを除外するフィルター\n"
 "(コンマ区切り、 例: *.json, *.txt, docs/*)"
 
+msgid "Delta Encoding Compression Level"
+msgstr "デルタ圧縮度"
+
 msgid "Base Packs:"
 msgstr "ベースパック:"
 
@@ -6253,6 +6391,13 @@ msgstr "バイナリトークン(高速な読み込み)"
 
 msgid "Compressed binary tokens (smaller files)"
 msgstr "圧縮されたバイナリトークン (より小さなファイル)"
+
+msgid ""
+"No presets found.\n"
+"Create one so that its parameters can be edited here."
+msgstr ""
+"プリセットが見つかりませんでした。\n"
+"プリセットの引数がここで編集可能になるには新しいプリセットを作成してください。"
 
 msgid "Export PCK/ZIP..."
 msgstr "PCK/Zipのエクスポート..."
@@ -6352,6 +6497,9 @@ msgstr "削除されるファイル:"
 
 msgid "Dependencies of files to be deleted:"
 msgstr "削除されるファイルの依存関係:"
+
+msgid "Referenced by %s"
+msgstr "%s に参照されています"
 
 msgid "Fix Dependencies"
 msgstr "依存関係の修復"
@@ -7458,6 +7606,10 @@ msgstr "レイヤー"
 msgid "<empty>"
 msgstr "<空>"
 
+msgctxt "Ease Type"
+msgid "Zero"
+msgstr "ゼロ"
+
 msgid "Temporary Euler may be changed implicitly!"
 msgstr "一時的なオイラーは暗黙的に変更される可能性があります!"
 
@@ -7578,6 +7730,23 @@ msgstr "翻訳を追加"
 msgid "Lock/Unlock Component Ratio"
 msgstr "ロック/アンロック構成比"
 
+msgid "This %s is external to scene."
+msgstr "この %s はシーンの外部に存在します。"
+
+msgid ""
+"The %s cannot be edited in the inspector and can't be made unique directly."
+msgstr ""
+"%s はインスペクターで編集不可であり、直にユニーク化することができません。"
+
+msgid "Left-click to make it unique."
+msgstr "左クリックでユニーク化。"
+
+msgid "It is possible to make its subresources unique."
+msgstr "サブリソースのユニーク化は可能です。"
+
+msgid "In order to duplicate it, make its parent Resource unique."
+msgstr "複製するには親リソースをユニーク化してください。"
+
 msgid ""
 "The selected resource (%s) does not match any type expected for this property "
 "(%s)."
@@ -7595,6 +7764,12 @@ msgstr "検査"
 
 msgid "Make Unique (Recursive)"
 msgstr "ユニーク化 (再帰的)"
+
+msgid "In order to duplicate recursively, make its parent Resource unique."
+msgstr "再帰的に複製するには親リソースをユニーク化してください。"
+
+msgid "Subresources have already been made unique."
+msgstr "サブリソースはユニーク化済みです。"
 
 msgid "Paste as Unique"
 msgstr "ユニーク化して貼り付け"
@@ -8984,6 +9159,9 @@ msgstr "生成中..."
 msgid "Loading emission mask requires ParticleProcessMaterial."
 msgstr "放出マスクの読み込みには ParticleProcessMaterial が必要です。"
 
+msgid "Mask texture has an invalid size."
+msgstr "マスクテクスチャの大きさは無効です。"
+
 msgid "GPUParticles2D"
 msgstr "GPUParticles2D"
 
@@ -10220,6 +10398,13 @@ msgstr "消去ツール"
 msgid "Picker Tool"
 msgstr "ピッカーツール"
 
+msgid ""
+"Source ID: %d\n"
+"Texture path: %s"
+msgstr ""
+"ソースID：%d\n"
+"テクスチャのパス：%s"
+
 msgid "Bone Picker:"
 msgstr "ボーンピッカー:"
 
@@ -10449,6 +10634,12 @@ msgstr "簡略化された凸型シェイプを作成する"
 msgid "Multiple Convex"
 msgstr "複数の凸型シェイプを作成する"
 
+msgid "Capsule"
+msgstr "カプセル"
+
+msgid "Cylinder"
+msgstr "円柱"
+
 msgid "Sphere"
 msgstr "球体"
 
@@ -10598,6 +10789,22 @@ msgstr ""
 "簡略化された凸型コリジョンシェイプを作成します。\n"
 "これは単一の凸型コリジョンシェイプと似ていますが、精度を犠牲により単純なジオメ"
 "トリになることがあります。"
+
+msgid ""
+"Creates a box, capsule, cylinder, or sphere primitive collision shape if the "
+"mesh is a primitive.\n"
+"The mesh must use the built-in BoxMesh, CapsuleMesh, CylinderMesh, or "
+"SphereMesh primitive.\n"
+"This is faster than the convex collision shape option for collision detection."
+msgstr ""
+"基本meshである場合、箱、カプセル、円柱または球体の基本衝突シェイプを生成しま"
+"す。\n"
+"meshは組み込みのBoxMesh、CapsuleMesh、CylinderMeshまたはSphereMeshを使う必要が"
+"あります。\n"
+"この衝突検出方法は凸形状の衝突シェイプよりも速いです。"
+
+msgid "Longest Axis"
+msgstr "最長軸"
 
 msgid "X-Axis"
 msgstr "X軸"
@@ -15046,7 +15253,7 @@ msgid "Listening for Input. Hold %s to release focus."
 msgstr "入力を待っています。フォーカスを解除するには %s を長押ししてください。"
 
 msgid "Listening for Input"
-msgstr "入力を待機しています..."
+msgstr "入力を待機しています"
 
 msgid "Filter by Event"
 msgstr "イベントでフィルタ"
@@ -17536,6 +17743,9 @@ msgstr "内部のNavigationMeshの頂点とポリゴンを消去します。"
 
 msgid "Toggles whether the noise preview is computed in 3D space."
 msgstr "ノイズプレビューを3D空間で計算するかどうかを切り替えます。"
+
+msgid "Delta"
+msgstr "デルタ"
 
 msgid "Rename Action"
 msgstr "アクション名を変更"

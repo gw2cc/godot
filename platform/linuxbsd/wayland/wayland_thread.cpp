@@ -197,6 +197,21 @@ Vector<uint8_t> WaylandThread::_wp_primary_selection_offer_read(struct wl_displa
 	return Vector<uint8_t>();
 }
 
+void WaylandThread::_wl_display_check_error(struct wl_display *wl_display) {
+	int werror = wl_display_get_error(wl_display);
+	if (werror) {
+		if (werror == EPROTO) {
+			struct wl_interface *wl_interface = nullptr;
+			uint32_t id = 0;
+
+			int error_code = wl_display_get_protocol_error(wl_display, (const struct wl_interface **)&wl_interface, &id);
+			CRASH_NOW_MSG(vformat("Wayland protocol error %d on interface %s@%d.", error_code, wl_interface ? wl_interface->name : "unknown", id));
+		} else {
+			CRASH_NOW_MSG(vformat("Wayland client error code %d.", werror));
+		}
+	}
+}
+
 Ref<InputEventKey> WaylandThread::_seat_state_get_key_event(SeatState *p_ss, xkb_keycode_t p_keycode, bool p_pressed) {
 	Ref<InputEventKey> event;
 
@@ -1287,6 +1302,10 @@ void WaylandThread::_wl_output_on_mode(void *data, struct wl_output *wl_output, 
 	ScreenState *ss = (ScreenState *)data;
 	ERR_FAIL_NULL(ss);
 
+	if (!(flags & WL_OUTPUT_MODE_CURRENT)) {
+		return;
+	}
+
 	ss->pending_data.size.width = width;
 	ss->pending_data.size.height = height;
 
@@ -1338,12 +1357,22 @@ void WaylandThread::_xdg_surface_on_configure(void *data, struct xdg_surface *xd
 	WindowState *ws = (WindowState *)data;
 	ERR_FAIL_NULL(ws);
 
+	ws->ready = true;
+
 	DEBUG_LOG_WAYLAND_THREAD(vformat("xdg surface on configure rect %s", ws->rect));
 }
 
 void WaylandThread::_xdg_toplevel_on_configure(void *data, struct xdg_toplevel *xdg_toplevel, int32_t width, int32_t height, struct wl_array *states) {
 	WindowState *ws = (WindowState *)data;
 	ERR_FAIL_NULL(ws);
+
+	if (width == 0) {
+		width = ws->rect.size.width;
+	}
+
+	if (height == 0) {
+		height = ws->rect.size.height;
+	}
 
 	// Expect the window to be in a plain state. It will get properly set if the
 	// compositor reports otherwise below.
@@ -1400,9 +1429,7 @@ void WaylandThread::_xdg_toplevel_on_configure(void *data, struct xdg_toplevel *
 		}
 	}
 
-	if (width != 0 && height != 0) {
-		window_state_update_size(ws, width, height);
-	}
+	window_state_update_size(ws, width, height);
 
 	DEBUG_LOG_WAYLAND_THREAD(vformat("XDG toplevel on configure width %d height %d.", width, height));
 }
@@ -1453,9 +1480,15 @@ void WaylandThread::_xdg_popup_on_configure(void *data, struct xdg_popup *xdg_po
 	WindowState *ws = (WindowState *)data;
 	ERR_FAIL_NULL(ws);
 
-	if (width != 0 && height != 0) {
-		window_state_update_size(ws, width, height);
+	if (width == 0) {
+		width = ws->rect.size.width;
 	}
+
+	if (height == 0) {
+		height = ws->rect.size.width;
+	}
+
+	window_state_update_size(ws, width, height);
 
 	WindowState *parent = ws->wayland_thread->window_get_state(ws->parent_id);
 	ERR_FAIL_NULL(parent);
@@ -1547,6 +1580,8 @@ void WaylandThread::libdecor_on_error(struct libdecor *context, enum libdecor_er
 void WaylandThread::libdecor_frame_on_configure(struct libdecor_frame *frame, struct libdecor_configuration *configuration, void *user_data) {
 	WindowState *ws = (WindowState *)user_data;
 	ERR_FAIL_NULL(ws);
+
+	ws->ready = true;
 
 	int width = 0;
 	int height = 0;
@@ -2484,37 +2519,15 @@ void WaylandThread::_wl_data_source_on_target(void *data, struct wl_data_source 
 
 void WaylandThread::_wl_data_source_on_send(void *data, struct wl_data_source *wl_data_source, const char *mime_type, int32_t fd) {
 	SeatState *ss = (SeatState *)data;
-	ERR_FAIL_NULL(ss);
-
-	Vector<uint8_t> *data_to_send = nullptr;
-
-	if (wl_data_source == ss->wl_data_source_selection) {
-		data_to_send = &ss->selection_data;
-		DEBUG_LOG_WAYLAND_THREAD("Clipboard: requested selection.");
+	if (ss == nullptr) {
+		ERR_PRINT("Seat state not set.");
+		close(fd);
+		return;
 	}
 
-	if (data_to_send) {
-		ssize_t written_bytes = 0;
-
-		bool valid_mime = false;
-
-		if (strcmp(mime_type, "text/plain;charset=utf-8") == 0) {
-			valid_mime = true;
-		} else if (strcmp(mime_type, "text/plain") == 0) {
-			valid_mime = true;
-		}
-
-		if (valid_mime) {
-			written_bytes = write(fd, data_to_send->ptr(), data_to_send->size());
-		}
-
-		if (written_bytes > 0) {
-			DEBUG_LOG_WAYLAND_THREAD(vformat("Clipboard: sent %d bytes.", written_bytes));
-		} else if (written_bytes == 0) {
-			DEBUG_LOG_WAYLAND_THREAD("Clipboard: no bytes sent.");
-		} else {
-			ERR_PRINT(vformat("Clipboard: write error %d.", errno));
-		}
+	if (wl_data_source == ss->wl_data_source_selection) {
+		DEBUG_LOG_WAYLAND_THREAD("Clipboard: requested selection.");
+		_clipboard_send(ss->selection_data, mime_type, fd);
 	}
 
 	close(fd);
@@ -2680,29 +2693,15 @@ void WaylandThread::_wp_primary_selection_offer_on_offer(void *data, struct zwp_
 
 void WaylandThread::_wp_primary_selection_source_on_send(void *data, struct zwp_primary_selection_source_v1 *wp_primary_selection_source_v1, const char *mime_type, int32_t fd) {
 	SeatState *ss = (SeatState *)data;
-	ERR_FAIL_NULL(ss);
-
-	Vector<uint8_t> *data_to_send = nullptr;
-
-	if (wp_primary_selection_source_v1 == ss->wp_primary_selection_source) {
-		data_to_send = &ss->primary_data;
-		DEBUG_LOG_WAYLAND_THREAD("Clipboard: requested primary selection.");
+	if (ss == nullptr) {
+		ERR_PRINT("Seat state not set.");
+		close(fd);
+		return;
 	}
 
-	if (data_to_send) {
-		ssize_t written_bytes = 0;
-
-		if (strcmp(mime_type, "text/plain") == 0) {
-			written_bytes = write(fd, data_to_send->ptr(), data_to_send->size());
-		}
-
-		if (written_bytes > 0) {
-			DEBUG_LOG_WAYLAND_THREAD(vformat("Clipboard: sent %d bytes.", written_bytes));
-		} else if (written_bytes == 0) {
-			DEBUG_LOG_WAYLAND_THREAD("Clipboard: no bytes sent.");
-		} else {
-			ERR_PRINT(vformat("Clipboard: write error %d.", errno));
-		}
+	if (wp_primary_selection_source_v1 == ss->wp_primary_selection_source) {
+		DEBUG_LOG_WAYLAND_THREAD("Clipboard: requested primary selection.");
+		_clipboard_send(ss->primary_data, mime_type, fd);
 	}
 
 	close(fd);
@@ -3302,6 +3301,33 @@ void WaylandThread::_godot_embedded_client_on_window_focus_out(void *data, struc
 	DEBUG_LOG_WAYLAND_THREAD(vformat("Embedded client pid %d focus out", state->pid));
 }
 
+void WaylandThread::_clipboard_send(Vector<uint8_t> &p_data, const char *p_media_type, int32_t p_fd) {
+	ssize_t written_bytes = 0;
+
+	bool valid_mime = false;
+
+	if (strcmp(p_media_type, "text/plain;charset=utf-8") == 0) {
+		valid_mime = true;
+	} else if (strcmp(p_media_type, "text/plain") == 0) {
+		valid_mime = true;
+	}
+
+	if (!valid_mime) {
+		DEBUG_LOG_WAYLAND_THREAD(vformat("Clipboard: Media type '%s' unknown, skipping.", p_media_type));
+		return;
+	}
+
+	written_bytes = write(p_fd, p_data.ptr(), p_data.size());
+
+	if (written_bytes > 0) {
+		DEBUG_LOG_WAYLAND_THREAD(vformat("Clipboard: sent %d bytes.", written_bytes));
+	} else if (written_bytes == 0) {
+		DEBUG_LOG_WAYLAND_THREAD("Clipboard: no bytes sent.");
+	} else {
+		ERR_PRINT(vformat("Clipboard: write error %d.", errno));
+	}
+}
+
 // NOTE: This must be started after a valid wl_display is loaded.
 void WaylandThread::_poll_events_thread(void *p_data) {
 	Thread::set_name("Wayland Events");
@@ -3338,19 +3364,7 @@ void WaylandThread::_poll_events_thread(void *p_data) {
 			}
 		}
 
-		int werror = wl_display_get_error(data->wl_display);
-
-		if (werror) {
-			if (werror == EPROTO) {
-				struct wl_interface *wl_interface = nullptr;
-				uint32_t id = 0;
-
-				int error_code = wl_display_get_protocol_error(data->wl_display, (const struct wl_interface **)&wl_interface, &id);
-				CRASH_NOW_MSG(vformat("Wayland protocol error %d on interface %s@%d.", error_code, wl_interface ? wl_interface->name : "unknown", id));
-			} else {
-				CRASH_NOW_MSG(vformat("Wayland client error code %d.", werror));
-			}
-		}
+		_wl_display_check_error(data->wl_display);
 
 		wl_display_flush(data->wl_display);
 
@@ -3521,6 +3535,10 @@ double WaylandThread::window_state_get_scale_factor(const WindowState *p_ws) {
 
 void WaylandThread::window_state_update_size(WindowState *p_ws, int p_width, int p_height) {
 	ERR_FAIL_NULL(p_ws);
+
+	// Failsafe.
+	p_width = MAX(p_width, 1);
+	p_height = MAX(p_height, 1);
 
 	int preferred_buffer_scale = window_state_get_preferred_buffer_scale(p_ws);
 	bool using_fractional = p_ws->preferred_fractional_scale > 0;
@@ -3820,7 +3838,7 @@ void WaylandThread::window_create(DisplayServer::WindowID p_window_id, const Siz
 	ws.registry = &registry;
 	ws.wayland_thread = this;
 
-	ws.rect.size = p_size;
+	ws.rect.size = p_size.maxi(1);
 
 	ws.wl_surface = wl_compositor_create_surface(registry.wl_compositor);
 	wl_proxy_tag_godot((struct wl_proxy *)ws.wl_surface);
@@ -3894,11 +3912,6 @@ void WaylandThread::window_create(DisplayServer::WindowID p_window_id, const Siz
 	}
 
 	wl_surface_commit(ws.wl_surface);
-
-	// Wait for the surface to be configured before continuing.
-	wl_display_roundtrip(wl_display);
-
-	window_state_update_size(&ws, ws.rect.size.width, ws.rect.size.height);
 }
 
 void WaylandThread::window_create_popup(DisplayServer::WindowID p_window_id, DisplayServer::WindowID p_parent_id, Rect2i p_rect) {
@@ -3912,7 +3925,6 @@ void WaylandThread::window_create_popup(DisplayServer::WindowID p_window_id, Dis
 
 	p_rect.position = scale_vector2i(p_rect.position, 1.0 / parent_scale);
 	p_rect.size = scale_vector2i(p_rect.size, 1.0 / parent_scale);
-
 	// We manually scaled based on the parent. If we don't set the relevant fields,
 	// the resizing routines will get confused and scale once more.
 	ws.preferred_fractional_scale = parent.preferred_fractional_scale;
@@ -3983,9 +3995,6 @@ void WaylandThread::window_create_popup(DisplayServer::WindowID p_window_id, Dis
 	wl_callback_add_listener(ws.frame_callback, &frame_wl_callback_listener, &ws);
 
 	wl_surface_commit(ws.wl_surface);
-
-	// Wait for the surface to be configured before continuing.
-	wl_display_roundtrip(wl_display);
 }
 
 void WaylandThread::window_destroy(DisplayServer::WindowID p_window_id) {
@@ -4104,7 +4113,7 @@ Size2i WaylandThread::window_set_size(DisplayServer::WindowID p_window_id, const
 
 	window_state_update_size(&ws, new_size.width, new_size.height);
 
-	return scale_vector2i(new_size, window_scale);
+	return scale_vector2i(new_size, window_scale).maxi(1);
 }
 
 void WaylandThread::beep() const {
@@ -4370,8 +4379,8 @@ void WaylandThread::window_try_set_mode(DisplayServer::WindowID p_window_id, Dis
 #endif // LIBDECOR_ENABLED
 		} break;
 	}
-
-	// Wait for a configure event and hope that something changed.
+	// Roundtrip and hope that something changed.
+	// TODO: Async?
 	wl_display_roundtrip(wl_display);
 
 	if (ws.mode != DisplayServer::WINDOW_MODE_WINDOWED) {
@@ -4828,6 +4837,28 @@ Error WaylandThread::init() {
 
 	thread_data.wl_display = wl_display;
 
+#ifdef LIBDECOR_ENABLED
+	bool libdecor_found = true;
+
+	bool skip_libdecor = OS::get_singleton()->get_environment("GODOT_WAYLAND_DISABLE_LIBDECOR") == "1";
+
+#ifdef SOWRAP_ENABLED
+	if (!skip_libdecor && initialize_libdecor(dylibloader_verbose) != 0) {
+		libdecor_found = false;
+	}
+#endif // SOWRAP_ENABLED
+
+	if (skip_libdecor) {
+		print_verbose("Skipping libdecor check because GODOT_WAYLAND_DISABLE_LIBDECOR is set to 1.");
+	} else {
+		if (libdecor_found) {
+			libdecor_context = libdecor_new(wl_display, (struct libdecor_interface *)&libdecor_interface);
+		} else {
+			print_verbose("libdecor not found. Client-side decorations disabled.");
+		}
+	}
+#endif // LIBDECOR_ENABLED
+
 	wl_registry = wl_display_get_registry(wl_display);
 
 	ERR_FAIL_NULL_V_MSG(wl_registry, ERR_UNAVAILABLE, "Can't obtain the Wayland registry global.");
@@ -4837,6 +4868,7 @@ Error WaylandThread::init() {
 	wl_registry_add_listener(wl_registry, &wl_registry_listener, &registry);
 
 	// Wait for registry to get notified from the compositor.
+	// TODO: Async?
 	wl_display_roundtrip(wl_display);
 
 	ERR_FAIL_NULL_V_MSG(registry.wl_shm, ERR_UNAVAILABLE, "Can't obtain the Wayland shared memory global.");
@@ -4873,29 +4905,8 @@ Error WaylandThread::init() {
 	}
 
 	// Wait for seat capabilities.
+	// TODO: Async?
 	wl_display_roundtrip(wl_display);
-
-#ifdef LIBDECOR_ENABLED
-	bool libdecor_found = true;
-
-	bool skip_libdecor = OS::get_singleton()->get_environment("GODOT_WAYLAND_DISABLE_LIBDECOR") == "1";
-
-#ifdef SOWRAP_ENABLED
-	if (!skip_libdecor && initialize_libdecor(dylibloader_verbose) != 0) {
-		libdecor_found = false;
-	}
-#endif // SOWRAP_ENABLED
-
-	if (skip_libdecor) {
-		print_verbose("Skipping libdecor check because GODOT_WAYLAND_DISABLE_LIBDECOR is set to 1.");
-	} else {
-		if (libdecor_found) {
-			libdecor_context = libdecor_new(wl_display, (struct libdecor_interface *)&libdecor_interface);
-		} else {
-			print_verbose("libdecor not found. Client-side decorations disabled.");
-		}
-	}
-#endif // LIBDECOR_ENABLED
 
 	cursor_theme_name = OS::get_singleton()->get_environment("XCURSOR_THEME");
 
@@ -5142,15 +5153,18 @@ void WaylandThread::selection_set_text(const String &p_text) {
 
 	ss->selection_data = p_text.to_utf8_buffer();
 
-	if (ss->wl_data_source_selection == nullptr) {
-		ss->wl_data_source_selection = wl_data_device_manager_create_data_source(registry.wl_data_device_manager);
-		wl_data_source_add_listener(ss->wl_data_source_selection, &wl_data_source_listener, ss);
-		wl_data_source_offer(ss->wl_data_source_selection, "text/plain;charset=utf-8");
-		wl_data_source_offer(ss->wl_data_source_selection, "text/plain");
-
-		// TODO: Implement a good way of getting the latest serial from the user.
-		wl_data_device_set_selection(ss->wl_data_device, ss->wl_data_source_selection, MAX(ss->pointer_data.button_serial, ss->last_key_pressed_serial));
+	if (ss->wl_data_source_selection != nullptr) {
+		wl_data_source_destroy(ss->wl_data_source_selection);
+		ss->wl_data_source_selection = nullptr;
 	}
+
+	ss->wl_data_source_selection = wl_data_device_manager_create_data_source(registry.wl_data_device_manager);
+	wl_data_source_add_listener(ss->wl_data_source_selection, &wl_data_source_listener, ss);
+	wl_data_source_offer(ss->wl_data_source_selection, "text/plain;charset=utf-8");
+	wl_data_source_offer(ss->wl_data_source_selection, "text/plain");
+
+	// TODO: Implement a good way of getting the latest serial from the user.
+	wl_data_device_set_selection(ss->wl_data_device, ss->wl_data_source_selection, MAX(ss->pointer_data.button_serial, ss->last_key_pressed_serial));
 
 	// Wait for the message to get to the server before continuing, otherwise the
 	// clipboard update might come with a delay.
@@ -5233,7 +5247,7 @@ Vector<uint8_t> WaylandThread::primary_get_mime(const String &p_mime) const {
 
 		if (os->mime_types.has(p_mime)) {
 			// All righty, we're offering this type. Let's just return the data as is.
-			return ss->selection_data;
+			return ss->primary_data;
 		}
 
 		// ... we don't offer that type. Oh well.
@@ -5263,15 +5277,18 @@ void WaylandThread::primary_set_text(const String &p_text) {
 
 	ss->primary_data = p_text.to_utf8_buffer();
 
-	if (ss->wp_primary_selection_source == nullptr) {
-		ss->wp_primary_selection_source = zwp_primary_selection_device_manager_v1_create_source(registry.wp_primary_selection_device_manager);
-		zwp_primary_selection_source_v1_add_listener(ss->wp_primary_selection_source, &wp_primary_selection_source_listener, ss);
-		zwp_primary_selection_source_v1_offer(ss->wp_primary_selection_source, "text/plain;charset=utf-8");
-		zwp_primary_selection_source_v1_offer(ss->wp_primary_selection_source, "text/plain");
-
-		// TODO: Implement a good way of getting the latest serial from the user.
-		zwp_primary_selection_device_v1_set_selection(ss->wp_primary_selection_device, ss->wp_primary_selection_source, MAX(ss->pointer_data.button_serial, ss->last_key_pressed_serial));
+	if (ss->wp_primary_selection_source != nullptr) {
+		zwp_primary_selection_source_v1_destroy(ss->wp_primary_selection_source);
+		ss->wp_primary_selection_source = nullptr;
 	}
+
+	ss->wp_primary_selection_source = zwp_primary_selection_device_manager_v1_create_source(registry.wp_primary_selection_device_manager);
+	zwp_primary_selection_source_v1_add_listener(ss->wp_primary_selection_source, &wp_primary_selection_source_listener, ss);
+	zwp_primary_selection_source_v1_offer(ss->wp_primary_selection_source, "text/plain;charset=utf-8");
+	zwp_primary_selection_source_v1_offer(ss->wp_primary_selection_source, "text/plain");
+
+	// TODO: Implement a good way of getting the latest serial from the user.
+	zwp_primary_selection_device_v1_set_selection(ss->wp_primary_selection_device, ss->wp_primary_selection_source, MAX(ss->pointer_data.button_serial, ss->last_key_pressed_serial));
 
 	// Wait for the message to get to the server before continuing, otherwise the
 	// clipboard update might come with a delay.
@@ -5295,6 +5312,41 @@ bool WaylandThread::get_reset_frame() {
 	return old_frame;
 }
 
+// Wraps around `wl_display_dispatch_pending`. Judging from the docs, this
+// should work pretty much like `wl_display_dispatch_timeout`, which is only
+// available on somewhat recent versions of libwayland.
+//
+// This implementation is NOT based on libwayland's code.
+int WaylandThread::wait_events(int p_timeout_ms) {
+	struct pollfd poll_fd;
+	poll_fd.fd = wl_display_get_fd(wl_display);
+	poll_fd.events = POLLIN | POLLHUP;
+
+	while (wl_display_prepare_read(wl_display) != 0) {
+		// Event queue got already something.
+		return wl_display_dispatch_pending(wl_display);
+	}
+
+	wl_display_flush(wl_display);
+
+	// Wait for the event file descriptor to have new data.
+	poll(&poll_fd, 1, p_timeout_ms);
+
+	if (poll_fd.revents | POLLIN) {
+		// Load the queues with fresh new data.
+		wl_display_read_events(wl_display);
+	} else {
+		// Oh well... Stop signaling that we want to read.
+		wl_display_cancel_read(wl_display);
+
+		// We've got no new events :(
+		return 0;
+	}
+
+	// Let's try dispatching now...
+	return wl_display_dispatch_pending(wl_display);
+}
+
 // Dispatches events until a frame event is received, a window is reported as
 // suspended or the timeout expires.
 bool WaylandThread::wait_frame_suspend_ms(int p_timeout) {
@@ -5303,9 +5355,21 @@ bool WaylandThread::wait_frame_suspend_ms(int p_timeout) {
 	// `wl_display_prepare_read` and `wl_display_read`. This means, that it will
 	// basically be guaranteed to stay stuck in a "prepare read" state, where it
 	// will block any other attempt at reading the display fd, such as ours. The
-	// solution? Let's make sure the mutex is locked (it should) and unblock the
-	// main thread with a roundtrip!
+	// solution? Let's make sure the mutex is locked (it should)...
 	MutexLock mutex_lock(mutex);
+
+	if (is_suspended()) {
+		return false;
+	}
+
+	if (frame) {
+		frame = false;
+		return true;
+	}
+
+	ERR_FAIL_COND_V(Thread::get_caller_id() == events_thread.get_id(), false);
+
+	// ...and unblock the main thread with a roundtrip!
 	wl_display_roundtrip(wl_display);
 
 	if (is_suspended()) {
@@ -5321,65 +5385,12 @@ bool WaylandThread::wait_frame_suspend_ms(int p_timeout) {
 		return true;
 	}
 
-	struct pollfd poll_fd;
-	poll_fd.fd = wl_display_get_fd(wl_display);
-	poll_fd.events = POLLIN | POLLHUP;
+	for (int remaining_ms = p_timeout; remaining_ms > 0;) {
+		int begin_ms = OS::get_singleton()->get_ticks_msec();
 
-	int begin_ms = OS::get_singleton()->get_ticks_msec();
-	int remaining_ms = p_timeout;
+		wait_events(remaining_ms);
 
-	while (remaining_ms > 0) {
-		// Empty the event queue while it's full.
-		while (wl_display_prepare_read(wl_display) != 0) {
-			if (wl_display_dispatch_pending(wl_display) == -1) {
-				// Oh no. We'll check and handle any display error below.
-				break;
-			}
-
-			if (is_suspended()) {
-				return false;
-			}
-
-			if (frame) {
-				// We had a frame event in the queue :D
-				frame = false;
-				return true;
-			}
-		}
-
-		int werror = wl_display_get_error(wl_display);
-
-		if (werror) {
-			if (werror == EPROTO) {
-				struct wl_interface *wl_interface = nullptr;
-				uint32_t id = 0;
-
-				int error_code = wl_display_get_protocol_error(wl_display, (const struct wl_interface **)&wl_interface, &id);
-				CRASH_NOW_MSG(vformat("Wayland protocol error %d on interface %s@%d.", error_code, wl_interface ? wl_interface->name : "unknown", id));
-			} else {
-				CRASH_NOW_MSG(vformat("Wayland client error code %d.", werror));
-			}
-		}
-
-		wl_display_flush(wl_display);
-
-		// Wait for the event file descriptor to have new data.
-		poll(&poll_fd, 1, remaining_ms);
-
-		if (poll_fd.revents | POLLIN) {
-			// Load the queues with fresh new data.
-			wl_display_read_events(wl_display);
-		} else {
-			// Oh well... Stop signaling that we want to read.
-			wl_display_cancel_read(wl_display);
-
-			// We've got no new events :(
-			// We won't even bother with checking the frame flag.
-			return false;
-		}
-
-		// Let's try dispatching now...
-		wl_display_dispatch_pending(wl_display);
+		_wl_display_check_error(wl_display);
 
 		if (is_suspended()) {
 			return false;
@@ -5419,6 +5430,43 @@ bool WaylandThread::is_suspended() const {
 	}
 
 	return true;
+}
+
+bool WaylandThread::window_wait_ready(DisplayServer::WindowID p_window_id, int p_timeout_ms) {
+	MutexLock mutex_lock(mutex);
+
+	WindowState *ws = windows.getptr(p_window_id);
+	ERR_FAIL_NULL_V(ws, false);
+
+	if (ws->ready) {
+		return true;
+	}
+
+	// See _poll_events_thread.
+	ERR_FAIL_COND_V(Thread::get_caller_id() == events_thread.get_id(), ws->ready);
+
+	// Unlock the thread.
+	wl_display_roundtrip(wl_display);
+
+	if (ws->ready) {
+		return true;
+	}
+
+	for (int remaining_ms = p_timeout_ms; remaining_ms > 0;) {
+		int begin_ms = OS::get_singleton()->get_ticks_msec();
+
+		wait_events(remaining_ms);
+
+		_wl_display_check_error(wl_display);
+
+		if (ws->ready) {
+			return true;
+		}
+
+		remaining_ms -= OS::get_singleton()->get_ticks_msec() - begin_ms;
+	}
+
+	return false;
 }
 
 struct godot_embedding_compositor *WaylandThread::get_embedding_compositor() {

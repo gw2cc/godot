@@ -27,13 +27,14 @@
 # "A Thousand Ships (she/her)" <over999ships@gmail.com>, 2025.
 # RESONA <championkungpvp@gmail.com>, 2025.
 # Wi Chan <mac.wikrom@gmail.com>, 2026.
+# M1ST3RWiCK <suwanruch.s@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine editor interface\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-01-15 07:06+0000\n"
-"Last-Translator: Wi Chan <mac.wikrom@gmail.com>\n"
+"PO-Revision-Date: 2026-02-05 19:01+0000\n"
+"Last-Translator: M1ST3RWiCK <suwanruch.s@gmail.com>\n"
 "Language-Team: Thai <https://hosted.weblate.org/projects/godot-engine/godot/"
 "th/>\n"
 "Language: th\n"
@@ -41,10 +42,31 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 msgid "OK"
 msgstr "ตกลง"
+
+msgid "Failed"
+msgstr "ผิดพลาด"
+
+msgid "Unavailable"
+msgstr "ไม่มีคำอธิบายสำหรับ"
+
+msgid "Unconfigured"
+msgstr "ไม่ได้กำหนดค่า"
+
+msgid "Unauthorized"
+msgstr "ไม่ได้รับอนุญาต"
+
+msgid "Parameter out of range"
+msgstr "พารามิเตอร์อยู่นอกช่วงที่กำหนด"
+
+msgid "Out of memory"
+msgstr "หน่วยความจำไม่เพียงพอ"
+
+msgid "File not found"
+msgstr "ไม่พบไฟล์"
 
 msgid "File already in use"
 msgstr "ไฟล์ถูกใช้งานอยู่แล้ว"

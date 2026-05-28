@@ -91,13 +91,14 @@
 # "A Thousand Ships (she/her)" <over999ships@gmail.com>, 2025.
 # penggrin12 <miner.sidor@gmail.com>, 2025.
 # Marijn Scholtus <linkable@gmail.com>, 2026.
+# Flying Piano <flyingpiano27@gmail.com>, 2026.
 msgid ""
 msgstr ""
 "Project-Id-Version: Godot Engine editor interface\n"
 "Report-Msgid-Bugs-To: https://github.com/godotengine/godot\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2026-01-16 10:02+0000\n"
-"Last-Translator: Cas Vankrunkelsven <cas.vankrunkelsven@protonmail.com>\n"
+"PO-Revision-Date: 2026-02-08 06:09+0000\n"
+"Last-Translator: Flying Piano <flyingpiano27@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/godot-engine/godot/"
 "nl/>\n"
 "Language: nl\n"
@@ -105,7 +106,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.15.2\n"
+"X-Generator: Weblate 5.16-dev\n"
 
 msgid "OK"
 msgstr "Oké"
@@ -934,7 +935,7 @@ msgid "Inspect Filters"
 msgstr "Inspecteer Filters"
 
 msgid "Edit Filters"
-msgstr "Filters berwerken"
+msgstr "Filters bewerken"
 
 msgid "Output node can't be added to the blend tree."
 msgstr "Uitvoerknoop kan niet worden toegevoegd aan de overgangsboom."
@@ -1063,17 +1064,110 @@ msgstr "Er bestaat al een bibliotheek met deze naam."
 msgid "Animation name is valid."
 msgstr "Animatienaam is geldig."
 
+msgid "Global library will be created."
+msgstr "Globale bibliotheek zal worden gecreëerd."
+
+msgid "Library name is valid."
+msgstr "Bibliotheeknaam is geldig."
+
 msgid "Add Animation to Library: %s"
 msgstr "Animatie toevoegen aan bibliotheek: %s"
+
+msgid "Add Animation Library: %s"
+msgstr "Voeg Animatiebibliotheek toe: %s"
 
 msgid "Load Animation"
 msgstr "Animatie laden"
 
+msgid ""
+"This animation library can't be saved because it does not belong to the "
+"edited scene. Make it unique first."
+msgstr ""
+"Deze animatiebibliotheek kan niet opgeslagen worden omdat het niet bij de "
+"bewerkte scène hoort. Maak het eerst uniek."
+
+msgid ""
+"This animation library can't be saved because it was imported from another "
+"file. Make it unique first."
+msgstr ""
+"Deze animatiebibliotheek kan niet opgeslagen worden omdat het vanuit een "
+"ander bestand werd geïmporteerd. Maak het eerst uniek."
+
+msgid "Save Library"
+msgstr "Bibilotheek Opslaan"
+
+msgid "Make Animation Library Unique: %s"
+msgstr "Maak Animatiebibliotheek Uniek: %s"
+
+msgid ""
+"This animation can't be saved because it does not belong to the edited scene. "
+"Make it unique first."
+msgstr ""
+"Deze animatie kan niet opgeslagen worden omdat het niet bij de bewerkte scène "
+"hoort. Maak het eerst uniek."
+
+msgid ""
+"This animation can't be saved because it was imported from another file. Make "
+"it unique first."
+msgstr ""
+"Deze animatie kan niet opgeslagen worden omdat het vanuit een ander bestand "
+"werd geïmporteerd. Maak het eerst uniek."
+
+msgid "Save Animation"
+msgstr "Animatie Opslaan"
+
+msgid "Make Animation Unique: %s"
+msgstr "Animatie Uniek Maken: %s"
+
+msgid "Save Animation library to File: %s"
+msgstr "Animatiebibliotheek naar bestand opslaan: %s"
+
+msgid "Save Animation to File: %s"
+msgstr "Animatie naar bestand opslaan: %s"
+
+msgid ""
+"The file you selected is not a valid AnimationLibrary.\n"
+"\n"
+"If the animations you want are inside of this file, save them to a separate "
+"file first."
+msgstr ""
+"Het bestand dat u selecteerde is geen geldige animatiebibliotheek.\n"
+"\n"
+"Als de animaties zich bevinden in dit bestand, sla ze dan eerst op als een "
+"apart bestand."
+
+msgid "Some of the selected libraries were already added to the mixer."
+msgstr "Enkele geselecteerde bibliotheken waren al toegevoegd aan de mixer."
+
+msgid "Add Animation Libraries"
+msgstr "Voeg Animatiebibliotheken toe"
+
+msgid "Some Animation files were invalid."
+msgstr "Enkele animatiebestanden waren ongeldig."
+
+msgid "Some of the selected animations were already added to the library."
+msgstr "Enkele geselecteerde animaties waren al toegevoegd aan de bibliotheek."
+
+msgid "Load Animations into Library"
+msgstr "Animatie laden in Bibliotheek"
+
+msgid "Load Animation into Library: %s"
+msgstr "Animatie laden in Bibliotheek: %s"
+
+msgid "Rename Animation Library: %s"
+msgstr "Animatiebibliotheek Hernoemen: %s"
+
 msgid "[Global]"
 msgstr "[globaal]"
 
+msgid "Rename Animation: %s"
+msgstr "Animatie Hernoemen: %s"
+
 msgid "Animation Name:"
 msgstr "Animatienaam:"
+
+msgid "No animation resource in clipboard!"
+msgstr "Geen animatiebron in klembord!"
 
 msgid "Pasted Animation"
 msgstr "Geplakte Animatie"
@@ -1089,6 +1183,12 @@ msgstr "Maak Uniek"
 
 msgid "Open in Inspector"
 msgstr "Openen in de Inspecteur"
+
+msgid "Remove Animation Library: %s"
+msgstr "Verwijder Animatiebibliotheek: %s"
+
+msgid "Remove Animation from Library: %s"
+msgstr "Verwijder Animatie van Bibliotheek: %s"
 
 msgid "[built-in]"
 msgstr "[ingebouwd]"
@@ -1108,11 +1208,29 @@ msgstr "Laad animatie van bestand en voeg toe aan bibliotheek."
 msgid "Remove animation library."
 msgstr "Verwijder animatie bibliotheek."
 
+msgid "Copy animation to clipboard."
+msgstr "Animatie naar klembord kopiëren."
+
+msgid "Save animation to resource on disk."
+msgstr "Animatie naar bron opslaan op de schijf."
+
 msgid "Remove animation from Library."
 msgstr "Verwijder animatie van Bibliotheek."
 
+msgid "Edit Animation Libraries"
+msgstr "Animatiebibliotheken bewerken:"
+
+msgid "New Library"
+msgstr "Nieuwe Bibliotheek"
+
 msgid "Create new empty animation library."
 msgstr "Creëer nieuwe lege animatie bibliotheek."
+
+msgid "Load Library"
+msgstr "Bibliotheek Laden"
+
+msgid "Load animation library from disk."
+msgstr "Animatiebibliotheek laden vanaf de schijf."
 
 msgid "Resource"
 msgstr "Bron"
@@ -1138,11 +1256,17 @@ msgstr "Animatie Hernoemen"
 msgid "Change Animation Name:"
 msgstr "Verander Animatie Naam:"
 
+msgid "Delete Animation '%s'?"
+msgstr "Animatie '%s' wissen?"
+
 msgid "Remove Animation"
 msgstr "Verwijder Animatie"
 
 msgid "Invalid animation name!"
 msgstr "Ongeldige animatienaam!"
+
+msgid "Animation '%s' already exists!"
+msgstr "Animatie '%s' bestaat al!"
 
 msgid "Duplicate Animation"
 msgstr "Dupliceer Animatie"
@@ -1153,8 +1277,35 @@ msgstr "Meng met volgende aanpassing"
 msgid "Change Blend Time"
 msgstr "Wijzig overgangstijd"
 
+msgid "[Global] (create)"
+msgstr "[Globaal](creëren)"
+
+msgid "Pause/Stop Animation"
+msgstr "Pauze/Stop Animatie"
+
+msgid "Play Animation from Start"
+msgstr "Speel geselecteerde animatie vanaf het begin"
+
+msgid "Play Animation"
+msgstr "Animatie Afspelen"
+
+msgid "Play Animation Backwards"
+msgstr "Animatie­ Achterwaarts Afspelen"
+
+msgid "Play Animation Backwards from End"
+msgstr "Speel geselecteerde animatie achterwaarts vanaf het einde"
+
+msgid "Duplicated Animation Name:"
+msgstr "Gedupliceerde Animatienaam:"
+
+msgid "Onion skinning requires a RESET animation."
+msgstr "Onion Skinning vereist een RESET animatie."
+
 msgid "Animation"
 msgstr "Animatie"
+
+msgid "Toggle Animation Dock"
+msgstr "Animatiepaneel aan-/uitzetten"
 
 msgid "Animation position (in seconds)."
 msgstr "Animatie positie (in seconden)."
@@ -1167,6 +1318,9 @@ msgstr "Animatiehulpmiddelen"
 
 msgid "New..."
 msgstr "Nieuw…"
+
+msgid "Manage Animations..."
+msgstr "Beheer Animaties..."
 
 msgid "Duplicate..."
 msgstr "Dupliceren..."
@@ -1240,11 +1394,35 @@ msgstr "Overgangstijden:"
 msgid "Next (Auto Queue):"
 msgstr "Volgende (Auto wachtrij):"
 
+msgid "Reconnect Transition"
+msgstr "Herconnecteer Overgang"
+
 msgid "Move Node"
 msgstr "Knoop verplaatsen"
 
 msgid "Transition exists!"
 msgstr "Overgang bestaat!"
+
+msgid "Cannot transition to self!"
+msgstr "Kan niet overgaan naar zelf!"
+
+msgid "Cannot transition to \"Start\"!"
+msgstr "Kan niet overgaan naar \"Start\"!"
+
+msgid "Cannot transition from \"End\"!"
+msgstr "Kan niet overgaan van \"Einde\"!"
+
+msgid "Transition from \"%s\" to \"%s\" already exists!"
+msgstr "Overgang van \"%s\" naar \"%s\" bestaat al!"
+
+msgid "Edit %s"
+msgstr "Bewerk %s"
+
+msgid "Add Node and Transition"
+msgstr "Voeg Knoop en Overgang toe"
+
+msgid "Transition already exists!"
+msgstr "Overgang bestaat al!"
 
 msgid "Add Transition"
 msgstr "Voeg vertaling toe"
@@ -1269,6 +1447,20 @@ msgstr "Knoop verwijderd"
 
 msgid "Transition Removed"
 msgstr "Overgang Verwijderd"
+
+msgid ""
+"Select and move nodes.\n"
+"RMB: Add node at position clicked.\n"
+"Shift+LMB+Drag: Connects the selected node with another node or creates a new "
+"node if you select an area without nodes."
+msgstr ""
+"Selecteer en verplaats knopen.\n"
+"rechtermuisknop: voeg knoop op de geklikte positie toe.\n"
+"Shift+linkermuisknop+slepen: Connecteer de geselecteerde knoop met een andere "
+"knoop of maak een nieuwe knoop als je een gebied zonder knoop selecteert."
+
+msgid "Select and move nodes."
+msgstr "Selecteer en verplaats knopen."
 
 msgid "Create new nodes."
 msgstr "Nieuwe knopen maken."
@@ -1850,6 +2042,12 @@ msgstr "Naar volgende stap gaan"
 msgid "Go to Previous Step"
 msgstr "Naar vorige stap gaan"
 
+msgid "Add tracks to RESET"
+msgstr "Voeg sporen aan RESET toe"
+
+msgid "Apply RESET"
+msgstr "RESET toepassen"
+
 msgid "Bake Animation..."
 msgstr "Animatie bakken…"
 
@@ -1997,6 +2195,12 @@ msgstr "Alles/niets selecteren"
 msgid "Copy Selection"
 msgstr "Selectie kopiëren"
 
+msgid "Key Insertion Error"
+msgstr "Fout bij het invoeren van de sleutel"
+
+msgid "Imported Animation cannot be edited!"
+msgstr "Geïmporteerde Animatie kan niet worden aangepast!"
+
 msgid "Animation Change Keyframe Time"
 msgstr "Animatie sleutelframe-tijd wijzigen"
 
@@ -2084,6 +2288,12 @@ msgstr "Pad:"
 msgid "Open asset details"
 msgstr "Asset-informatie openen"
 
+msgid "Title"
+msgstr "Titel"
+
+msgid "Category"
+msgstr "Categorie"
+
 msgid "Author"
 msgstr "Auteur"
 
@@ -2168,6 +2378,9 @@ msgstr "SHA256-hash controle mislukt"
 msgid "Asset Download Error:"
 msgstr "Asset-downloadfout:"
 
+msgid "Ready to install!"
+msgstr "Klaar om te installeren!"
+
 msgid "Downloading (%s / %s)..."
 msgstr "Bezig met neerladen (%s / %s)..."
 
@@ -2243,6 +2456,12 @@ msgstr "Volgende"
 msgctxt "Pagination"
 msgid "Last"
 msgstr "Laatste"
+
+msgid "Go Online"
+msgstr "Ga Online"
+
+msgid "Failed to get repository configuration."
+msgstr "Gefaald om de configuratie van de opslagplaats te verkrijgen."
 
 msgid "All"
 msgstr "Alle"
@@ -3185,11 +3404,23 @@ msgstr "Openen in Bestandsbeheer"
 msgid "Class"
 msgstr "Klasse"
 
+msgid "Enumeration"
+msgstr "Enumeratie"
+
 msgid "Constant"
 msgstr "Constante"
 
+msgid "Metadata"
+msgstr "Metadata"
+
+msgid "Setting"
+msgstr "Instelling"
+
 msgid "Property"
 msgstr "Eigenschap"
+
+msgid "Internal Property"
+msgstr "Interne eigenschap"
 
 msgid "This property can only be set in the Inspector."
 msgstr "Deze eigenschap kan alleen worden ingesteld in de Inspector."
@@ -3205,6 +3436,19 @@ msgstr "Signaal"
 
 msgid "Annotation"
 msgstr "Annotatie"
+
+msgid "Local Constant"
+msgstr "Lokale Constante"
+
+msgid "Local Variable"
+msgstr "Lokale variabele"
+
+msgid "This variable may be changed or removed in future versions."
+msgstr ""
+"Deze variabele kan in toekomstige versies worden gewijzigd of verwijderd."
+
+msgid "Text File"
+msgstr "Tekst­bestand"
 
 msgid "File"
 msgstr "Bestand"
@@ -3338,6 +3582,9 @@ msgstr "Tabblad naar rechts verschuiven"
 
 msgid "Make Floating"
 msgstr "Maak zwevend"
+
+msgid "Link to: %s"
+msgstr "Link naar: %s"
 
 msgid "Favorites:"
 msgstr "Favorieten:"
@@ -3679,6 +3926,12 @@ msgstr "De zojuist bewerkte bron opslaan."
 msgid "Save As..."
 msgstr "Opslaan Als..."
 
+msgid "Extra resource options."
+msgstr "Extra bron opties."
+
+msgid "Edit Resource from Clipboard"
+msgstr "Wijzig Bron vanuit Klembord"
+
 msgid "Copy Resource"
 msgstr "Bron kopiëren"
 
@@ -3690,6 +3943,9 @@ msgstr "Open Godot online documentatie."
 
 msgid "Open Documentation"
 msgstr "Documentatie openen"
+
+msgid "Manage object properties."
+msgstr "Beheer objecteigenschappen."
 
 msgid "Error loading scene from %s"
 msgstr "Fout bij het laden van scène uit %s"
@@ -4680,6 +4936,12 @@ msgstr "Open de map waarin deze templates zitten."
 msgid "Uninstall these templates."
 msgstr "Deze templates verwijderen."
 
+msgid "There are no mirrors available."
+msgstr "Er zijn geen mirrors beschikbaar."
+
+msgid "Retrieving the mirror list..."
+msgstr "Mirrors ophalen..."
+
 msgid "Starting the download..."
 msgstr "Starten van de download..."
 
@@ -4745,6 +5007,9 @@ msgstr "Export Sjablonen Uitpakken"
 msgid "Importing:"
 msgstr "Bezit met importeren:"
 
+msgid "Remove templates for the version '%s'?"
+msgstr "Verwijder sjablonen voor de versie '%s'?"
+
 msgid "Export templates are missing. Download them or install from a file."
 msgstr ""
 "Geen exportsjablonen gevonden. Download de exportsjablonen of installeer ze "
@@ -4791,8 +5056,17 @@ msgstr ""
 "Download en installeer sjablonen voor de huidige versie vanuit de best "
 "mogelijke server."
 
+msgid "Install from File"
+msgstr "Vanuit bestand installeren"
+
 msgid "Install templates from a local file."
 msgstr "Sjablonen importeren Vanuit ZIP-Bestand."
+
+msgid "Cancel the download of the templates."
+msgstr "Annuleer de download van de sjablonen."
+
+msgid "Other Installed Versions:"
+msgstr "Andere Geïnstalleerde Versies:"
 
 msgid "Uninstall Template"
 msgstr "Sjabloon verwijderen"
@@ -5360,6 +5634,9 @@ msgstr "Verplaatsen"
 
 msgid "No sub-resources found."
 msgstr "Geen deel-hulpbronnen gevonden."
+
+msgid "Open a list of sub-resources."
+msgstr "Open een lijst van deel-hulpbronnen."
 
 msgid "Remove Item"
 msgstr "Verwijder Item"

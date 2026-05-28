@@ -8,7 +8,7 @@ readability.
 ## accesskit
 
 - Upstream: https://github.com/AccessKit/accesskit-c
-- Version: 0.18.0 (0c52a8ce2357bbeb927f90dc9a1c19c8ec1bd2c3, 2025)
+- Version: 0.21.2 (72460cd52d1b24492393cdf54a6f19d2fd63e258, 2026)
 - License: MIT
 
 Files extracted from upstream source:
@@ -356,7 +356,7 @@ for UI.
 ## freetype
 
 - Upstream: https://gitlab.freedesktop.org/freetype/freetype
-- Version: 2.14.1 (526ec5c47b9ebccc4754c85ac0c0cdf7c85a5e9b, 2025)
+- Version: 2.14.3 (0a0221a1347e2f1e07c395263540026e9a0aa7c7, 2026)
 - License: FreeType License (BSD-like)
 
 Files extracted from upstream source:
@@ -501,6 +501,16 @@ Files extracted from upstream source:
 - All files in `Jolt/`, except `Jolt/Jolt.cmake` and any files dependent on `ENABLE_OBJECT_STREAM`, as seen in `Jolt/Jolt.cmake`
 - `LICENSE`
 
+Patches:
+
+- `0001-backport-upstream-commit-b385bc3d7.patch` ([GH-111087](https://github.com/godotengine/godot/pull/111087))
+- `0002-backport-upstream-commit-ccfe0a0df.patch` ([GH-111408](https://github.com/godotengine/godot/pull/111408))
+- `0003-backport-upstream-commit-9e48d59be.patch` ([GH-111767](https://github.com/godotengine/godot/pull/111767))
+- `0004-backport-upstream-commit-ee3725250.patch` ([GH-115089](https://github.com/godotengine/godot/pull/115089))
+- `0005-backport-upstream-commit-bc7f1fb8c.patch` ([GH-115305](https://github.com/godotengine/godot/pull/115305))
+- `0006-backport-upstream-commit-365a15367.patch` ([GH-115305](https://github.com/godotengine/godot/pull/115305))
+- `0007-backport-upstream-commit-e0a6a9a16.patch` ([GH-115327](https://github.com/godotengine/godot/pull/115327))
+
 
 ## libbacktrace
 
@@ -580,7 +590,7 @@ Files extracted from upstream source:
 ## libpng
 
 - Upstream: http://libpng.org/pub/png/libpng.html
-- Version: 1.6.53 (4e3f57d50f552841550a36eabbb3fbcecacb7750, 2025)
+- Version: 1.6.58 (3061454d980de7d53608f594194cfac722721d2a, 2026)
 - License: libpng/zlib
 
 Files extracted from upstream source:
@@ -731,7 +741,7 @@ Files extracted from upstream source:
 ## minizip
 
 - Upstream: https://github.com/madler/zlib
-- Version: 1.3.1.2 (570720b0c24f9686c33f35a1b3165c1f568b96be, 2025)
+- Version: 1.3.2 (da607da739fa6047df13e66a2af6b8bec7c2a498, 2026)
 - License: zlib
 
 Files extracted from the upstream source:
@@ -912,7 +922,7 @@ Files extracted from upstream source:
 ## re-spirv
 
 - Upstream: https://github.com/renderbag/re-spirv
-- Version: git (5af3b606e6aaf11bae8dc7b5cd236c943e24865e, 2025)
+- Version: git (c1853b0221cd43866b792406f55c4ab10a0b4503, 2026)
 - License: MIT
 
 Files extracted from upstream source:
@@ -1242,7 +1252,7 @@ Files extracted from upstream source:
 ## zlib
 
 - Upstream: https://github.com/madler/zlib
-- Version: 1.3.1.2 (570720b0c24f9686c33f35a1b3165c1f568b96be, 2025)
+- Version: 1.3.2 (da607da739fa6047df13e66a2af6b8bec7c2a498, 2026)
 - License: zlib
 
 Files extracted from upstream source:

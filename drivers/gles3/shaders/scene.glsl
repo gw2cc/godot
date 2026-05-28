@@ -48,6 +48,12 @@ RENDER_MOTION_VECTORS = false
 #define SHADER_IS_SRGB true
 #define SHADER_SPACE_FAR -1.0
 
+#ifdef USE_MULTIVIEW
+#define OUTPUT_IS_MULTIVIEW true
+#else
+#define OUTPUT_IS_MULTIVIEW false
+#endif
+
 #if defined(RENDER_SHADOWS) || defined(RENDER_SHADOWS_LINEAR)
 #define IN_SHADOW_PASS true
 #else
@@ -800,7 +806,7 @@ void vertex_shader(vec4 vertex_angle_attrib_input,
 
 #if !defined(RENDER_SHADOWS) && !defined(RENDER_SHADOWS_LINEAR)
 #ifdef Z_CLIP_SCALE_USED
-	gl_Position.z = mix(gl_Position.w, gl_Position.z, z_clip_scale);
+	clip_position_output.z = mix(clip_position_output.w, clip_position_output.z, z_clip_scale);
 #endif
 #endif
 
@@ -1020,6 +1026,12 @@ void main() {
 
 #define SHADER_IS_SRGB true
 #define SHADER_SPACE_FAR -1.0
+
+#ifdef USE_MULTIVIEW
+#define OUTPUT_IS_MULTIVIEW true
+#else
+#define OUTPUT_IS_MULTIVIEW false
+#endif
 
 #if defined(RENDER_SHADOWS) || defined(RENDER_SHADOWS_LINEAR)
 #define IN_SHADOW_PASS true
@@ -2014,9 +2026,7 @@ void main() {
 #ifdef PREMUL_ALPHA_USED
 	float premul_alpha = 1.0;
 #endif // PREMUL_ALPHA_USED
-#ifndef FOG_DISABLED
 	vec4 fog = vec4(0.0);
-#endif // !FOG_DISABLED
 #if defined(CUSTOM_RADIANCE_USED)
 	vec4 custom_radiance = vec4(0.0);
 #endif

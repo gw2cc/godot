@@ -746,6 +746,7 @@ class EditorPropertyResource : public EditorProperty {
 	void _resource_selected(const Ref<Resource> &p_resource, bool p_inspect);
 	void _resource_changed(const Ref<Resource> &p_resource);
 
+	Node *_get_base_node();
 	void _viewport_selected(const NodePath &p_path);
 
 	void _sub_inspector_property_keyed(const String &p_property, const Variant &p_value, bool p_advance);
@@ -773,6 +774,8 @@ public:
 	void set_use_sub_inspector(bool p_enable);
 	void set_use_filter(bool p_use);
 	void fold_resource();
+
+	virtual void set_keying(bool p_keying) override;
 
 	virtual bool is_colored(ColorationMode p_mode) override;
 
