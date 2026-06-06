@@ -190,6 +190,22 @@ public:
 
 	Resource();
 	~Resource();
+
+public:
+	void set_source_path(const String &p_path) {
+		old_path = p_path;
+	}
+
+	String get_source_path() const {
+		if (old_path != "") {
+			return old_path;
+		} else {
+			return path_cache;
+		}
+	}
+
+private:
+	String old_path;
 };
 
 VARIANT_ENUM_CAST(Resource::DeepDuplicateMode);

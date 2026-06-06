@@ -425,6 +425,10 @@ Error DirAccess::copy(const String &p_from, const String &p_to, int p_chmod_flag
 		Ref<FileAccess> fsrc = FileAccess::open(p_from, FileAccess::READ, &err);
 		ERR_FAIL_COND_V_MSG(err != OK, err, vformat("Failed to open '%s'.", p_from));
 
+		if (fsrc->is_protected()) {
+			return ERR_FILE_NO_PERMISSION;
+		}
+
 		Ref<FileAccess> fdst = FileAccess::open(p_to, FileAccess::WRITE, &err);
 		ERR_FAIL_COND_V_MSG(err != OK, err, vformat("Failed to open '%s'.", p_to));
 

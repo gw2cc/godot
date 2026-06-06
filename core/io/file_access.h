@@ -285,6 +285,8 @@ public:
 		create_func[p_access] = _create_builtin<T>;
 	}
 
+	virtual bool is_protected() { return false; }
+
 public:
 	virtual ~FileAccess();
 };

@@ -191,6 +191,10 @@ Ref<FileAccess> FileAccess::_open(const String &p_path, ModeFlags p_mode_flags) 
 	if (err) {
 		return Ref<FileAccess>();
 	}
+	if (fa->is_protected()) {
+		last_file_open_error = ERR_FILE_CANT_OPEN;
+		return Ref<FileAccess>();
+	}
 	return fa;
 }
 
