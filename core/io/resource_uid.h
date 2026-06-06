@@ -86,6 +86,7 @@ public:
 	static String ensure_path(const String &p_uid_or_path);
 
 	Error load_from_cache(bool p_reset);
+	Error load_from_cache(Ref<FileAccess> &p_cache_file, bool p_reset);
 	Error save_to_cache();
 	Error update_cache();
 	static String get_path_from_cache(Ref<FileAccess> &p_cache_file, const String &p_uid_string);
