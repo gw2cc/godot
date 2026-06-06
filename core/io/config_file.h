@@ -63,6 +63,7 @@ public:
 
 	Error save(const String &p_path);
 	Error load(const String &p_path);
+	Error load_fa(const Ref<FileAccess> &p_file);
 	Error parse(const String &p_data);
 
 	String encode_to_text() const; // used by exporter

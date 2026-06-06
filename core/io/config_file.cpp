@@ -221,6 +221,10 @@ Error ConfigFile::load(const String &p_path) {
 	return _internal_load(p_path, f);
 }
 
+Error ConfigFile::load_fa(const Ref<FileAccess> &p_file) {
+	return _internal_load(p_file->get_path(), p_file);
+}
+
 Error ConfigFile::load_encrypted(const String &p_path, const Vector<uint8_t> &p_key) {
 	Error err;
 	Ref<FileAccess> f = FileAccess::open(p_path, FileAccess::READ, &err);
