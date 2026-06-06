@@ -168,6 +168,7 @@ public:
 	Variant get_setting(const String &p_setting, const Variant &p_default_value = Variant()) const;
 	TypedArray<Dictionary> get_global_class_list();
 	void refresh_global_class_list();
+	void merge_global_class_list(const Array &p_classes);
 	void store_global_class_list(const Array &p_classes);
 	String get_global_class_list_path() const;
 

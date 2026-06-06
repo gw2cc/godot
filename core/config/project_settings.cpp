@@ -1443,6 +1443,19 @@ void ProjectSettings::refresh_global_class_list() {
 	}
 }
 
+void ProjectSettings::merge_global_class_list(const Array &script_classes) {
+	for (int i = 0; i < script_classes.size(); i++) {
+		Dictionary c = script_classes[i];
+		if (!c.has("class") || !c.has("language") || !c.has("path") || !c.has("base") || !c.has("is_abstract") || !c.has("is_tool")) {
+			continue;
+		}
+		if (ScriptServer::is_global_class(c["class"])) {
+			continue;
+		}
+		ScriptServer::add_global_class(c["class"], c["base"], c["language"], c["path"], c["is_abstract"], c["is_tool"]);
+	}
+}
+
 TypedArray<Dictionary> ProjectSettings::get_global_class_list() {
 	if (is_global_class_list_loaded) {
 		return global_class_list;
