@@ -1958,6 +1958,9 @@ void Viewport::_gui_input_event(Ref<InputEvent> p_event) {
 				}
 			}
 			DEV_ASSERT(gui.mouse_focus);
+			if (!gui.mouse_focus) {
+				return;
+			}
 
 			mb = mb->xformed_by(Transform2D()); // Make a copy of the event.
 
@@ -2178,6 +2181,11 @@ void Viewport::_gui_input_event(Ref<InputEvent> p_event) {
 
 			if (over->can_process()) {
 				_gui_call_input(over, mm);
+			}
+		} else {
+			// No control under mouse.
+			if (gui.tooltip_popup) {
+				_gui_cancel_tooltip();
 			}
 		}
 
@@ -3204,7 +3212,10 @@ bool Viewport::_sub_windows_forward_input(const Ref<InputEvent> &p_event) {
 
 	gui.subwindow_focused->_window_input(ev);
 
-	return true;
+	if (!gui.subwindow_focused) {
+		return true;
+	}
+	return gui.subwindow_focused->is_input_handled() || gui.subwindow_focused->is_handling_input_locally();
 }
 
 void Viewport::_window_start_drag(Window *p_window) {
@@ -3642,7 +3653,7 @@ void Viewport::_push_unhandled_input_internal(const Ref<InputEvent> &p_event) {
 
 								)) {
 			physics_picking_events.push_back(p_event);
-			set_input_as_handled();
+			//set_input_as_handled();
 		}
 	}
 #endif // !defined(PHYSICS_2D_DISABLED) || !defined(PHYSICS_3D_DISABLED)
