@@ -3272,7 +3272,7 @@ void DisplayServerWindows::cursor_set_shape(DisplayServerEnums::CursorShape p_sh
 	if (cursors_cache.has(p_shape)) {
 		SetCursor(cursors[p_shape]);
 	} else {
-		SetCursor(LoadCursor(hInstance, win_cursors[p_shape]));
+		SetCursor(LoadCursor(nullptr, win_cursors[p_shape]));
 	}
 
 	cursor_shape = p_shape;
