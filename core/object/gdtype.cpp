@@ -72,7 +72,7 @@ void GDType::initialize() {
 }
 
 void GDType::bind_integer_constant(const StringName &p_enum, const StringName &p_name, int64_t p_constant, bool p_is_bitfield) {
-	ERR_FAIL_COND(!Thread::is_main_thread());
+	//ERR_FAIL_COND(!Thread::is_main_thread());
 	ERR_FAIL_COND(init_state != InitState::MUTABLE);
 	ERR_FAIL_COND_MSG(self_constant_map.has(p_name), vformat("Class '%s' already has constant '%s'.", String(name), String(p_name)));
 
@@ -113,7 +113,7 @@ const GDType::EnumInfo *GDType::get_integer_constant_enum(const StringName &p_na
 }
 
 void GDType::add_signal(MethodInfo p_signal) {
-	ERR_FAIL_COND(!Thread::is_main_thread());
+	//ERR_FAIL_COND(!Thread::is_main_thread());
 	ERR_FAIL_COND(init_state != InitState::MUTABLE);
 
 	const StringName signal_name(p_signal.name);
