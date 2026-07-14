@@ -3,6 +3,7 @@ from __future__ import annotations
 import atexit
 import contextlib
 import glob
+import json
 import math
 import os
 import re
@@ -46,7 +47,9 @@ def add_source_files_orig(self, sources, files, allow_gen=False):
     for file in files:
         obj = self.Object(file)
         if obj in sources:
-            print_warning('Object "{}" already included in environment sources.'.format(obj))
+            print_warning(
+                'Object "{}" already included in environment sources.'.format(obj)
+            )
             continue
         sources.append(obj)
 
@@ -103,7 +106,9 @@ def redirect_emitter(target, source, env):
             pass
         elif base_folder in path.parents:
             item = env.File(f"#bin/obj/{path.relative_to(base_folder)}")
-        elif (alt_base := Path(env.Dir(".").get_abspath()).resolve().parent) in path.parents:
+        elif (
+            alt_base := Path(env.Dir(".").get_abspath()).resolve().parent
+        ) in path.parents:
             item = env.File(f"#bin/obj/external/{path.relative_to(alt_base)}")
         else:
             print_warning(f'Failed to redirect "{path}"')
@@ -160,7 +165,9 @@ def get_version_info(module_version_string="", silent=False):
     if os.getenv("GODOT_VERSION_STATUS") is not None:
         version_info["status"] = str(os.getenv("GODOT_VERSION_STATUS"))
         if not silent:
-            print_info(f"Using version status '{version_info['status']}', overriding the original '{version.status}'.")
+            print_info(
+                f"Using version status '{version_info['status']}', overriding the original '{version.status}'."
+            )
 
     return version_info
 
@@ -198,7 +205,7 @@ def get_git_info():
                 for line in open(packedrefs, "r", encoding="utf-8").read().splitlines():
                     if line.startswith("#"):
                         continue
-                    (line_hash, line_ref) = line.split(" ")
+                    line_hash, line_ref = line.split(" ")
                     if ref == line_ref:
                         git_hash = line_hash
                         break
@@ -210,7 +217,15 @@ def get_git_info():
     if os.path.exists(".git"):
         try:
             git_timestamp = subprocess.check_output(
-                ["git", "log", "-1", "--pretty=format:%ct", "--no-show-signature", git_hash], encoding="utf-8"
+                [
+                    "git",
+                    "log",
+                    "-1",
+                    "--pretty=format:%ct",
+                    "--no-show-signature",
+                    git_hash,
+                ],
+                encoding="utf-8",
             )
         except (subprocess.CalledProcessError, OSError):
             # `git` not found in PATH.
@@ -317,7 +332,9 @@ def convert_custom_modules_path(path):
     if not os.path.isdir(path):
         raise ValueError(err_msg % "point to an existing directory.")
     if path == os.path.realpath("modules"):
-        raise ValueError(err_msg % "be a directory other than built-in `modules` directory.")
+        raise ValueError(
+            err_msg % "be a directory other than built-in `modules` directory."
+        )
     return path
 
 
@@ -342,7 +359,11 @@ def module_check_dependencies(self, module):
     Returns a boolean (True if dependencies are satisfied).
     """
     missing_deps = set()
-    required_deps = self.module_dependencies[module][0] if module in self.module_dependencies else []
+    required_deps = (
+        self.module_dependencies[module][0]
+        if module in self.module_dependencies
+        else []
+    )
     for dep in required_deps:
         opt = "module_{}_enabled".format(dep)
         if opt not in self or not self[opt] or not module_check_dependencies(self, dep):
@@ -362,7 +383,10 @@ def module_check_dependencies(self, module):
 
 
 def sort_module_list(env):
-    deps = {k: v[0] + list(filter(lambda x: x in env.module_list, v[1])) for k, v in env.module_dependencies.items()}
+    deps = {
+        k: v[0] + list(filter(lambda x: x in env.module_list, v[1]))
+        for k, v in env.module_dependencies.items()
+    }
 
     frontier = list(env.module_list.keys())
     explored = []
@@ -424,19 +448,29 @@ def use_windows_spawn_fix(self, platform=None):
 def no_verbose(env):
     from misc.utility.color import Ansi, is_stdout_color
 
-    colors = [Ansi.BLUE, Ansi.BOLD, Ansi.REGULAR, Ansi.RESET] if is_stdout_color() else ["", "", "", ""]
+    colors = (
+        [Ansi.BLUE, Ansi.BOLD, Ansi.REGULAR, Ansi.RESET]
+        if is_stdout_color()
+        else ["", "", "", ""]
+    )
 
     # There is a space before "..." to ensure that source file names can be
     # Ctrl + clicked in the VS Code terminal.
     compile_source_message = "{}Compiling {}$SOURCE{} ...{}".format(*colors)
     java_compile_source_message = "{}Compiling {}$SOURCE{} ...{}".format(*colors)
-    compile_shared_source_message = "{}Compiling shared {}$SOURCE{} ...{}".format(*colors)
+    compile_shared_source_message = "{}Compiling shared {}$SOURCE{} ...{}".format(
+        *colors
+    )
     link_program_message = "{}Linking Program {}$TARGET{} ...{}".format(*colors)
     link_library_message = "{}Linking Static Library {}$TARGET{} ...{}".format(*colors)
     ranlib_library_message = "{}Ranlib Library {}$TARGET{} ...{}".format(*colors)
-    link_shared_library_message = "{}Linking Shared Library {}$TARGET{} ...{}".format(*colors)
+    link_shared_library_message = "{}Linking Shared Library {}$TARGET{} ...{}".format(
+        *colors
+    )
     java_library_message = "{}Creating Java Archive {}$TARGET{} ...{}".format(*colors)
-    compiled_resource_message = "{}Creating Compiled Resource {}$TARGET{} ...{}".format(*colors)
+    compiled_resource_message = "{}Creating Compiled Resource {}$TARGET{} ...{}".format(
+        *colors
+    )
     zip_archive_message = "{}Archiving {}$TARGET{} ...{}".format(*colors)
     generated_file_message = "{}Generating {}$TARGET{} ...{}".format(*colors)
 
@@ -486,35 +520,46 @@ def detect_visual_c_compiler_version(tools_env):
     if "VCTOOLSINSTALLDIR" in tools_env:
         # Newer versions have a different path available
         vc_amd64_compiler_detection_index = (
-            tools_env["PATH"].upper().find(tools_env["VCTOOLSINSTALLDIR"].upper() + "BIN\\HOSTX64\\X64;")
+            tools_env["PATH"]
+            .upper()
+            .find(tools_env["VCTOOLSINSTALLDIR"].upper() + "BIN\\HOSTX64\\X64;")
         )
         if vc_amd64_compiler_detection_index > -1:
             vc_chosen_compiler_index = vc_amd64_compiler_detection_index
             vc_chosen_compiler_str = "amd64"
 
         vc_amd64_x86_compiler_detection_index = (
-            tools_env["PATH"].upper().find(tools_env["VCTOOLSINSTALLDIR"].upper() + "BIN\\HOSTX64\\X86;")
+            tools_env["PATH"]
+            .upper()
+            .find(tools_env["VCTOOLSINSTALLDIR"].upper() + "BIN\\HOSTX64\\X86;")
         )
         if vc_amd64_x86_compiler_detection_index > -1 and (
-            vc_chosen_compiler_index == -1 or vc_chosen_compiler_index > vc_amd64_x86_compiler_detection_index
+            vc_chosen_compiler_index == -1
+            or vc_chosen_compiler_index > vc_amd64_x86_compiler_detection_index
         ):
             vc_chosen_compiler_index = vc_amd64_x86_compiler_detection_index
             vc_chosen_compiler_str = "amd64_x86"
 
         vc_x86_compiler_detection_index = (
-            tools_env["PATH"].upper().find(tools_env["VCTOOLSINSTALLDIR"].upper() + "BIN\\HOSTX86\\X86;")
+            tools_env["PATH"]
+            .upper()
+            .find(tools_env["VCTOOLSINSTALLDIR"].upper() + "BIN\\HOSTX86\\X86;")
         )
         if vc_x86_compiler_detection_index > -1 and (
-            vc_chosen_compiler_index == -1 or vc_chosen_compiler_index > vc_x86_compiler_detection_index
+            vc_chosen_compiler_index == -1
+            or vc_chosen_compiler_index > vc_x86_compiler_detection_index
         ):
             vc_chosen_compiler_index = vc_x86_compiler_detection_index
             vc_chosen_compiler_str = "x86"
 
         vc_x86_amd64_compiler_detection_index = (
-            tools_env["PATH"].upper().find(tools_env["VCTOOLSINSTALLDIR"].upper() + "BIN\\HOSTX86\\X64;")
+            tools_env["PATH"]
+            .upper()
+            .find(tools_env["VCTOOLSINSTALLDIR"].upper() + "BIN\\HOSTX86\\X64;")
         )
         if vc_x86_amd64_compiler_detection_index > -1 and (
-            vc_chosen_compiler_index == -1 or vc_chosen_compiler_index > vc_x86_amd64_compiler_detection_index
+            vc_chosen_compiler_index == -1
+            or vc_chosen_compiler_index > vc_x86_amd64_compiler_detection_index
         ):
             vc_chosen_compiler_str = "x86_amd64"
 
@@ -523,7 +568,12 @@ def detect_visual_c_compiler_version(tools_env):
 
 def find_visual_c_batch_file(env):
     # TODO: We should investigate if we can avoid relying on SCons internals here.
-    from SCons.Tool.MSCommon.vc import find_batch_file, find_vc_pdir, get_default_version, get_host_target
+    from SCons.Tool.MSCommon.vc import (
+        find_batch_file,
+        find_vc_pdir,
+        get_default_version,
+        get_host_target,
+    )
 
     msvc_version = get_default_version(env)
     host_platform, target_platform, _ = get_host_target(env, msvc_version)
@@ -614,7 +664,9 @@ def detect_darwin_toolchain_path(env):
     var_name = "APPLE_TOOLCHAIN_PATH"
     if not env[var_name]:
         try:
-            xcode_path = subprocess.check_output(["xcode-select", "-p"]).strip().decode("utf-8")
+            xcode_path = (
+                subprocess.check_output(["xcode-select", "-p"]).strip().decode("utf-8")
+            )
             if xcode_path:
                 env[var_name] = xcode_path + "/Toolchains/XcodeDefault.xctoolchain"
         except (subprocess.CalledProcessError, OSError):
@@ -650,11 +702,19 @@ def detect_darwin_sdk_path(platform, env):
 
     if not env[var_name]:
         try:
-            sdk_path = subprocess.check_output(["xcrun", "--sdk", sdk_name, "--show-sdk-path"]).strip().decode("utf-8")
+            sdk_path = (
+                subprocess.check_output(["xcrun", "--sdk", sdk_name, "--show-sdk-path"])
+                .strip()
+                .decode("utf-8")
+            )
             if sdk_path:
                 env[var_name] = sdk_path
         except (subprocess.CalledProcessError, OSError):
-            print_error("Failed to find SDK path while running 'xcrun --sdk {} --show-sdk-path'.".format(sdk_name))
+            print_error(
+                "Failed to find SDK path while running 'xcrun --sdk {} --show-sdk-path'.".format(
+                    sdk_name
+                )
+            )
             raise
 
 
@@ -667,13 +727,16 @@ def is_apple_clang(env):
         return False
     try:
         version = (
-            subprocess
-            .check_output(shlex.split(env.subst(env["CXX"]), posix=False) + ["--version"])
+            subprocess.check_output(
+                shlex.split(env.subst(env["CXX"]), posix=False) + ["--version"]
+            )
             .strip()
             .decode("utf-8")
         )
     except (subprocess.CalledProcessError, OSError):
-        print_warning("Couldn't parse CXX environment variable to infer compiler version.")
+        print_warning(
+            "Couldn't parse CXX environment variable to infer compiler version."
+        )
         return False
     return version.startswith("Apple")
 
@@ -725,7 +788,9 @@ def get_compiler_version(env):
             for line in version.splitlines():
                 split = line.split(":", 1)
                 if split[0] == "catalog_productSemanticVersion":
-                    match = re.match(r" ([0-9]*).([0-9]*).([0-9]*)-?([a-z0-9.+]*)", split[1])
+                    match = re.match(
+                        r" ([0-9]*).([0-9]*).([0-9]*)-?([a-z0-9.+]*)", split[1]
+                    )
                     if match is not None:
                         ret["major"] = int(match.group(1))
                         ret["minor"] = int(match.group(2))
@@ -744,10 +809,14 @@ def get_compiler_version(env):
     # Clang used to return hardcoded 4.2.1: # https://reviews.llvm.org/D56803
     try:
         version = subprocess.check_output(
-            shlex.split(env.subst(env["CXX"]), posix=False) + ["--version"], shell=(os.name == "nt"), encoding="utf-8"
+            shlex.split(env.subst(env["CXX"]), posix=False) + ["--version"],
+            shell=(os.name == "nt"),
+            encoding="utf-8",
         ).strip()
     except (subprocess.CalledProcessError, OSError):
-        print_warning("Couldn't parse CXX environment variable to infer compiler version.")
+        print_warning(
+            "Couldn't parse CXX environment variable to infer compiler version."
+        )
         return update_compiler_version_cache(ret)
 
     match = re.search(
@@ -921,7 +990,9 @@ def prepare_cache(env) -> None:
     if env["cache_path"]:
         cache_path = cast(str, env["cache_path"])
     elif os.environ.get("SCONS_CACHE"):
-        print_warning("Environment variable `SCONS_CACHE` is deprecated; use `cache_path` argument instead.")
+        print_warning(
+            "Environment variable `SCONS_CACHE` is deprecated; use `cache_path` argument instead."
+        )
         cache_path = cast(str, os.environ.get("SCONS_CACHE"))
 
     if not cache_path:
@@ -933,8 +1004,12 @@ def prepare_cache(env) -> None:
     if env["cache_limit"]:
         cache_limit = float(env["cache_limit"])
     elif os.environ.get("SCONS_CACHE_LIMIT"):
-        print_warning("Environment variable `SCONS_CACHE_LIMIT` is deprecated; use `cache_limit` argument instead.")
-        cache_limit = float(os.getenv("SCONS_CACHE_LIMIT", "0")) / 1024  # Old method used MiB, convert to GiB
+        print_warning(
+            "Environment variable `SCONS_CACHE_LIMIT` is deprecated; use `cache_limit` argument instead."
+        )
+        cache_limit = (
+            float(os.getenv("SCONS_CACHE_LIMIT", "0")) / 1024
+        )  # Old method used MiB, convert to GiB
 
     # Convert GiB to bytes; treat negative numbers as 0 (unlimited).
     cache_limit = max(0, int(cache_limit * 1024 * 1024 * 1024))
@@ -979,6 +1054,58 @@ def dump(env):
 
     with open(".scons_env.json", "w", encoding="utf-8", newline="\n") as file:
         file.write(env.Dump(format="json"))
+
+
+def dump_link_manifest(env, output_path):
+    """Writes the ordered static-library link interface for external build systems."""
+
+    def serialize_library(library):
+        if hasattr(library, "abspath"):
+            path = Path(library.abspath)
+            try:
+                return path.relative_to(base_folder).as_posix()
+            except ValueError:
+                return path.as_posix()
+        return env.subst(str(library))
+
+    libraries = []
+    for library in env.Flatten(env.get("godot_library", [])) + env.Flatten(
+        env.get("LIBS", [])
+    ):
+        serialized = serialize_library(library)
+        if serialized:
+            libraries.append(serialized)
+
+    external_libraries = []
+    for flag in env.Flatten(env.get("LINKFLAGS", [])):
+        expanded = env.subst(str(flag))
+        if expanded.lower().endswith((".a", ".lib")):
+            external_libraries.append(expanded)
+
+    library_paths = []
+    for path in env.Flatten(env.get("LIBPATH", [])):
+        if hasattr(path, "abspath"):
+            library_paths.append(Path(path.abspath).as_posix())
+        else:
+            library_paths.append(Path(env.subst(str(path))).as_posix())
+
+    manifest = {
+        "schema_version": 1,
+        "platform": env["platform"],
+        "target": env["target"],
+        "arch": env["arch"],
+        "libraries": libraries,
+        "external_libraries": external_libraries,
+        "library_paths": library_paths,
+    }
+
+    manifest_path = Path(output_path)
+    if not manifest_path.is_absolute():
+        manifest_path = base_folder / manifest_path
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    with manifest_path.open("w", encoding="utf-8", newline="\n") as file:
+        json.dump(manifest, file, indent=2)
+        file.write("\n")
 
 
 # Custom Visual Studio project generation logic that supports any platform that has a msvs.py
@@ -1171,7 +1298,11 @@ def generate_vs_project(env, original_args, project_name="godot"):
     import json
 
     md5 = hashlib.md5(
-        json.dumps(sorted(headers + headers_dirs + sources + sources_dirs + others + others_dirs)).encode("utf-8")
+        json.dumps(
+            sorted(
+                headers + headers_dirs + sources + sources_dirs + others + others_dirs
+            )
+        ).encode("utf-8")
     ).hexdigest()
 
     if os.path.exists(f"{project_name}.vcxproj.filters"):
@@ -1190,7 +1321,9 @@ def generate_vs_project(env, original_args, project_name="godot"):
         with open("misc/msvs/vcxproj.filters.template", "r", encoding="utf-8") as file:
             filters_template = file.read()
         for i in range(1, 10):
-            filters_template = filters_template.replace(f"%%UUID{i}%%", str(uuid.uuid4()))
+            filters_template = filters_template.replace(
+                f"%%UUID{i}%%", str(uuid.uuid4())
+            )
 
         filters = ""
 
@@ -1205,16 +1338,12 @@ def generate_vs_project(env, original_args, project_name="godot"):
 
         filters = ""
         for file in headers:
-            filters += (
-                f'<ClInclude Include="{file}"><Filter>Header Files\\{os.path.dirname(file)}</Filter></ClInclude>\n'
-            )
+            filters += f'<ClInclude Include="{file}"><Filter>Header Files\\{os.path.dirname(file)}</Filter></ClInclude>\n'
         filters_template = filters_template.replace("%%INCLUDES%%", filters)
 
         filters = ""
         for file in sources:
-            filters += (
-                f'<ClCompile Include="{file}"><Filter>Source Files\\{os.path.dirname(file)}</Filter></ClCompile>\n'
-            )
+            filters += f'<ClCompile Include="{file}"><Filter>Source Files\\{os.path.dirname(file)}</Filter></ClCompile>\n'
 
         filters_template = filters_template.replace("%%COMPILES%%", filters)
 
@@ -1225,7 +1354,9 @@ def generate_vs_project(env, original_args, project_name="godot"):
 
         filters_template = filters_template.replace("%%HASH%%", md5)
 
-        with open(f"{project_name}.vcxproj.filters", "w", encoding="utf-8", newline="\r\n") as f:
+        with open(
+            f"{project_name}.vcxproj.filters", "w", encoding="utf-8", newline="\r\n"
+        ) as f:
             f.write(filters_template)
 
     headers_active = []
@@ -1233,7 +1364,12 @@ def generate_vs_project(env, original_args, project_name="godot"):
     others_active = []
 
     get_dependencies(
-        env.File(f"#bin/godot{env['PROGSUFFIX']}"), env, extensions, headers_active, sources_active, others_active
+        env.File(f"#bin/godot{env['PROGSUFFIX']}"),
+        env,
+        extensions,
+        headers_active,
+        sources_active,
+        others_active,
     )
 
     all_items = []
@@ -1292,21 +1428,30 @@ def generate_vs_project(env, original_args, project_name="godot"):
 
         for x in itemlist.keys():
             properties.append(
-                "<ActiveProjectItemList_%s>;%s;</ActiveProjectItemList_%s>" % (x, ";".join(itemlist[x]), x)
+                "<ActiveProjectItemList_%s>;%s;</ActiveProjectItemList_%s>"
+                % (x, ";".join(itemlist[x]), x)
             )
         output = os.path.join("bin", f"godot{env['PROGSUFFIX']}")
 
         # The modules_enabled.gen.h header containing the defines is only generated on build, and only for the most recently built
         # platform, which means VS can't properly render code that's inside module-specific ifdefs. This adds those defines to the
         # platform-specific VS props file, so that VS knows which defines are enabled for the selected platform.
-        env.Append(VSHINT_DEFINES=[f"MODULE_{module.upper()}_ENABLED" for module in env.module_list])
+        env.Append(
+            VSHINT_DEFINES=[
+                f"MODULE_{module.upper()}_ENABLED" for module in env.module_list
+            ]
+        )
 
         with open("misc/msvs/props.template", "r", encoding="utf-8") as file:
             props_template = file.read()
 
         props_template = props_template.replace("%%CONDITION%%", condition)
-        props_template = props_template.replace("%%PROPERTIES%%", "\n    ".join(properties))
-        props_template = props_template.replace("%%EXTRA_ITEMS%%", "\n    ".join(extraItems))
+        props_template = props_template.replace(
+            "%%PROPERTIES%%", "\n    ".join(properties)
+        )
+        props_template = props_template.replace(
+            "%%EXTRA_ITEMS%%", "\n    ".join(extraItems)
+        )
 
         props_template = props_template.replace("%%OUTPUT%%", output)
 
@@ -1354,9 +1499,13 @@ def generate_vs_project(env, original_args, project_name="godot"):
         if len(common_build_prefix) == 0:
             commands = "echo Starting SCons &amp; " + commands
         else:
-            common_build_prefix[0] = "echo Starting SCons &amp; " + common_build_prefix[0]
+            common_build_prefix[0] = (
+                "echo Starting SCons &amp; " + common_build_prefix[0]
+            )
 
-        cmd = " ".join(common_build_prefix + [" ".join([commands] + common_build_postfix)])
+        cmd = " ".join(
+            common_build_prefix + [" ".join([commands] + common_build_postfix)]
+        )
         props_template = props_template.replace("%%BUILD%%", cmd)
 
         cmd = " ".join(common_build_prefix + [" ".join([commands] + cmd_rebuild)])
@@ -1366,7 +1515,10 @@ def generate_vs_project(env, original_args, project_name="godot"):
         props_template = props_template.replace("%%CLEAN%%", cmd)
 
         with open(
-            f"{project_name}.{platform}.{target}.{arch}.generated.props", "w", encoding="utf-8", newline="\r\n"
+            f"{project_name}.{platform}.{target}.{arch}.generated.props",
+            "w",
+            encoding="utf-8",
+            newline="\r\n",
         ) as f:
             f.write(props_template)
 
@@ -1374,7 +1526,9 @@ def generate_vs_project(env, original_args, project_name="godot"):
     sln_uuid = str(uuid.uuid4())
 
     if os.path.exists(f"{project_name}.sln"):
-        for line in open(f"{project_name}.sln", "r", encoding="utf-8").read().splitlines():
+        for line in (
+            open(f"{project_name}.sln", "r", encoding="utf-8").read().splitlines()
+        ):
             if line.startswith('Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}")'):
                 proj_uuid = re.search(
                     r"\"{(\b[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-\b[0-9a-fA-F]{12}\b)}\"$",
@@ -1382,7 +1536,8 @@ def generate_vs_project(env, original_args, project_name="godot"):
                 ).group(1)
             elif line.strip().startswith("SolutionGuid ="):
                 sln_uuid = re.search(
-                    r"{(\b[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-\b[0-9a-fA-F]{12}\b)}", line
+                    r"{(\b[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-\b[0-9a-fA-F]{12}\b)}",
+                    line,
                 ).group(1)
                 break
 
@@ -1418,7 +1573,9 @@ def generate_vs_project(env, original_args, project_name="godot"):
             # These configurations are disabled, so they show up but won't build.
             if not has_editor:
                 section1 += [f"editor|{sln_plat} = editor|{proj_plat}"]
-                section2 += [f"{{{proj_uuid}}}.editor|{proj_plat}.ActiveCfg = editor|{host_arch}"]
+                section2 += [
+                    f"{{{proj_uuid}}}.editor|{proj_plat}.ActiveCfg = editor|{host_arch}"
+                ]
 
                 configurations += [
                     f'<ProjectConfiguration Include="editor|{proj_plat}">',
@@ -1438,7 +1595,11 @@ def generate_vs_project(env, original_args, project_name="godot"):
                 godot_target = t
 
                 # Windows x86 is a special little flower that requires a project platform == Win32 but a solution platform == x86.
-                if godot_platform == "windows" and godot_target == "editor" and godot_arch == "x86_32":
+                if (
+                    godot_platform == "windows"
+                    and godot_target == "editor"
+                    and godot_arch == "x86_32"
+                ):
                     sln_plat = "x86"
 
                 configurations += [
@@ -1478,12 +1639,18 @@ def generate_vs_project(env, original_args, project_name="godot"):
         with open("misc/msvs/vcxproj.template", "r", encoding="utf-8") as file:
             proj_template = file.read()
         proj_template = proj_template.replace("%%UUID%%", proj_uuid)
-        proj_template = proj_template.replace("%%CONFS%%", "\n    ".join(configurations))
+        proj_template = proj_template.replace(
+            "%%CONFS%%", "\n    ".join(configurations)
+        )
         proj_template = proj_template.replace("%%IMPORTS%%", "\n  ".join(imports))
-        proj_template = proj_template.replace("%%DEFAULT_ITEMS%%", "\n    ".join(all_items))
+        proj_template = proj_template.replace(
+            "%%DEFAULT_ITEMS%%", "\n    ".join(all_items)
+        )
         proj_template = proj_template.replace("%%PROPERTIES%%", "\n  ".join(properties))
 
-        with open(f"{project_name}.vcxproj", "w", encoding="utf-8", newline="\r\n") as f:
+        with open(
+            f"{project_name}.vcxproj", "w", encoding="utf-8", newline="\r\n"
+        ) as f:
             f.write(proj_template)
 
     if not get_bool(original_args, "vsproj_props_only", False):
@@ -1561,7 +1728,9 @@ def generated_wrapper(
     """
 
     with open(path, "wt", encoding="utf-8", newline="\n") as file:
-        if not path.endswith(".out"):  # For test output, we only care about the content.
+        if not path.endswith(
+            ".out"
+        ):  # For test output, we only care about the content.
             file.write(generate_copyright_header(path))
             file.write("\n/* THIS FILE IS GENERATED. EDITS WILL BE LOST. */\n\n")
 
@@ -1589,7 +1758,11 @@ def compress_buffer(buffer: bytes) -> bytes:
 
 
 def format_buffer(buffer: bytes, indent: int = 0, width: int = 120) -> str:
-    return re.sub(f"(.{{0,{width - indent - 1}}},) ", ("\t" * indent) + "\\g<1>\n", ", ".join(map(str, buffer)))
+    return re.sub(
+        f"(.{{0,{width - indent - 1}}},) ",
+        ("\t" * indent) + "\\g<1>\n",
+        ", ".join(map(str, buffer)),
+    )
 
 
 ############################################################
@@ -1637,7 +1810,11 @@ def to_raw_cstring(value: str | list[str]) -> str:
             # If none found, ensure we end with valid utf8.
             # https://github.com/halloleo/unicut/blob/master/truncate.py
             elif segment[-1] & 0b10000000:
-                last_11xxxxxx_index = [i for i in range(-1, -5, -1) if segment[i] & 0b11000000 == 0b11000000][0]
+                last_11xxxxxx_index = [
+                    i
+                    for i in range(-1, -5, -1)
+                    if segment[i] & 0b11000000 == 0b11000000
+                ][0]
                 last_11xxxxxx = segment[last_11xxxxxx_index]
                 if not last_11xxxxxx & 0b00100000:
                     last_char_length = 2
@@ -1656,7 +1833,9 @@ def to_raw_cstring(value: str | list[str]) -> str:
         return f'R"<!>({split[0].decode()})<!>"'
     else:
         # Wrap multiple segments in parenthesis to suppress `string-concatenation` warnings on clang.
-        return "({})".format(" ".join(f'R"<!>({segment.decode()})<!>"' for segment in split))
+        return "({})".format(
+            " ".join(f'R"<!>({segment.decode()})<!>"' for segment in split)
+        )
 
 
 def get_default_include_paths(env):
@@ -1665,9 +1844,13 @@ def get_default_include_paths(env):
     compiler = env.subst("$CXX")
     target = os.path.join(env.Dir("#main").abspath, "main.cpp")
     args = [compiler, target, "-x", "c++", "-v"]
-    ret = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    ret = subprocess.run(
+        args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+    )
     output = ret.stdout
-    match = re.search(r"#include <\.\.\.> search starts here:([\S\s]*)End of search list.", output)
+    match = re.search(
+        r"#include <\.\.\.> search starts here:([\S\s]*)End of search list.", output
+    )
     if not match:
         print_warning("Failed to find the include paths in the compiler output.")
         return []

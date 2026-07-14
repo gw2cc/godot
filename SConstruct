@@ -59,7 +59,11 @@ import glsl_builders
 import methods
 import scu_builders
 from misc.utility.color import is_stderr_color, print_error, print_info, print_warning
-from platform_methods import architecture_aliases, architectures, compatibility_platform_aliases
+from platform_methods import (
+    architecture_aliases,
+    architectures,
+    compatibility_platform_aliases,
+)
 
 if ARGUMENTS.get("target", "editor") == "editor":
     _helper_module("editor.editor_builders", "editor/editor_builders.py")
@@ -161,50 +165,142 @@ opts = Variables(customs, ARGUMENTS)
 opts.Add((["platform", "p"], "Target platform (%s)" % "|".join(platform_list), ""))
 opts.Add(
     EnumVariable(
-        "target", "Compilation target", "editor", ["editor", "template_release", "template_debug"], ignorecase=2
+        "target",
+        "Compilation target",
+        "editor",
+        ["editor", "template_release", "template_debug"],
+        ignorecase=2,
     )
 )
-opts.Add(EnumVariable("arch", "CPU architecture", "auto", ["auto"] + architectures, architecture_aliases, ignorecase=2))
-opts.Add(BoolVariable("dev_build", "Developer build with dev-only debugging code (DEV_ENABLED)", False))
+opts.Add(
+    EnumVariable(
+        "arch",
+        "CPU architecture",
+        "auto",
+        ["auto"] + architectures,
+        architecture_aliases,
+        ignorecase=2,
+    )
+)
+opts.Add(
+    BoolVariable(
+        "dev_build", "Developer build with dev-only debugging code (DEV_ENABLED)", False
+    )
+)
 opts.Add(
     EnumVariable(
         "optimize",
         "Optimization level (by default inferred from 'target' and 'dev_build')",
         "auto",
-        ["auto", "none", "custom", "debug", "speed", "speed_trace", "size", "size_extra"],
+        [
+            "auto",
+            "none",
+            "custom",
+            "debug",
+            "speed",
+            "speed_trace",
+            "size",
+            "size_extra",
+        ],
         ignorecase=2,
     )
 )
 opts.Add(BoolVariable("debug_symbols", "Build with debugging symbols", False))
-opts.Add(BoolVariable("separate_debug_symbols", "Extract debugging symbols to a separate file", False))
-opts.Add(BoolVariable("debug_paths_relative", "Make file paths in debug symbols relative (if supported)", False))
 opts.Add(
-    EnumVariable(
-        "lto", "Link-time optimization (production builds)", "none", ["none", "auto", "thin", "full"], ignorecase=2
+    BoolVariable(
+        "separate_debug_symbols", "Extract debugging symbols to a separate file", False
     )
 )
-opts.Add(BoolVariable("production", "Set defaults to build Godot for use in production", False))
+opts.Add(
+    BoolVariable(
+        "debug_paths_relative",
+        "Make file paths in debug symbols relative (if supported)",
+        False,
+    )
+)
+opts.Add(
+    EnumVariable(
+        "lto",
+        "Link-time optimization (production builds)",
+        "none",
+        ["none", "auto", "thin", "full"],
+        ignorecase=2,
+    )
+)
+opts.Add(
+    BoolVariable(
+        "production", "Set defaults to build Godot for use in production", False
+    )
+)
 opts.Add(BoolVariable("threads", "Enable threading support", True))
 
 # Components
-opts.Add(BoolVariable("deprecated", "Enable compatibility code for deprecated and removed features", True))
 opts.Add(
-    EnumVariable("precision", "Set the floating-point precision level", "single", ["single", "double"], ignorecase=2)
+    BoolVariable(
+        "deprecated",
+        "Enable compatibility code for deprecated and removed features",
+        True,
+    )
+)
+opts.Add(
+    EnumVariable(
+        "precision",
+        "Set the floating-point precision level",
+        "single",
+        ["single", "double"],
+        ignorecase=2,
+    )
 )
 opts.Add(BoolVariable("minizip", "Enable ZIP archive support using minizip", True))
-opts.Add(BoolVariable("brotli", "Enable Brotli for decompression and WOFF2 fonts support", True))
-opts.Add(BoolVariable("xaudio2", "Enable the XAudio2 audio driver on supported platforms", False))
+opts.Add(
+    BoolVariable(
+        "brotli", "Enable Brotli for decompression and WOFF2 fonts support", True
+    )
+)
+opts.Add(
+    BoolVariable(
+        "xaudio2", "Enable the XAudio2 audio driver on supported platforms", False
+    )
+)
 opts.Add(BoolVariable("vulkan", "Enable the Vulkan rendering driver", True))
 opts.Add(BoolVariable("opengl3", "Enable the OpenGL/GLES3 rendering driver", True))
-opts.Add(BoolVariable("d3d12", "Enable the Direct3D 12 rendering driver on supported platforms", False))
-opts.Add(BoolVariable("metal", "Enable the Metal rendering driver on supported platforms (Apple arm64 only)", False))
-opts.Add(BoolVariable("use_volk", "Use the volk library to load the Vulkan loader dynamically", True))
-opts.Add(BoolVariable("accesskit", "Enable the AccessKit driver for screen reader support", True))
-opts.Add(BoolVariable("angle", "Enable the ANGLE rendering driver for OpenGL ES 3.0 on supported platforms", True))
+opts.Add(
+    BoolVariable(
+        "d3d12", "Enable the Direct3D 12 rendering driver on supported platforms", False
+    )
+)
+opts.Add(
+    BoolVariable(
+        "metal",
+        "Enable the Metal rendering driver on supported platforms (Apple arm64 only)",
+        False,
+    )
+)
+opts.Add(
+    BoolVariable(
+        "use_volk", "Use the volk library to load the Vulkan loader dynamically", True
+    )
+)
+opts.Add(
+    BoolVariable(
+        "accesskit", "Enable the AccessKit driver for screen reader support", True
+    )
+)
+opts.Add(
+    BoolVariable(
+        "angle",
+        "Enable the ANGLE rendering driver for OpenGL ES 3.0 on supported platforms",
+        True,
+    )
+)
 opts.Add(BoolVariable("sdl", "Enable the SDL3 input driver", True))
 opts.Add(
     EnumVariable(
-        "profiler", "Specify the profiler to use", "none", ["none", "tracy", "perfetto", "instruments"], ignorecase=2
+        "profiler",
+        "Specify the profiler to use",
+        "none",
+        ["none", "tracy", "perfetto", "instruments"],
+        ignorecase=2,
     )
 )
 opts.Add(("profiler_path", "Path to the Profiler framework.", ""))
@@ -234,16 +330,38 @@ opts.Add(
 # Advanced options
 opts.Add(
     BoolVariable(
-        "dev_mode", "Alias for dev options: verbose=yes warnings=extra werror=yes tests=yes strict_checks=yes", False
+        "dev_mode",
+        "Alias for dev options: verbose=yes warnings=extra werror=yes tests=yes strict_checks=yes",
+        False,
     )
 )
 opts.Add(BoolVariable("tests", "Build the unit tests", False))
-opts.Add(BoolVariable("fast_unsafe", "Enable unsafe options for faster incremental builds", False))
+opts.Add(
+    BoolVariable(
+        "fast_unsafe", "Enable unsafe options for faster incremental builds", False
+    )
+)
 opts.Add(BoolVariable("ninja", "Use the ninja backend for faster rebuilds", False))
-opts.Add(BoolVariable("ninja_auto_run", "Run ninja automatically after generating the ninja file", True))
+opts.Add(
+    BoolVariable(
+        "ninja_auto_run",
+        "Run ninja automatically after generating the ninja file",
+        True,
+    )
+)
 opts.Add("ninja_file", "Path to the generated ninja file", "build.ninja")
-opts.Add(BoolVariable("compiledb", "Generate compilation DB (`compile_commands.json`) for external tools", False))
-opts.Add(BoolVariable("compiledb_gen_only", "Exit after building the compilation database", False))
+opts.Add(
+    BoolVariable(
+        "compiledb",
+        "Generate compilation DB (`compile_commands.json`) for external tools",
+        False,
+    )
+)
+opts.Add(
+    BoolVariable(
+        "compiledb_gen_only", "Exit after building the compilation database", False
+    )
+)
 opts.Add(
     "num_jobs",
     "Use up to N jobs when compiling (equivalent to `-j N`). Defaults to max jobs - 1. Ignored if -j is used.",
@@ -252,23 +370,55 @@ opts.Add(
 opts.Add(BoolVariable("verbose", "Enable verbose output for the compilation", False))
 opts.Add(BoolVariable("progress", "Show a progress indicator during compilation", True))
 opts.Add(
-    EnumVariable("warnings", "Level of compilation warnings", "all", ["extra", "all", "moderate", "no"], ignorecase=2)
+    EnumVariable(
+        "warnings",
+        "Level of compilation warnings",
+        "all",
+        ["extra", "all", "moderate", "no"],
+        ignorecase=2,
+    )
 )
 opts.Add(BoolVariable("werror", "Treat compiler warnings as errors", False))
-opts.Add("extra_suffix", "Custom extra suffix added to the base filename of all generated binary files", "")
-opts.Add("object_prefix", "Custom prefix added to the base filename of all generated object files", "")
+opts.Add(
+    "extra_suffix",
+    "Custom extra suffix added to the base filename of all generated binary files",
+    "",
+)
+opts.Add(
+    "object_prefix",
+    "Custom prefix added to the base filename of all generated object files",
+    "",
+)
 opts.Add(BoolVariable("vsproj", "Generate a Visual Studio solution", False))
 opts.Add("vsproj_name", "Name of the Visual Studio solution", "godot")
-opts.Add("import_env_vars", "A comma-separated list of environment variables to copy from the outer environment.", "")
-opts.Add(BoolVariable("disable_exceptions", "Force disabling exception handling code", True))
+opts.Add(
+    "import_env_vars",
+    "A comma-separated list of environment variables to copy from the outer environment.",
+    "",
+)
+opts.Add(
+    BoolVariable("disable_exceptions", "Force disabling exception handling code", True)
+)
 opts.Add(BoolVariable("disable_3d", "Disable 3D nodes for a smaller executable", False))
-opts.Add(BoolVariable("disable_advanced_gui", "Disable advanced GUI nodes and behaviors", False))
-opts.Add(BoolVariable("disable_physics_2d", "Disable 2D physics nodes and server", False))
-opts.Add(BoolVariable("disable_physics_3d", "Disable 3D physics nodes and server", False))
+opts.Add(
+    BoolVariable(
+        "disable_advanced_gui", "Disable advanced GUI nodes and behaviors", False
+    )
+)
+opts.Add(
+    BoolVariable("disable_physics_2d", "Disable 2D physics nodes and server", False)
+)
+opts.Add(
+    BoolVariable("disable_physics_3d", "Disable 3D physics nodes and server", False)
+)
 opts.Add(BoolVariable("disable_navigation_2d", "Disable 2D navigation features", False))
 opts.Add(BoolVariable("disable_navigation_3d", "Disable 3D navigation features", False))
 opts.Add(BoolVariable("disable_xr", "Disable XR nodes and server", False))
-opts.Add(BoolVariable("disable_overrides", "Disable project settings overrides (override.cfg)", False))
+opts.Add(
+    BoolVariable(
+        "disable_overrides", "Disable project settings overrides (override.cfg)", False
+    )
+)
 opts.Add(
     BoolVariable(
         "disable_path_overrides",
@@ -277,28 +427,81 @@ opts.Add(
     )
 )
 opts.Add("build_profile", "Path to a file containing a feature build profile", "")
-opts.Add("custom_modules", "A list of comma-separated directory paths containing custom modules to build.", "")
-opts.Add(BoolVariable("custom_modules_recursive", "Detect custom modules recursively for each specified path.", True))
-opts.Add(BoolVariable("modules_enabled_by_default", "If no, disable all modules except ones explicitly enabled", True))
-opts.Add(BoolVariable("no_editor_splash", "Don't use the custom splash screen for the editor", True))
+opts.Add(
+    "custom_modules",
+    "A list of comma-separated directory paths containing custom modules to build.",
+    "",
+)
+opts.Add(
+    BoolVariable(
+        "custom_modules_recursive",
+        "Detect custom modules recursively for each specified path.",
+        True,
+    )
+)
+opts.Add(
+    BoolVariable(
+        "modules_enabled_by_default",
+        "If no, disable all modules except ones explicitly enabled",
+        True,
+    )
+)
+opts.Add(
+    BoolVariable(
+        "no_editor_splash", "Don't use the custom splash screen for the editor", True
+    )
+)
 opts.Add(
     "system_certs_path",
     "Use this path as TLS certificates default for editor and Linux/BSD export templates (for package maintainers)",
     "",
 )
-opts.Add(BoolVariable("use_precise_math_checks", "Math checks use very precise epsilon (debug option)", False))
+opts.Add(
+    BoolVariable(
+        "use_precise_math_checks",
+        "Math checks use very precise epsilon (debug option)",
+        False,
+    )
+)
 opts.Add(BoolVariable("strict_checks", "Enforce stricter checks (debug option)", False))
 opts.Add(
     BoolVariable(
-        "limit_transitive_includes", "Attempt to limit the amount of transitive includes in system headers", True
+        "limit_transitive_includes",
+        "Attempt to limit the amount of transitive includes in system headers",
+        True,
     )
 )
 opts.Add(BoolVariable("scu_build", "Use single compilation unit build", False))
-opts.Add("scu_limit", "Max includes per SCU file when using scu_build (determines RAM use)", "0")
-opts.Add(BoolVariable("engine_update_check", "Enable engine update checks in the Project Manager", True))
-opts.Add(BoolVariable("steamapi", "Enable minimal SteamAPI integration for usage time tracking (editor only)", False))
-opts.Add("cache_path", "Path to a directory where SCons cache files will be stored. No value disables the cache.", "")
+opts.Add(
+    "scu_limit",
+    "Max includes per SCU file when using scu_build (determines RAM use)",
+    "0",
+)
+opts.Add(
+    BoolVariable(
+        "engine_update_check",
+        "Enable engine update checks in the Project Manager",
+        True,
+    )
+)
+opts.Add(
+    BoolVariable(
+        "steamapi",
+        "Enable minimal SteamAPI integration for usage time tracking (editor only)",
+        False,
+    )
+)
+opts.Add(
+    "cache_path",
+    "Path to a directory where SCons cache files will be stored. No value disables the cache.",
+    "",
+)
 opts.Add("cache_limit", "Max size (in GiB) for the SCons cache. 0 means no limit.", "0")
+opts.Add(
+    "link_manifest",
+    "Write the resolved static-library link interface to this JSON file.",
+    "",
+)
 opts.Add(
     BoolVariable(
         "redirect_build_objects",
@@ -317,7 +520,9 @@ opts.Add(
 
 # Thirdparty libraries
 opts.Add(BoolVariable("builtin_brotli", "Use the built-in Brotli library", True))
-opts.Add(BoolVariable("builtin_certs", "Use the built-in SSL certificates bundles", True))
+opts.Add(
+    BoolVariable("builtin_certs", "Use the built-in SSL certificates bundles", True)
+)
 opts.Add(BoolVariable("builtin_clipper2", "Use the built-in Clipper2 library", True))
 opts.Add(BoolVariable("builtin_embree", "Use the built-in Embree library", True))
 opts.Add(BoolVariable("builtin_enet", "Use the built-in ENet library", True))
@@ -328,7 +533,11 @@ opts.Add(BoolVariable("builtin_graphite", "Use the built-in Graphite library", T
 opts.Add(BoolVariable("builtin_harfbuzz", "Use the built-in HarfBuzz library", True))
 opts.Add(BoolVariable("builtin_sdl", "Use the built-in SDL library", True))
 opts.Add(BoolVariable("builtin_icu4c", "Use the built-in ICU library", True))
-opts.Add(BoolVariable("builtin_libjpeg_turbo", "Use the built-in libjpeg-turbo library", True))
+opts.Add(
+    BoolVariable(
+        "builtin_libjpeg_turbo", "Use the built-in libjpeg-turbo library", True
+    )
+)
 opts.Add(BoolVariable("builtin_libogg", "Use the built-in libogg library", True))
 opts.Add(BoolVariable("builtin_libpng", "Use the built-in libpng library", True))
 opts.Add(BoolVariable("builtin_libtheora", "Use the built-in libtheora library", True))
@@ -339,8 +548,18 @@ opts.Add(BoolVariable("builtin_mbedtls", "Use the built-in mbedTLS library", Tru
 opts.Add(BoolVariable("builtin_miniupnpc", "Use the built-in miniupnpc library", True))
 opts.Add(BoolVariable("builtin_openxr", "Use the built-in OpenXR library", True))
 opts.Add(BoolVariable("builtin_pcre2", "Use the built-in PCRE2 library", True))
-opts.Add(BoolVariable("builtin_pcre2_with_jit", "Use JIT compiler for the built-in PCRE2 library", True))
-opts.Add(BoolVariable("builtin_recastnavigation", "Use the built-in Recast navigation library", True))
+opts.Add(
+    BoolVariable(
+        "builtin_pcre2_with_jit",
+        "Use JIT compiler for the built-in PCRE2 library",
+        True,
+    )
+)
+opts.Add(
+    BoolVariable(
+        "builtin_recastnavigation", "Use the built-in Recast navigation library", True
+    )
+)
 opts.Add(BoolVariable("builtin_rvo2_2d", "Use the built-in RVO2 2D library", True))
 opts.Add(BoolVariable("builtin_rvo2_3d", "Use the built-in RVO2 3D library", True))
 opts.Add(BoolVariable("builtin_xatlas", "Use the built-in xatlas library", True))
@@ -412,7 +631,9 @@ if env["platform"] in ["linux", "bsd"]:
     env["platform"] = "linuxbsd"
 
 if env["platform"] not in platform_list:
-    text = "The following platforms are available:\n\t{}\n".format("\n\t".join(platform_list))
+    text = "The following platforms are available:\n\t{}\n".format(
+        "\n\t".join(platform_list)
+    )
     text += "Please run SCons again and select a valid platform: platform=<string>."
 
     if env["platform"] == "list":
@@ -433,7 +654,9 @@ if env["platform"] in platform_opts:
 # as early as possible to ensure that we're using the correct values.
 flag_list = platform_flags[env["platform"]]
 for key, value in flag_list.items():
-    if key not in ARGUMENTS or ARGUMENTS[key] == "auto":  # Allow command line to override platform flags
+    if (
+        key not in ARGUMENTS or ARGUMENTS[key] == "auto"
+    ):  # Allow command line to override platform flags
         env[key] = value
 
 # Update the environment to take platform-specific options into account.
@@ -657,7 +880,9 @@ if env["build_profile"] != "":
             for c in dbo:
                 env[c] = dbo[c]
     except json.JSONDecodeError as err:
-        print_error(f'Failed to open feature build profile due to JSON decoding error: "{env["build_profile"]}"\n{err}')
+        print_error(
+            f'Failed to open feature build profile due to JSON decoding error: "{env["build_profile"]}"\n{err}'
+        )
         Exit(255)
     except FileNotFoundError:
         print_error(f'Feature build profile not found at: "{env["build_profile"]}"')
@@ -703,10 +928,14 @@ detect.configure(env)
 platform_string = env["platform"]
 if env.get("simulator"):
     platform_string += " (simulator)"
-print(f'Building for platform "{platform_string}", architecture "{env["arch"]}", target "{env["target"]}".')
+print(
+    f'Building for platform "{platform_string}", architecture "{env["arch"]}", target "{env["target"]}".'
+)
 
 if env.dev_build:
-    print_info("Developer build, with debug optimization level and debug symbols (unless overridden).")
+    print_info(
+        "Developer build, with debug optimization level and debug symbols (unless overridden)."
+    )
 
 # Enforce our minimal compiler version requirements
 cc_version = methods.get_compiler_version(env)
@@ -773,7 +1002,9 @@ elif methods.using_clang(env):
                 )
                 Exit(255)
             elif env["debug_paths_relative"] and cc_version_major < 10:
-                print_warning("Clang < 10 doesn't support -ffile-prefix-map, disabling `debug_paths_relative` option.")
+                print_warning(
+                    "Clang < 10 doesn't support -ffile-prefix-map, disabling `debug_paths_relative` option."
+                )
                 env["debug_paths_relative"] = False
 
 elif env.msvc:
@@ -815,9 +1046,17 @@ elif env["arch"] == "x86_32":
 
 # Explicitly specify colored output.
 if methods.using_gcc(env):
-    env.AppendUnique(CCFLAGS=["-fdiagnostics-color" if is_stderr_color() else "-fno-diagnostics-color"])
+    env.AppendUnique(
+        CCFLAGS=[
+            "-fdiagnostics-color" if is_stderr_color() else "-fno-diagnostics-color"
+        ]
+    )
 elif methods.using_clang(env) or methods.using_emcc(env):
-    env.AppendUnique(CCFLAGS=["-fcolor-diagnostics" if is_stderr_color() else "-fno-color-diagnostics"])
+    env.AppendUnique(
+        CCFLAGS=[
+            "-fcolor-diagnostics" if is_stderr_color() else "-fno-color-diagnostics"
+        ]
+    )
     if sys.platform == "win32":
         env.AppendUnique(CCFLAGS=["-fansi-escape-codes"])
 
@@ -855,9 +1094,13 @@ else:
     if env["debug_symbols"]:
         if env["platform"] == "windows":
             if methods.using_clang(env):
-                env.AppendUnique(CCFLAGS=["-gdwarf-4"])  # clang dwarf-5 symbols are broken on Windows.
+                env.AppendUnique(
+                    CCFLAGS=["-gdwarf-4"]
+                )  # clang dwarf-5 symbols are broken on Windows.
             else:
-                env.AppendUnique(CCFLAGS=["-gdwarf-5"])  # For gcc, only dwarf-5 symbols seem usable by libbacktrace.
+                env.AppendUnique(
+                    CCFLAGS=["-gdwarf-5"]
+                )  # For gcc, only dwarf-5 symbols seem usable by libbacktrace.
         else:
             # Adding dwarf-4 explicitly makes stacktraces work with clang builds,
             # otherwise addr2line doesn't understand them
@@ -990,7 +1233,10 @@ else:  # GCC, Clang
             # GCC 16 flags type-incompleteness assertions on their intended behavior, see GH-119269.
             env.AppendUnique(CXXFLAGS=["-Wno-sfinae-incomplete"])
     elif methods.using_clang(env) or methods.using_emcc(env):
-        common_warnings += ["-Wshadow-field-in-constructor", "-Wshadow-uncaptured-local"]
+        common_warnings += [
+            "-Wshadow-field-in-constructor",
+            "-Wshadow-uncaptured-local",
+        ]
         # We often implement `operator<` for structs of pointers as a requirement
         # for putting them in `Set` or `Map`. We don't mind about unreliable ordering.
         common_warnings += ["-Wno-ordered-compare-function-pointers"]
@@ -1000,7 +1246,10 @@ else:  # GCC, Clang
     env["WARNLEVEL"] = "-Wall" if not env.msvc else "-W3"
 
     if env["warnings"] == "extra":
-        env.AppendUnique(CCFLAGS=["-Wextra", "-Wwrite-strings", "-Wno-unused-parameter"] + common_warnings)
+        env.AppendUnique(
+            CCFLAGS=["-Wextra", "-Wwrite-strings", "-Wno-unused-parameter"]
+            + common_warnings
+        )
         env.AppendUnique(CXXFLAGS=["-Wctor-dtor-privacy", "-Wnon-virtual-dtor"])
         if methods.using_gcc(env):
             env.AppendUnique(
@@ -1154,7 +1403,9 @@ if env.editor_build:
         print_error("Not all modules required by editor builds are enabled.")
         Exit(255)
 
-env["PROGSUFFIX_WRAP"] = suffix + env.module_version_string + ".console" + env["PROGSUFFIX"]
+env["PROGSUFFIX_WRAP"] = (
+    suffix + env.module_version_string + ".console" + env["PROGSUFFIX"]
+)
 env["PROGSUFFIX"] = suffix + env.module_version_string + env["PROGSUFFIX"]
 env["OBJSUFFIX"] = suffix + env["OBJSUFFIX"]
 # (SH)LIBSUFFIX will be used for our own built libraries
@@ -1255,6 +1506,8 @@ if not env.GetOption("clean") and not env.GetOption("help"):
         write_compilation_db([env.File("compile_commands.json")], [], env)
         env.Exit()
 
+    if env["link_manifest"]:
+        methods.dump_link_manifest(env, env["link_manifest"])
     methods.dump(env)
     methods.show_progress(env)
     methods.prepare_purge(env)

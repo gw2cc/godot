@@ -33,6 +33,7 @@ bin
 *.gen.*
 compile_commands.json
 platform/windows/godot_res.res
+.cmake
 
 # Ninja build files
 *.ninja
