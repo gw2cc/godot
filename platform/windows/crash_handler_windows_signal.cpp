@@ -309,19 +309,19 @@ void CrashHandler::disable() {
 		return;
 	}
 
-#if defined(CRASH_HANDLER_EXCEPTION)
-	signal(SIGSEGV, nullptr);
-	signal(SIGFPE, nullptr);
-	signal(SIGILL, nullptr);
-#endif
+	// #if defined(CRASH_HANDLER_EXCEPTION)
+	// 	signal(SIGSEGV, nullptr);
+	// 	signal(SIGFPE, nullptr);
+	// 	signal(SIGILL, nullptr);
+	// #endif
 
 	disabled = true;
 }
 
 void CrashHandler::initialize() {
-#if defined(CRASH_HANDLER_EXCEPTION)
-	signal(SIGSEGV, CrashHandlerException);
-	signal(SIGFPE, CrashHandlerException);
-	signal(SIGILL, CrashHandlerException);
-#endif
+	// #if defined(CRASH_HANDLER_EXCEPTION)
+	// 	signal(SIGSEGV, CrashHandlerException);
+	// 	signal(SIGFPE, CrashHandlerException);
+	// 	signal(SIGILL, CrashHandlerException);
+	// #endif
 }

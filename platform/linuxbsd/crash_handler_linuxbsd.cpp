@@ -261,19 +261,19 @@ void CrashHandler::disable() {
 		return;
 	}
 
-#ifdef CRASH_HANDLER_ENABLED
-	signal(SIGSEGV, SIG_DFL);
-	signal(SIGFPE, SIG_DFL);
-	signal(SIGILL, SIG_DFL);
-#endif
+	// #ifdef CRASH_HANDLER_ENABLED
+	// 	signal(SIGSEGV, SIG_DFL);
+	// 	signal(SIGFPE, SIG_DFL);
+	// 	signal(SIGILL, SIG_DFL);
+	// #endif
 
 	disabled = true;
 }
 
 void CrashHandler::initialize() {
-#ifdef CRASH_HANDLER_ENABLED
-	signal(SIGSEGV, handle_crash);
-	signal(SIGFPE, handle_crash);
-	signal(SIGILL, handle_crash);
-#endif
+	// #ifdef CRASH_HANDLER_ENABLED
+	// 	signal(SIGSEGV, handle_crash);
+	// 	signal(SIGFPE, handle_crash);
+	// 	signal(SIGILL, handle_crash);
+	// #endif
 }
