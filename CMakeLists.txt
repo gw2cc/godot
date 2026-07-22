@@ -115,6 +115,10 @@ foreach(library_path IN LISTS GODOT_LIBRARY_RELATIVE_PATHS)
     if(IS_ABSOLUTE "${library_path}")
         list(APPEND GODOT_LIBRARIES "${library_path}")
     else()
+        if(NOT library_path MATCHES "\\.(a|lib)$")
+            message(STATUS "Skipping non-archive Godot library manifest entry: ${library_path}")
+            continue()
+        endif()
         list(APPEND GODOT_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/${library_path}")
     endif()
     get_filename_component(library_name "${library_path}" NAME)
@@ -238,10 +242,21 @@ target_include_directories(godot INTERFACE
 foreach(thirdparty_dir IN LISTS _godot_thirdparty_dirs)
     if(IS_DIRECTORY "${thirdparty_dir}")
         get_filename_component(thirdparty_name "${thirdparty_dir}" NAME)
+        file(GLOB_RECURSE thirdparty_installed_files
+            LIST_DIRECTORIES false
+            "${thirdparty_dir}/*.h"
+            "${thirdparty_dir}/*.hpp"
+            "${thirdparty_dir}/*.inc"
+            "${thirdparty_dir}/*.crt"
+        )
         target_include_directories(godot INTERFACE
             "$<BUILD_INTERFACE:${thirdparty_dir}>"
-            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/godot/thirdparty/${thirdparty_name}>"
         )
+        if(thirdparty_installed_files)
+            target_include_directories(godot INTERFACE
+                "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/godot/thirdparty/${thirdparty_name}>"
+            )
+        endif()
     endif()
 endforeach()
 
