@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.29)
 project(godot VERSION 4.7 LANGUAGES NONE)
 
+include(CTest)
 set(CMAKE_INSTALL_LIBDIR "lib" CACHE PATH "Object code libraries")
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -30,6 +31,12 @@ else()
     set(GODOT_LTO_ARG lto=none)
 endif()
 
+if(BUILD_TESTING)
+    set(GODOT_TESTS_ARG yes)
+else()
+    set(GODOT_TESTS_ARG no)
+endif()
+
 # ---- Parallelism ----
 include(ProcessorCount)
 ProcessorCount(GODOT_CPU_COUNT)
@@ -48,7 +55,7 @@ set(GODOT_SCONS_ARGS
     module_navigation_enabled=no
     disable_path_overrides=no
     deprecated=no
-    tests=no
+    tests=${GODOT_TESTS_ARG}
     platform=${GODOT_PLATFORM}
     windows_subsystem=console
     library_type=static_library
