@@ -269,6 +269,7 @@ install(
         PATTERN "*.h"
         PATTERN "*.hpp"
         PATTERN "*.inc"
+        PATTERN "*.crt"
 )
 
 if(WIN32)
