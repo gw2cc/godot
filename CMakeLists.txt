@@ -45,7 +45,11 @@ if(GODOT_CPU_COUNT EQUAL 0)
 endif()
 
 set(GODOT_SCONS_COMMAND "uvx scons" CACHE STRING "Command used to invoke SCons")
-separate_arguments(GODOT_SCONS_COMMAND_LIST NATIVE_COMMAND "${GODOT_SCONS_COMMAND}")
+if(GODOT_SCONS_COMMAND MATCHES ";")
+    set(GODOT_SCONS_COMMAND_LIST ${GODOT_SCONS_COMMAND})
+else()
+    separate_arguments(GODOT_SCONS_COMMAND_LIST NATIVE_COMMAND "${GODOT_SCONS_COMMAND}")
+endif()
 
 set(GODOT_SCONS_ARGS
     debug_symbols=yes
