@@ -58,6 +58,7 @@ set(GODOT_SCONS_ARGS
     engine_update_check=no
     module_navigation_enabled=no
     disable_path_overrides=no
+    disable_exceptions=no
     deprecated=no
     tests=${GODOT_TESTS_ARG}
     platform=${GODOT_PLATFORM}
@@ -215,7 +216,6 @@ target_compile_definitions(godot INTERFACE
 )
 if(WIN32)
     target_compile_definitions(godot INTERFACE
-        _HAS_EXCEPTIONS=0
         _WIN32_WINNT=0x0601
         _WIN64
         D3D12_ENABLED
