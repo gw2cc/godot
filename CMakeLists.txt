@@ -131,8 +131,14 @@ foreach(library_path IN LISTS GODOT_LIBRARY_RELATIVE_PATHS)
 endforeach()
 
 set(GODOT_EXTERNAL_LIBRARY_FILES)
+set(GODOT_EXTERNAL_LINK_LIBRARIES)
 set(GODOT_INSTALLED_EXTERNAL_LIBRARIES)
 foreach(external_library IN LISTS GODOT_EXTERNAL_LIBRARIES)
+    get_filename_component(external_library_name "${external_library}" NAME)
+    if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND external_library_name STREQUAL "libffi.a")
+        continue()
+    endif()
+
     set(external_library_file "")
     if(IS_ABSOLUTE "${external_library}" AND EXISTS "${external_library}")
         set(external_library_file "${external_library}")
@@ -147,11 +153,13 @@ foreach(external_library IN LISTS GODOT_EXTERNAL_LIBRARIES)
 
     if(external_library_file)
         list(APPEND GODOT_EXTERNAL_LIBRARY_FILES "${external_library_file}")
+        list(APPEND GODOT_EXTERNAL_LINK_LIBRARIES "${external_library_file}")
         get_filename_component(external_library_name "${external_library_file}" NAME)
         list(APPEND GODOT_INSTALLED_EXTERNAL_LIBRARIES
             "$<INSTALL_PREFIX>/${CMAKE_INSTALL_LIBDIR}/${external_library_name}"
         )
     else()
+        list(APPEND GODOT_EXTERNAL_LINK_LIBRARIES "${external_library}")
         list(APPEND GODOT_INSTALLED_EXTERNAL_LIBRARIES "${external_library}")
     endif()
 endforeach()
@@ -180,7 +188,7 @@ endforeach()
 target_link_libraries(godot INTERFACE
     $<BUILD_INTERFACE:${GODOT_LIBRARIES}>
     $<INSTALL_INTERFACE:${GODOT_INSTALLED_LIBRARIES}>
-    $<BUILD_INTERFACE:${GODOT_EXTERNAL_LIBRARIES}>
+    $<BUILD_INTERFACE:${GODOT_EXTERNAL_LINK_LIBRARIES}>
     $<INSTALL_INTERFACE:${GODOT_INSTALLED_EXTERNAL_LIBRARIES}>
 )
 
