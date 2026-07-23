@@ -68,6 +68,9 @@ set(GODOT_SCONS_ARGS
     target=${GODOT_TARGET}
     ${GODOT_LTO_ARG}
 )
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND GODOT_SCONS_ARGS linker=mold)
+endif()
 if(GODOT_D3D12_ARG)
     list(APPEND GODOT_SCONS_ARGS ${GODOT_D3D12_ARG})
 endif()
