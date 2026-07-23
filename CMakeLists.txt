@@ -26,7 +26,7 @@ endif()
 
 # ---- LTO ----
 if(CMAKE_INTERPROCEDURAL_OPTIMIZATION)
-    set(GODOT_LTO_ARG lto=full)
+    set(GODOT_LTO_ARG lto=auto)
 else()
     set(GODOT_LTO_ARG lto=none)
 endif()
