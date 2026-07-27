@@ -49,6 +49,7 @@
 #include "core/io/dir_access.h"
 #include "core/io/dtls_server.h"
 #include "core/io/file_access_encrypted.h"
+#include "core/io/file_access_game_data.h"
 #include "core/io/http_client.h"
 #include "core/io/image_loader.h"
 #include "core/io/image_resource_format.h"
@@ -150,6 +151,8 @@ void register_core_types() {
 	GDREGISTER_CLASS(Time);
 	_time = memnew(Time);
 	ResourceLoader::initialize();
+	FileAccess::make_default<FileAccessGameData>(FileAccess::ACCESS_GAME_DATA);
+	DirAccess::make_default<DirAccessGameData>(DirAccess::ACCESS_GAME_DATA);
 
 	Variant::register_types();
 

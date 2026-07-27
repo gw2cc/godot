@@ -34,9 +34,128 @@ TEST_FORCE_LINK(test_file_access)
 
 #include "core/io/dir_access.h"
 #include "core/io/file_access.h"
+#include "core/io/file_access_game_data.h"
+#include "core/io/file_access_memory.h"
+#include "core/io/resource.h"
+#include "core/io/resource_loader.h"
 #include "tests/test_utils.h"
 
 namespace TestFileAccess {
+
+class TestGameDataSource : public GameDataSource {
+	HashMap<String, Vector<uint8_t>> files;
+
+public:
+	void add_file(const String &p_path, const String &p_contents) {
+		CharString contents = p_contents.utf8();
+		Vector<uint8_t> data;
+		data.resize(contents.length());
+		for (int i = 0; i < contents.length(); i++) {
+			data.write[i] = contents[i];
+		}
+		files[p_path] = data;
+	}
+
+	virtual Ref<FileAccess> get_file(const String &p_path) override {
+		const Vector<uint8_t> *data = files.getptr(p_path);
+		if (!data) {
+			return Ref<FileAccess>();
+		}
+
+		Ref<FileAccessMemory> file(memnew(FileAccessMemory));
+		if (file->open_custom(data->ptr(), data->size()) != OK) {
+			return Ref<FileAccess>();
+		}
+		return file;
+	}
+};
+
+class TestGameDataResourceLoader : public ResourceFormatLoader {
+public:
+	virtual void get_recognized_extensions(List<String> *p_extensions) const override {
+		p_extensions->push_back("game_data_test");
+	}
+
+	virtual String get_resource_type(const String &p_path) const override {
+		return "Resource";
+	}
+
+	virtual Ref<Resource> load(const String &p_path, const String &p_original_path = "", Error *r_error = nullptr, bool p_use_sub_threads = false, float *r_progress = nullptr, CacheMode p_cache_mode = CACHE_MODE_REUSE) override {
+		Error error = OK;
+		Ref<FileAccess> file = FileAccess::open(p_path, FileAccess::READ, &error);
+		if (r_error) {
+			*r_error = error;
+		}
+		if (file.is_null()) {
+			return Ref<Resource>();
+		}
+
+		Ref<Resource> resource(memnew(Resource));
+		resource->set_name(file->get_as_text());
+		return resource;
+	}
+};
+
+TEST_CASE("[FileAccess] game_data virtual filesystem") {
+	GameData *game_data = GameData::get_singleton();
+	REQUIRE(game_data != nullptr);
+
+	const String root = "game_data://file_access_game_data";
+	const String hello_path = root.path_join("hello.txt");
+	const String nested_path = root.path_join("nested/item.txt");
+	const String resource_path = root.path_join("resource.game_data_test");
+
+	TestGameDataSource *base_source = memnew(TestGameDataSource);
+	base_source->add_file(hello_path, "base");
+	base_source->add_file(nested_path, "nested");
+	base_source->add_file(resource_path, "loaded");
+	game_data->add_source(base_source);
+
+	CHECK(game_data->add_path(root.path_join("./hello.txt"), 4, base_source));
+	CHECK(game_data->add_path(nested_path, 6, base_source));
+	CHECK(game_data->add_path(resource_path, 6, base_source));
+	CHECK(!game_data->add_path(hello_path, 4, base_source));
+
+	TestGameDataSource *overlay_source = memnew(TestGameDataSource);
+	overlay_source->add_file(hello_path, "overlay");
+	game_data->add_source(overlay_source);
+	CHECK(game_data->add_path(hello_path, 7, overlay_source, true));
+
+	Ref<FileAccess> file = FileAccess::open(hello_path, FileAccess::READ);
+	REQUIRE(file.is_valid());
+	CHECK(file->get_as_utf8_string() == "overlay");
+	CHECK(FileAccess::exists(hello_path));
+	CHECK(!FileAccess::exists(root.path_join("missing.txt")));
+	CHECK(FileAccess::get_size(hello_path) == 7);
+	CHECK(FileAccess::get_modified_time(hello_path) == 0);
+	CHECK(FileAccess::get_access_time(hello_path) == 0);
+	CHECK(FileAccess::get_read_only_attribute(hello_path));
+	CHECK(FileAccess::set_read_only_attribute(hello_path, false) == ERR_UNAVAILABLE);
+
+	Error error = OK;
+	CHECK(FileAccess::open(hello_path, FileAccess::WRITE, &error).is_null());
+	CHECK(error == ERR_UNAVAILABLE);
+	CHECK(FileAccess::open(root.path_join("missing.txt"), FileAccess::READ, &error).is_null());
+	CHECK(error == ERR_FILE_NOT_FOUND);
+
+	Ref<DirAccess> directory = DirAccess::open(root);
+	REQUIRE(directory.is_valid());
+	CHECK(directory->file_exists("hello.txt"));
+	CHECK(directory->dir_exists("nested"));
+	CHECK(directory->change_dir("nested") == OK);
+	CHECK(directory->file_exists("item.txt"));
+	CHECK(directory->change_dir("..") == OK);
+	CHECK(directory->get_current_dir() == root);
+	CHECK(directory->make_dir("new_directory") == ERR_UNAVAILABLE);
+
+	Ref<TestGameDataResourceLoader> loader(memnew(TestGameDataResourceLoader));
+	ResourceLoader::add_resource_format_loader(loader, true);
+	Ref<Resource> resource = ResourceLoader::load(resource_path, "", ResourceLoader::CACHE_MODE_IGNORE, &error);
+	ResourceLoader::remove_resource_format_loader(loader);
+	REQUIRE(resource.is_valid());
+	CHECK(error == OK);
+	CHECK(resource->get_name() == "loaded");
+}
 
 TEST_CASE("[FileAccess] CSV read") {
 	Ref<FileAccess> f = FileAccess::open(TestUtils::get_data_path("testdata.csv"), FileAccess::READ);

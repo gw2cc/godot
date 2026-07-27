@@ -35,6 +35,7 @@
 #include "core/core_bind.h"
 #include "core/io/dir_access.h"
 #include "core/io/file_access.h"
+#include "core/io/file_access_game_data.h"
 #include "core/io/resource_importer.h"
 #include "core/object/callable_mp.h"
 #include "core/object/class_db.h"
@@ -317,8 +318,7 @@ Ref<Resource> ResourceLoader::_load(const String &p_path, const String &p_origin
 	ERR_FAIL_COND_V_MSG(found, Ref<Resource>(), vformat("Failed loading resource: %s.", p_path));
 
 #ifdef TOOLS_ENABLED
-	Ref<FileAccess> file_check = FileAccess::create(FileAccess::ACCESS_RESOURCES);
-	if (!file_check->file_exists(p_path)) {
+	if (!FileAccess::exists(p_path)) {
 		if (r_error) {
 			*r_error = ERR_FILE_NOT_FOUND;
 		}
@@ -690,6 +690,8 @@ String ResourceLoader::_validate_local_path(const String &p_path) {
 	ResourceUID::ID uid = ResourceUID::get_singleton()->text_to_id(p_path);
 	if (uid != ResourceUID::INVALID_ID) {
 		return ResourceUID::get_singleton()->get_id_path(uid);
+	} else if (GameData::is_game_data_path(p_path)) {
+		return p_path;
 	} else if (p_path.is_relative_path()) {
 		return ("res://" + p_path).simplify_path();
 	} else {

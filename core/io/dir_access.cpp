@@ -54,6 +54,8 @@ String DirAccess::_get_root_string() const {
 			return "res://";
 		case ACCESS_USERDATA:
 			return "user://";
+		case ACCESS_GAME_DATA:
+			return "game_data://";
 		default:
 			return "";
 	}
@@ -214,6 +216,9 @@ String DirAccess::fix_path(const String &p_path) const {
 		case ACCESS_FILESYSTEM: {
 			return p_path;
 		} break;
+		case ACCESS_GAME_DATA: {
+			return p_path;
+		} break;
 		case ACCESS_MAX:
 			break; // Can't happen, but silences warning
 	}
@@ -221,7 +226,7 @@ String DirAccess::fix_path(const String &p_path) const {
 	return p_path;
 }
 
-DirAccess::CreateFunc DirAccess::create_func[ACCESS_MAX] = { nullptr, nullptr, nullptr };
+DirAccess::CreateFunc DirAccess::create_func[ACCESS_MAX] = { nullptr, nullptr, nullptr, nullptr };
 
 Ref<DirAccess> DirAccess::create_for_path(const String &p_path) {
 	Ref<DirAccess> da;
@@ -229,6 +234,8 @@ Ref<DirAccess> DirAccess::create_for_path(const String &p_path) {
 		da = create(ACCESS_RESOURCES);
 	} else if (p_path.begins_with("user://")) {
 		da = create(ACCESS_USERDATA);
+	} else if (p_path.begins_with("game_data://")) {
+		da = create(ACCESS_GAME_DATA);
 	} else {
 		da = create(ACCESS_FILESYSTEM);
 	}
@@ -321,6 +328,8 @@ Ref<DirAccess> DirAccess::create(AccessType p_access) {
 			da->change_dir("res://");
 		} else if (p_access == ACCESS_USERDATA) {
 			da->change_dir("user://");
+		} else if (p_access == ACCESS_GAME_DATA) {
+			da->change_dir("game_data://");
 		}
 	}
 

@@ -42,6 +42,7 @@
 #include "core/input/input.h"
 #include "core/input/input_map.h"
 #include "core/io/dir_access.h"
+#include "core/io/file_access_game_data.h"
 #include "core/io/file_access_pack.h"
 #include "core/io/file_access_zip.h"
 #include "core/io/image.h"
@@ -168,6 +169,7 @@ static InputMap *input_map = nullptr;
 static TranslationServer *translation_server = nullptr;
 static Performance *performance = nullptr;
 static PackedData *packed_data = nullptr;
+static GameData *game_data = nullptr;
 #ifdef MINIZIP_ENABLED
 static ZipArchive *zip_packed_data = nullptr;
 #endif
@@ -757,6 +759,7 @@ Error Main::test_setup() {
 	register_core_driver_types();
 
 	packed_data = memnew(PackedData);
+	game_data = memnew(GameData);
 
 	globals = memnew(ProjectSettings);
 
@@ -939,6 +942,9 @@ void Main::test_cleanup() {
 
 	if (packed_data) {
 		memdelete(packed_data);
+	}
+	if (game_data) {
+		memdelete(game_data);
 	}
 	if (translation_server) {
 		memdelete(translation_server);
@@ -1136,6 +1142,10 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph
 	packed_data = PackedData::get_singleton();
 	if (!packed_data) {
 		packed_data = memnew(PackedData);
+	}
+	game_data = GameData::get_singleton();
+	if (!game_data) {
+		game_data = memnew(GameData);
 	}
 
 #ifdef MINIZIP_ENABLED
@@ -2975,6 +2985,9 @@ error:
 	}
 	if (packed_data) {
 		memdelete(packed_data);
+	}
+	if (game_data) {
+		memdelete(game_data);
 	}
 
 	unregister_core_driver_types();
@@ -5337,6 +5350,9 @@ void Main::cleanup(bool p_force) {
 
 	if (packed_data) {
 		memdelete(packed_data);
+	}
+	if (game_data) {
+		memdelete(game_data);
 	}
 	if (performance) {
 		memdelete(performance);
