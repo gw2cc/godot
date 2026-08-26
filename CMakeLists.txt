@@ -31,12 +31,6 @@ else()
     set(GODOT_LTO_ARG lto=none)
 endif()
 
-if(BUILD_TESTING)
-    set(GODOT_TESTS_ARG yes)
-else()
-    set(GODOT_TESTS_ARG no)
-endif()
-
 # ---- Parallelism ----
 include(ProcessorCount)
 ProcessorCount(GODOT_CPU_COUNT)
@@ -60,7 +54,7 @@ set(GODOT_SCONS_ARGS
     disable_path_overrides=no
     disable_exceptions=no
     deprecated=no
-    tests=${GODOT_TESTS_ARG}
+    tests=no
     platform=${GODOT_PLATFORM}
     windows_subsystem=console
     library_type=static_library
@@ -334,4 +328,3 @@ install(
         "${GODOT_CONFIG_VERSION_FILE}"
     DESTINATION "${GODOT_PACKAGE_DIR}"
 )
-
