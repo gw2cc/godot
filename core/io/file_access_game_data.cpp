@@ -5,6 +5,28 @@
 /*                             GODOT ENGINE                               */
 /*                        https://godotengine.org                         */
 /**************************************************************************/
+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */
+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */
+/*                                                                        */
+/* Permission is hereby granted, free of charge, to any person obtaining  */
+/* a copy of this software and associated documentation files (the        */
+/* "Software"), to deal in the Software without restriction, including    */
+/* without limitation the rights to use, copy, modify, merge, publish,    */
+/* distribute, sublicense, and/or sell copies of the Software, and to     */
+/* permit persons to whom the Software is furnished to do so, subject to  */
+/* the following conditions:                                              */
+/*                                                                        */
+/* The above copyright notice and this permission notice shall be         */
+/* included in all copies or substantial portions of the Software.        */
+/*                                                                        */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,        */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
+/**************************************************************************/
 
 #include "file_access_game_data.h"
 
@@ -38,6 +60,7 @@ bool GameData::normalize_path(const String &p_path, String &r_path, bool p_requi
 
 void GameData::add_source(GameDataSource *p_source) {
 	ERR_FAIL_NULL(p_source);
+	RWLockWrite lock(registry_lock);
 	sources.push_back(p_source);
 }
 
@@ -47,6 +70,7 @@ bool GameData::add_path(const String &p_path, uint64_t p_size, GameDataSource *p
 	String normalized_path;
 	ERR_FAIL_COND_V(!normalize_path(p_path, normalized_path, true), false);
 
+	RWLockWrite lock(registry_lock);
 	if (files.has(normalized_path) && !p_replace_files) {
 		return false;
 	}
@@ -68,12 +92,20 @@ bool GameData::add_path(const String &p_path, uint64_t p_size, GameDataSource *p
 
 bool GameData::has_path(const String &p_path) const {
 	String normalized_path;
-	return normalize_path(p_path, normalized_path, true) && files.has(normalized_path);
+	if (!normalize_path(p_path, normalized_path, true)) {
+		return false;
+	}
+	RWLockRead lock(registry_lock);
+	return files.has(normalized_path);
 }
 
 bool GameData::has_directory(const String &p_path) const {
 	String normalized_path;
-	return normalize_path(p_path, normalized_path) && directories.has(normalized_path);
+	if (!normalize_path(p_path, normalized_path)) {
+		return false;
+	}
+	RWLockRead lock(registry_lock);
+	return directories.has(normalized_path);
 }
 
 int64_t GameData::get_size(const String &p_path) const {
@@ -82,6 +114,7 @@ int64_t GameData::get_size(const String &p_path) const {
 		return -1;
 	}
 
+	RWLockRead lock(registry_lock);
 	const GameDataFile *file = files.getptr(normalized_path);
 	return file ? file->size : -1;
 }
@@ -92,15 +125,21 @@ Ref<FileAccess> GameData::try_open_path(const String &p_path) const {
 		return Ref<FileAccess>();
 	}
 
-	const GameDataFile *file = files.getptr(normalized_path);
-	if (!file) {
-		return Ref<FileAccess>();
+	GameDataSource *source = nullptr;
+	{
+		RWLockRead lock(registry_lock);
+		const GameDataFile *file = files.getptr(normalized_path);
+		if (!file) {
+			return Ref<FileAccess>();
+		}
+		source = file->source;
 	}
 
-	return file->source->get_file(String(SCHEME) + normalized_path);
+	return source->get_file(String(SCHEME) + normalized_path);
 }
 
 bool GameData::_get_directory_contents(const String &p_path, Vector<String> &r_directories, Vector<String> &r_files) const {
+	RWLockRead lock(registry_lock);
 	const GameDataDirectory *directory = directories.getptr(p_path);
 	if (!directory) {
 		return false;
@@ -276,7 +315,7 @@ Error DirAccessGameData::change_dir(String p_dir) {
 
 	GameData *game_data = GameData::get_singleton();
 	ERR_FAIL_NULL_V(game_data, ERR_UNAVAILABLE);
-	ERR_FAIL_COND_V(!game_data->directories.has(path), ERR_INVALID_PARAMETER);
+	ERR_FAIL_COND_V(!game_data->has_directory(String(GameData::SCHEME) + path), ERR_INVALID_PARAMETER);
 
 	current_path = path;
 	return OK;
@@ -289,11 +328,11 @@ String DirAccessGameData::get_current_dir(bool p_include_drive) const {
 bool DirAccessGameData::file_exists(String p_file) {
 	String path;
 	GameData *game_data = GameData::get_singleton();
-	return game_data && _resolve_path(p_file, path) && game_data->files.has(path);
+	return game_data && _resolve_path(p_file, path) && game_data->has_path(String(GameData::SCHEME) + path);
 }
 
 bool DirAccessGameData::dir_exists(String p_dir) {
 	String path;
 	GameData *game_data = GameData::get_singleton();
-	return game_data && _resolve_path(p_dir, path) && game_data->directories.has(path);
+	return game_data && _resolve_path(p_dir, path) && game_data->has_directory(String(GameData::SCHEME) + path);
 }
