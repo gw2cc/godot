@@ -3071,6 +3071,12 @@ void EditorHelp::_gen_doc_thread(void *p_udata) {
 		ERR_PRINT("Cannot save editor help cache (" + get_cache_full_path() + ").");
 	}
 
+	// Documentation loaded at runtime (not part of the compressed data) must also apply when the cache is rebuilt.
+	// It is merged after saving so the cache never contains it.
+	if (ext_doc) {
+		doc->merge_from(*ext_doc);
+	}
+
 	// Load script docs after native ones are cached so native cache doesn't contain script docs.
 	bool use_script_cache = (bool)p_udata;
 	if (use_script_cache) {
