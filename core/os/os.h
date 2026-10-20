@@ -145,6 +145,8 @@ protected:
 public:
 	static OS *get_singleton();
 
+	bool is_in_editor() const { return _in_editor; }
+
 	static bool prefer_meta_over_ctrl();
 
 	void set_current_rendering_driver_name(const String &p_driver_name, RenderingSource p_source) {

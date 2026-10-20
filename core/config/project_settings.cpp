@@ -653,9 +653,11 @@ void ProjectSettings::_convert_to_last_version(int p_from_version) {
  * using the following merit order:
  *  - If using NetworkClient, try to lookup project file or fail.
  *  - If --main-pack was passed by the user (`p_main_pack`), load it or fail.
- *  - Search for project PCKs automatically. For each step we try loading a potential
- *    PCK, and if it doesn't work, we proceed to the next step. If any step succeeds,
- *    we try loading the project settings, and abort if it fails. Steps:
+ *  - Outside editor mode, search for project PCKs automatically. In editor mode, skip
+ *    this executable-side lookup and load the project from disk at `p_path`. For each
+ *    step we try loading a potential PCK, and if it doesn't work, we proceed to the
+ *    next step. If any step succeeds, we try loading the project settings, and abort
+ *    if it fails. Steps:
  *    o Bundled PCK in the executable.
  *    o [macOS only] PCK with same basename as the binary in the .app resource dir.
  *    o PCK with same basename as the binary in the binary's directory. We handle both
@@ -706,7 +708,8 @@ Error ProjectSettings::_setup(const String &p_path, const String &p_main_pack, b
 
 	String exec_path = OS::get_singleton()->get_executable_path();
 
-	if (!exec_path.is_empty()) {
+	// Editor projects are loaded from disk, never from a pack next to the executable.
+	if (!OS::get_singleton()->is_in_editor() && !exec_path.is_empty()) {
 		// We do several tests sequentially until one succeeds to find a PCK,
 		// and if so, we attempt loading it at the end.
 
