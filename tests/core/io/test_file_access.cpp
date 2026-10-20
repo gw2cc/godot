@@ -46,6 +46,8 @@ class TestGameDataSource : public GameDataSource {
 	HashMap<String, Vector<uint8_t>> files;
 
 public:
+	int size_probes = 0;
+
 	void add_file(const String &p_path, const String &p_contents) {
 		CharString contents = p_contents.utf8();
 		Vector<uint8_t> data;
@@ -54,6 +56,12 @@ public:
 			data.write[i] = contents[i];
 		}
 		files[p_path] = data;
+	}
+
+	virtual int64_t get_size(const String &p_path) override {
+		size_probes++;
+		const Vector<uint8_t> *data = files.getptr(p_path);
+		return data ? data->size() : -1;
 	}
 
 	virtual Ref<FileAccess> get_file(const String &p_path) override {
@@ -67,6 +75,31 @@ public:
 			return Ref<FileAccess>();
 		}
 		return file;
+	}
+};
+
+// Opens its sibling from get_file, registers a child and re-enters GameData, which must not hold the registry lock.
+class ReentrantGameDataSource : public GameDataSource {
+	String own_path;
+	String sibling_path;
+	String child_path;
+
+public:
+	ReentrantGameDataSource(const String &p_own_path, const String &p_sibling_path, const String &p_child_path) :
+			own_path(p_own_path), sibling_path(p_sibling_path), child_path(p_child_path) {}
+
+	virtual int64_t get_size(const String &p_path) override {
+		// Same size as the sibling contents.
+		return p_path == own_path ? 5 : -1;
+	}
+
+	virtual Ref<FileAccess> get_file(const String &p_path) override {
+		GameData *game_data = GameData::get_singleton();
+		if (!game_data->has_path(sibling_path)) {
+			return Ref<FileAccess>();
+		}
+		game_data->add_path(child_path, 5, this, true);
+		return game_data->try_open_path(sibling_path);
 	}
 };
 
@@ -155,6 +188,141 @@ TEST_CASE("[FileAccess] game_data virtual filesystem") {
 	REQUIRE(resource.is_valid());
 	CHECK(error == OK);
 	CHECK(resource->get_name() == "loaded");
+}
+
+TEST_CASE("[FileAccess] game_data lazy source resolution") {
+	GameData *game_data = GameData::get_singleton();
+	REQUIRE(game_data != nullptr);
+
+	const String root = "game_data://file_access_game_data_lazy";
+	const String lazy_path = root.path_join("lazy.txt");
+	const String shadowed_path = root.path_join("shadowed.txt");
+	const String second_path = root.path_join("second.txt");
+	const String missing_path = root.path_join("missing.txt");
+	const String reentrant_path = root.path_join("reentrant.txt");
+	const String reentrant_child_path = root.path_join("reentrant_child.txt");
+
+	TestGameDataSource *first_source = memnew(TestGameDataSource);
+	first_source->add_file(lazy_path, "first");
+	first_source->add_file(shadowed_path, "first");
+	game_data->add_source(first_source);
+
+	TestGameDataSource *second_source = memnew(TestGameDataSource);
+	second_source->add_file(shadowed_path, "second");
+	second_source->add_file(second_path, "second");
+	game_data->add_source(second_source);
+
+	auto list_names = [](DirAccess *p_directory) {
+		Vector<String> names;
+		CHECK(p_directory->list_dir_begin() == OK);
+		for (String name = p_directory->get_next(); !name.is_empty(); name = p_directory->get_next()) {
+			names.push_back(name);
+		}
+		p_directory->list_dir_end();
+		return names;
+	};
+
+	// Nothing under the root is registered yet, so the directory does not exist.
+	CHECK(!game_data->has_directory(root));
+
+	// Paths never added with add_path resolve through the sources, probed in registration order.
+	CHECK(game_data->get_size(lazy_path) == 5);
+	CHECK(first_source->size_probes == 1);
+	CHECK(game_data->has_directory(root));
+	Ref<FileAccess> lazy_file = FileAccess::open(lazy_path, FileAccess::READ);
+	REQUIRE(lazy_file.is_valid());
+	CHECK(lazy_file->get_as_utf8_string() == "first");
+
+	// The first registered source wins, so later sources are not consulted for paths the first one provides.
+	const int second_probes_before_shadowed = second_source->size_probes;
+	Ref<FileAccess> shadowed_file = FileAccess::open(shadowed_path, FileAccess::READ);
+	REQUIRE(shadowed_file.is_valid());
+	CHECK(shadowed_file->get_as_utf8_string() == "first");
+	CHECK(second_source->size_probes == second_probes_before_shadowed);
+
+	// Paths only a later source provides fall through to it.
+	CHECK(game_data->get_size(second_path) == 6);
+	CHECK(second_source->size_probes == second_probes_before_shadowed + 1);
+
+	// Resolved paths and their directories are cached, so repeated lookups probe no source.
+	const int first_probes_cached = first_source->size_probes;
+	const int second_probes_cached = second_source->size_probes;
+	CHECK(FileAccess::exists(lazy_path));
+	CHECK(game_data->get_size(shadowed_path) == 5);
+	CHECK(game_data->get_size(second_path) == 6);
+	CHECK(first_source->size_probes == first_probes_cached);
+	CHECK(second_source->size_probes == second_probes_cached);
+
+	Ref<DirAccess> directory = DirAccess::open(root);
+	REQUIRE(directory.is_valid());
+	Vector<String> names = list_names(directory.ptr());
+	CHECK(names.has("lazy.txt"));
+	CHECK(names.has("shadowed.txt"));
+	CHECK(names.has("second.txt"));
+
+	// Explicit registration still overrides a lazily resolved path when it replaces it.
+	CHECK(!game_data->add_path(shadowed_path, 6, second_source));
+	CHECK(game_data->add_path(shadowed_path, 6, second_source, true));
+	CHECK(game_data->get_size(shadowed_path) == 6);
+	Ref<FileAccess> replaced_file = FileAccess::open(shadowed_path, FileAccess::READ);
+	REQUIRE(replaced_file.is_valid());
+	CHECK(replaced_file->get_as_utf8_string() == "second");
+
+	// A missing path stays absent on every lookup and never appears in the directory.
+	for (int attempt = 0; attempt < 2; attempt++) {
+		Error error = OK;
+		CHECK(FileAccess::open(missing_path, FileAccess::READ, &error).is_null());
+		CHECK(error == ERR_FILE_NOT_FOUND);
+		CHECK(!FileAccess::exists(missing_path));
+		CHECK(game_data->get_size(missing_path) == -1);
+		CHECK(!game_data->has_path(missing_path));
+	}
+	CHECK(!list_names(directory.ptr()).has("missing.txt"));
+
+	// A source whose get_file calls back into GameData must not deadlock on the registry lock.
+	game_data->add_source(memnew(ReentrantGameDataSource(reentrant_path, lazy_path, reentrant_child_path)));
+	Ref<FileAccess> reentrant_file = FileAccess::open(reentrant_path, FileAccess::READ);
+	REQUIRE(reentrant_file.is_valid());
+	CHECK(reentrant_file->get_as_utf8_string() == "first");
+	CHECK(FileAccess::exists(reentrant_child_path));
+}
+
+TEST_CASE("[FileAccess] game_data unsupported suffixes bypass lazy sources") {
+	GameData *game_data = GameData::get_singleton();
+	REQUIRE(game_data != nullptr);
+
+	const String root = "game_data://file_access_game_data_suffixes";
+	const String remap_path = root.path_join("texture.png.remap");
+	const String import_path = root.path_join("texture.png.import");
+	const String registered_path = root.path_join("registered.txt.remap");
+
+	TestGameDataSource *source = memnew(TestGameDataSource);
+	source->add_file(remap_path, "remap");
+	source->add_file(import_path, "import");
+	source->add_file(registered_path, "registered");
+	game_data->add_source(source);
+
+	// The source would report these present, proving the suffix filter is what hides them.
+	CHECK(source->get_size(remap_path) == 5);
+	CHECK(source->get_size(import_path) == 6);
+	const int probes_before = source->size_probes;
+
+	CHECK(!game_data->has_path(remap_path));
+	CHECK(game_data->get_size(remap_path) == -1);
+	CHECK(game_data->try_open_path(remap_path).is_null());
+	CHECK(!game_data->has_path(import_path));
+	CHECK(game_data->get_size(import_path) == -1);
+	CHECK(game_data->try_open_path(import_path).is_null());
+	CHECK(source->size_probes == probes_before);
+
+	// An explicitly registered path with a suffix is still honored and never probes the source.
+	CHECK(game_data->add_path(registered_path, 10, source));
+	CHECK(game_data->has_path(registered_path));
+	CHECK(game_data->get_size(registered_path) == 10);
+	Ref<FileAccess> registered_file = game_data->try_open_path(registered_path);
+	REQUIRE(registered_file.is_valid());
+	CHECK(registered_file->get_as_utf8_string() == "registered");
+	CHECK(source->size_probes == probes_before);
 }
 
 TEST_CASE("[FileAccess] CSV read") {

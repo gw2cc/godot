@@ -38,6 +38,7 @@
 
 class GameDataSource {
 public:
+	virtual int64_t get_size(const String &p_path) = 0;
 	virtual Ref<FileAccess> get_file(const String &p_path) = 0;
 	virtual ~GameDataSource() {}
 };
@@ -62,10 +63,13 @@ class GameData {
 
 	static inline GameData *singleton = nullptr;
 
+	void _add_path_locked(const String &p_normalized_path, uint64_t p_size, GameDataSource *p_source);
+	bool _find_file(const String &p_normalized_path, GameDataFile &r_file);
 	bool _get_directory_contents(const String &p_path, Vector<String> &r_directories, Vector<String> &r_files) const;
 
 public:
 	static constexpr const char *SCHEME = "game_data://";
+	static constexpr const char *UNSUPPORTED_SUFFIXES[] = { ".remap", ".import" };
 
 	static GameData *get_singleton() { return singleton; }
 	static bool is_game_data_path(const String &p_path);
@@ -74,10 +78,10 @@ public:
 	void add_source(GameDataSource *p_source);
 	bool add_path(const String &p_path, uint64_t p_size, GameDataSource *p_source, bool p_replace_files = false);
 
-	bool has_path(const String &p_path) const;
+	bool has_path(const String &p_path);
 	bool has_directory(const String &p_path) const;
-	int64_t get_size(const String &p_path) const;
-	Ref<FileAccess> try_open_path(const String &p_path) const;
+	int64_t get_size(const String &p_path);
+	Ref<FileAccess> try_open_path(const String &p_path);
 
 	GameData();
 	~GameData();

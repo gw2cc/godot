@@ -64,6 +64,20 @@ void GameData::add_source(GameDataSource *p_source) {
 	sources.push_back(p_source);
 }
 
+void GameData::_add_path_locked(const String &p_normalized_path, uint64_t p_size, GameDataSource *p_source) {
+	files[p_normalized_path] = { p_source, p_size };
+	String current_directory;
+	directories[current_directory];
+	Vector<String> path_parts = p_normalized_path.get_base_dir().split("/", false);
+	for (const String &path_part : path_parts) {
+		directories[current_directory].directories.insert(path_part);
+		current_directory = current_directory.is_empty() ? path_part : current_directory.path_join(path_part);
+		directories[current_directory];
+	}
+
+	directories[current_directory].files.insert(p_normalized_path.get_file());
+}
+
 bool GameData::add_path(const String &p_path, uint64_t p_size, GameDataSource *p_source, bool p_replace_files) {
 	ERR_FAIL_NULL_V(p_source, false);
 
@@ -75,28 +89,54 @@ bool GameData::add_path(const String &p_path, uint64_t p_size, GameDataSource *p
 		return false;
 	}
 
-	files[normalized_path] = { p_source, p_size };
-
-	String current_directory;
-	directories[current_directory];
-	Vector<String> path_parts = normalized_path.get_base_dir().split("/", false);
-	for (const String &path_part : path_parts) {
-		directories[current_directory].directories.insert(path_part);
-		current_directory = current_directory.is_empty() ? path_part : current_directory.path_join(path_part);
-		directories[current_directory];
-	}
-
-	directories[current_directory].files.insert(normalized_path.get_file());
+	_add_path_locked(normalized_path, p_size, p_source);
 	return true;
 }
 
-bool GameData::has_path(const String &p_path) const {
+bool GameData::_find_file(const String &p_normalized_path, GameDataFile &r_file) {
+	Vector<GameDataSource *> source_snapshot;
+	{
+		RWLockRead lock(registry_lock);
+		const GameDataFile *file = files.getptr(p_normalized_path);
+		if (file) {
+			r_file = *file;
+			return true;
+		}
+		for (const char *suffix : UNSUPPORTED_SUFFIXES) {
+			if (p_normalized_path.ends_with(suffix)) {
+				return false;
+			}
+		}
+		source_snapshot = sources;
+	}
+
+	const String full_path = String(SCHEME) + p_normalized_path;
+	for (GameDataSource *source : source_snapshot) {
+		const int64_t size = source->get_size(full_path);
+		if (size < 0) {
+			continue;
+		}
+
+		RWLockWrite lock(registry_lock);
+		const GameDataFile *file = files.getptr(p_normalized_path);
+		if (file) {
+			r_file = *file;
+			return true;
+		}
+		_add_path_locked(p_normalized_path, static_cast<uint64_t>(size), source);
+		r_file = { source, static_cast<uint64_t>(size) };
+		return true;
+	}
+	return false;
+}
+
+bool GameData::has_path(const String &p_path) {
 	String normalized_path;
 	if (!normalize_path(p_path, normalized_path, true)) {
 		return false;
 	}
-	RWLockRead lock(registry_lock);
-	return files.has(normalized_path);
+	GameDataFile file;
+	return _find_file(normalized_path, file);
 }
 
 bool GameData::has_directory(const String &p_path) const {
@@ -108,34 +148,27 @@ bool GameData::has_directory(const String &p_path) const {
 	return directories.has(normalized_path);
 }
 
-int64_t GameData::get_size(const String &p_path) const {
+int64_t GameData::get_size(const String &p_path) {
 	String normalized_path;
 	if (!normalize_path(p_path, normalized_path, true)) {
 		return -1;
 	}
 
-	RWLockRead lock(registry_lock);
-	const GameDataFile *file = files.getptr(normalized_path);
-	return file ? file->size : -1;
+	GameDataFile file;
+	return _find_file(normalized_path, file) ? static_cast<int64_t>(file.size) : -1;
 }
 
-Ref<FileAccess> GameData::try_open_path(const String &p_path) const {
+Ref<FileAccess> GameData::try_open_path(const String &p_path) {
 	String normalized_path;
 	if (!normalize_path(p_path, normalized_path, true)) {
 		return Ref<FileAccess>();
 	}
 
-	GameDataSource *source = nullptr;
-	{
-		RWLockRead lock(registry_lock);
-		const GameDataFile *file = files.getptr(normalized_path);
-		if (!file) {
-			return Ref<FileAccess>();
-		}
-		source = file->source;
+	GameDataFile file;
+	if (!_find_file(normalized_path, file)) {
+		return Ref<FileAccess>();
 	}
-
-	return source->get_file(String(SCHEME) + normalized_path);
+	return file.source->get_file(String(SCHEME) + normalized_path);
 }
 
 bool GameData::_get_directory_contents(const String &p_path, Vector<String> &r_directories, Vector<String> &r_files) const {
