@@ -36,6 +36,7 @@
 #include "gdscript_parser.h"
 
 #include "core/io/file_access.h"
+#include "core/io/file_access_pack.h"
 #include "core/io/resource_loader.h"
 #include "core/templates/vector.h"
 
@@ -319,6 +320,9 @@ Ref<GDScript> GDScriptCache::get_shallow_script(const String &p_path, Error &r_e
 	script.instantiate();
 
 	script->set_path_cache(p_path);
+	if (PackedData::get_singleton() && PackedData::get_singleton()->is_path_protected(remapped_path)) {
+		script->set_protected(true);
+	}
 	if (remapped_path.has_extension("gdc")) {
 		Vector<uint8_t> buffer = get_binary_tokens(remapped_path);
 		if (buffer.is_empty()) {
@@ -368,6 +372,9 @@ Ref<GDScript> GDScriptCache::get_full_script(const String &p_path, Error &r_erro
 	}
 
 	const String remapped_path = ResourceLoader::path_remap(p_path);
+	if (PackedData::get_singleton() && PackedData::get_singleton()->is_path_protected(remapped_path)) {
+		script->set_protected(true);
+	}
 
 	if (p_update_from_disk) {
 		if (remapped_path.has_extension("gdc")) {

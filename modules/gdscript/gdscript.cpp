@@ -956,7 +956,7 @@ Variant GDScript::callp(const StringName &p_method, const Variant **p_args, int 
 
 bool GDScript::_get(const StringName &p_name, Variant &r_ret) const {
 	if (p_name == GDScriptLanguage::get_singleton()->strings._script_source) {
-		r_ret = get_source_code();
+		r_ret = is_protected() ? String() : get_source_code();
 		return true;
 	}
 

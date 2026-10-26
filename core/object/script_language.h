@@ -143,6 +143,7 @@ public:
 	virtual void reload_from_file() override;
 
 	virtual bool can_instantiate() const = 0;
+	String _get_source_code_bind() const;
 
 	virtual Ref<Script> get_base_script() const = 0; //for script inheritance
 	virtual StringName get_global_name() const = 0;

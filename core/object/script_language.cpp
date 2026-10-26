@@ -160,11 +160,18 @@ PropertyInfo Script::get_class_category() const {
 
 #endif // TOOLS_ENABLED
 
+String Script::_get_source_code_bind() const {
+	if (is_protected()) {
+		return String();
+	}
+	return get_source_code();
+}
+
 void Script::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("can_instantiate"), &Script::can_instantiate);
 	//ClassDB::bind_method(D_METHOD("instance_create","base_object"),&Script::instance_create);
 	ClassDB::bind_method(D_METHOD("has_source_code"), &Script::has_source_code);
-	ClassDB::bind_method(D_METHOD("get_source_code"), &Script::get_source_code);
+	ClassDB::bind_method(D_METHOD("get_source_code"), &Script::_get_source_code_bind);
 	ClassDB::bind_method(D_METHOD("set_source_code", "source"), &Script::set_source_code);
 	ClassDB::bind_method(D_METHOD("reload", "keep_state"), &Script::reload, DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("get_base_script"), &Script::get_base_script);
