@@ -36,6 +36,7 @@
 #include "core/io/dir_access.h"
 #include "core/io/file_access.h"
 #include "core/io/file_access_game_data.h"
+#include "core/io/file_access_pack.h"
 #include "core/io/resource_importer.h"
 #include "core/object/callable_mp.h"
 #include "core/object/class_db.h"
@@ -297,6 +298,9 @@ Ref<Resource> ResourceLoader::_load(const String &p_path, const String &p_origin
 	load_nesting--;
 
 	if (res.is_valid()) {
+		if (PackedData::get_singleton() && PackedData::get_singleton()->is_path_protected(p_path)) {
+			Resource::mark_protected(res);
+		}
 		return res;
 	} else {
 		print_verbose(vformat("Failed loading resource: %s", p_path));
@@ -1539,6 +1543,13 @@ String ResourceLoader::import_remap(const String &p_path) {
 
 String ResourceLoader::path_remap(const String &p_path) {
 	return _path_remap(p_path);
+}
+
+bool ResourceLoader::is_path_protected(const String &p_path) {
+	if (!PackedData::get_singleton()) {
+		return false;
+	}
+	return PackedData::get_singleton()->is_path_protected(_path_remap(_validate_local_path(p_path)));
 }
 
 void ResourceLoader::reload_translation_remaps() {

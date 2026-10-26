@@ -1743,7 +1743,8 @@ Error encode_variant(const Variant &p_variant, uint8_t *r_buffer, int &r_len, bo
 		case Variant::OBJECT: {
 			if (p_full_objects) {
 				Object *obj = p_variant;
-				if (!obj) {
+				Ref<Resource> res_obj = p_variant;
+				if (!obj || (res_obj.is_valid() && res_obj->is_protected())) {
 					if (buf) {
 						encode_uint32(0, buf);
 					}

@@ -35,8 +35,84 @@
 #include "core/math/random_pcg.h"
 #include "core/object/class_db.h"
 #include "core/os/os.h"
+#include "core/templates/hash_set.h"
 #include "core/variant/container_type_validate.h" // IWYU pragma: keep.
 #include "scene/main/node.h" //only so casting works
+
+static bool _walk_protected_resource_graph(const Variant &p_value, bool p_mark, bool p_follow_external, bool p_only_built_in, HashSet<ObjectID> &p_visited) {
+	switch (p_value.get_type()) {
+		case Variant::ARRAY: {
+			Array array = p_value;
+			for (int i = 0; i < array.size(); i++) {
+				if (_walk_protected_resource_graph(array[i], p_mark, p_follow_external, p_only_built_in, p_visited) && !p_mark) {
+					return true;
+				}
+			}
+		} break;
+		case Variant::DICTIONARY: {
+			Dictionary dictionary = p_value;
+			for (const Variant &key : dictionary.keys()) {
+				if (_walk_protected_resource_graph(key, p_mark, p_follow_external, p_only_built_in, p_visited) && !p_mark) {
+					return true;
+				}
+				if (_walk_protected_resource_graph(dictionary[key], p_mark, p_follow_external, p_only_built_in, p_visited) && !p_mark) {
+					return true;
+				}
+			}
+		} break;
+		case Variant::OBJECT: {
+			Object *object = p_value;
+			Resource *resource = Object::cast_to<Resource>(object);
+			if (resource == nullptr) {
+				break;
+			}
+
+			if (p_mark && p_only_built_in && !resource->is_built_in()) {
+				break;
+			}
+
+			const ObjectID instance_id = resource->get_instance_id();
+			if (p_visited.has(instance_id)) {
+				break;
+			}
+			p_visited.insert(instance_id);
+
+			if (p_mark) {
+				resource->set_protected(true);
+			} else if (resource->is_protected()) {
+				return true;
+			}
+
+			if (!resource->is_built_in() && !p_mark && !p_follow_external) {
+				break;
+			}
+
+			List<PropertyInfo> properties;
+			resource->get_property_list(&properties);
+			for (const PropertyInfo &property : properties) {
+				if (!(property.usage & PROPERTY_USAGE_STORAGE)) {
+					continue;
+				}
+				if (_walk_protected_resource_graph(resource->get(property.name), p_mark, p_follow_external, p_mark, p_visited) && !p_mark) {
+					return true;
+				}
+			}
+		} break;
+		default: {
+		} break;
+	}
+	return false;
+}
+
+void Resource::mark_protected(const Variant &p_value) {
+	HashSet<ObjectID> visited;
+	_walk_protected_resource_graph(p_value, true, false, false, visited);
+}
+
+bool Resource::references_protected(const Variant &p_value, bool p_follow_external) {
+	HashSet<ObjectID> visited;
+	return _walk_protected_resource_graph(p_value, false, p_follow_external, false, visited);
+}
 
 void Resource::register_custom_data_to_otdb() {
 	ClassDB::add_resource_base_extension("res", get_class_static());
@@ -395,6 +471,7 @@ Ref<Resource> Resource::_duplicate(const DuplicateParams &p_params) const {
 	ERR_FAIL_COND_V(r.is_null(), Ref<Resource>());
 
 	thread_duplicate_remap_cache->insert(Ref<Resource>(this), r);
+	r->protected_resource = protected_resource;
 
 	if (p_params.local_scene) {
 		r->local_scene = p_params.local_scene;

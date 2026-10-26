@@ -814,6 +814,11 @@ Variant JSON::_from_native(const Variant &p_variant, bool p_full_objects, int p_
 				return Variant();
 			}
 
+			Ref<Resource> res_obj = p_variant;
+			if (res_obj.is_valid() && res_obj->is_protected()) {
+				return Variant();
+			}
+
 			ERR_FAIL_COND_V(!ClassDB::can_instantiate(obj->get_class()), Variant());
 
 			List<PropertyInfo> prop_list;

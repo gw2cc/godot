@@ -298,6 +298,8 @@ public:
 	static String path_remap(const String &p_path);
 	static String import_remap(const String &p_path);
 
+	static bool is_path_protected(const String &p_path);
+
 	static void reload_translation_remaps();
 	static void load_translation_remaps();
 	static void clear_translation_remaps();

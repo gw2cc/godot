@@ -109,13 +109,8 @@ Error ResourceSaver::save(RequiredParam<Resource> rp_resource, const String &p_p
 
 	Error err = ERR_FILE_UNRECOGNIZED;
 
-	if (p_resource->get_source_path() != "") {
-		Ref fa = FileAccess::open(p_resource->get_source_path(), FileAccess::READ);
-		if (fa.is_valid()) {
-			if (fa->is_protected()) {
-				return ERR_FILE_UNRECOGNIZED; // nice try
-			}
-		}
+	if (p_resource->is_protected() || Resource::references_protected(p_resource, p_flags & FLAG_BUNDLE_RESOURCES)) {
+		return ERR_FILE_UNRECOGNIZED; // nice try
 	}
 
 	for (int i = 0; i < saver_count; i++) {

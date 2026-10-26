@@ -2208,6 +2208,11 @@ Error VariantWriter::write(const Variant &p_variant, StoreStringFunc p_store_str
 					p_store_string_func(p_store_string_ud, res_text);
 					break;
 				}
+
+				if (res->is_protected()) {
+					p_store_string_func(p_store_string_ud, "null");
+					break;
+				}
 			}
 
 			//store as generic object

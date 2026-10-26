@@ -86,6 +86,7 @@ private:
 	};
 	EmitChangedState emit_changed_state = EMIT_CHANGED_UNBLOCKED;
 	bool local_to_scene = false;
+	bool protected_resource = false;
 	friend class SceneState;
 	Node *local_scene = nullptr;
 
@@ -145,6 +146,10 @@ public:
 	String get_path() const;
 	virtual void set_path_cache(const String &p_path); // Set raw path without involving resource cache.
 	_FORCE_INLINE_ bool is_built_in() const { return path_cache.is_empty() || path_cache.contains("::") || path_cache.begins_with("local://"); }
+	void set_protected(bool p_protected) { protected_resource = p_protected; }
+	bool is_protected() const { return protected_resource; }
+	static void mark_protected(const Variant &p_value);
+	static bool references_protected(const Variant &p_value, bool p_follow_external);
 
 	static void seed_scene_unique_id(uint32_t p_seed);
 	static String generate_scene_unique_id();
@@ -190,22 +195,6 @@ public:
 
 	Resource();
 	~Resource();
-
-public:
-	void set_source_path(const String &p_path) {
-		old_path = p_path;
-	}
-
-	String get_source_path() const {
-		if (old_path != "") {
-			return old_path;
-		} else {
-			return path_cache;
-		}
-	}
-
-private:
-	String old_path;
 };
 
 VARIANT_ENUM_CAST(Resource::DeepDuplicateMode);
