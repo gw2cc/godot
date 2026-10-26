@@ -148,6 +148,7 @@ public:
 
 	_FORCE_INLINE_ Ref<FileAccess> try_open_path(const String &p_path, const Vector<uint8_t> &p_decryption_key = Vector<uint8_t>());
 	_FORCE_INLINE_ bool has_path(const String &p_path);
+	bool is_path_protected(const String &p_path);
 
 	_FORCE_INLINE_ int64_t get_size(const String &p_path);
 
@@ -162,6 +163,7 @@ class PackSource {
 public:
 	virtual bool try_open_pack(const String &p_path, bool p_replace_files, uint64_t p_offset, const Vector<uint8_t> &p_decryption_key = Vector<uint8_t>()) = 0;
 	virtual Ref<FileAccess> get_file(const String &p_path, PackedData::PackedFile *p_file, const Vector<uint8_t> &p_decryption_key = Vector<uint8_t>()) = 0;
+	virtual bool is_protected(const String &p_path, PackedData::PackedFile *p_file) { return false; }
 	virtual ~PackSource() {}
 };
 

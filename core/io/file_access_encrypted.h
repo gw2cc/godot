@@ -103,6 +103,8 @@ public:
 
 	virtual void close() override;
 
+	virtual bool is_protected() override;
+
 	static void deinitialize();
 
 	~FileAccessEncrypted();

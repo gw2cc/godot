@@ -106,5 +106,7 @@ public:
 
 	virtual void close() override;
 
+	virtual bool is_protected() override;
+
 	virtual ~FileAccessCompressed();
 };

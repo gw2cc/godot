@@ -154,6 +154,9 @@ Error PCKPacker::add_file(const String &p_target_path, const String &p_source_pa
 	if (f.is_null()) {
 		return ERR_FILE_CANT_OPEN;
 	}
+	if (f->is_protected()) {
+		return ERR_FILE_NO_PERMISSION;
+	}
 	Vector<uint8_t> data = FileAccess::get_file_as_bytes(p_source_path);
 
 	return _add_file(p_target_path, p_source_path, data, p_encrypt);

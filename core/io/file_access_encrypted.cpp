@@ -346,6 +346,10 @@ void FileAccessEncrypted::close() {
 	_close();
 }
 
+bool FileAccessEncrypted::is_protected() {
+	return file.is_valid() && file->is_protected();
+}
+
 FileAccessEncrypted::~FileAccessEncrypted() {
 	_close();
 }

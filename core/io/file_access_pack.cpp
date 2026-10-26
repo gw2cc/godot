@@ -143,6 +143,20 @@ uint8_t *PackedData::get_file_hash(const String &p_path) {
 	return E->value.md5;
 }
 
+bool PackedData::is_path_protected(const String &p_path) {
+	if (disabled) {
+		return false;
+	}
+	HashMap<PathMD5, PackedFile, PathMD5>::Iterator E = files.find(_get_simplified_path(p_path));
+	if (!E) {
+		return false;
+	}
+	if (E->value.offset == 0 || E->value.src == nullptr) {
+		return false;
+	}
+	return E->value.src->is_protected(p_path, &E->value);
+}
+
 Vector<PackedData::PackedFile> PackedData::get_delta_patches(const String &p_path) const {
 	String simplified_path = p_path.simplify_path().trim_prefix("res://");
 	PathMD5 pmd5(simplified_path.md5_buffer());

@@ -413,6 +413,10 @@ void FileAccessCompressed::close() {
 	_close();
 }
 
+bool FileAccessCompressed::is_protected() {
+	return f.is_valid() && f->is_protected();
+}
+
 FileAccessCompressed::~FileAccessCompressed() {
 	_close();
 }

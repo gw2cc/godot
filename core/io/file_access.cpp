@@ -247,6 +247,11 @@ Ref<FileAccess> FileAccess::open_compressed(const String &p_path, ModeFlags p_mo
 		return Ref<FileAccess>();
 	}
 
+	if (fac->is_protected()) {
+		last_file_open_error = ERR_FILE_CANT_OPEN;
+		return Ref<FileAccess>();
+	}
+
 	return fac;
 }
 
@@ -913,6 +918,13 @@ bool FileAccess::store_var(const Variant &p_var, bool p_full_objects) {
 }
 
 Vector<uint8_t> FileAccess::get_file_as_bytes(const String &p_path, Error *r_error) {
+	if (PackedData::get_singleton() && PackedData::get_singleton()->is_path_protected(p_path)) {
+		if (r_error) {
+			*r_error = ERR_FILE_CANT_OPEN;
+			return Vector<uint8_t>();
+		}
+		ERR_FAIL_V_MSG(Vector<uint8_t>(), vformat("Can't open file from path '%s'.", String(p_path)));
+	}
 	Ref<FileAccess> f = FileAccess::open(p_path, READ, r_error);
 	if (f.is_null()) {
 		if (r_error) { // if error requested, do not throw error
@@ -928,6 +940,13 @@ Vector<uint8_t> FileAccess::get_file_as_bytes(const String &p_path, Error *r_err
 }
 
 String FileAccess::get_file_as_string(const String &p_path, Error *r_error) {
+	if (PackedData::get_singleton() && PackedData::get_singleton()->is_path_protected(p_path)) {
+		if (r_error) {
+			*r_error = ERR_FILE_CANT_OPEN;
+			return String();
+		}
+		ERR_FAIL_V_MSG(String(), vformat("Can't get file as string from path '%s'.", String(p_path)));
+	}
 	Error err;
 	Vector<uint8_t> array = get_file_as_bytes(p_path, &err);
 	if (r_error) {
