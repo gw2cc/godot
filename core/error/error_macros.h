@@ -86,9 +86,9 @@ void _physics_interpolation_warning(const char *p_function, const char *p_file, 
 
 #ifdef __GNUC__
 //#define FUNCTION_STR __PRETTY_FUNCTION__ - too annoying
-#define FUNCTION_STR __FUNCTION__
+#define FUNCTION_STR ""
 #else
-#define FUNCTION_STR __FUNCTION__
+#define FUNCTION_STR ""
 #endif
 
 #if defined(_MSC_VER) && !defined(__clang__)
