@@ -35,10 +35,10 @@
 #include "core/os/memory.h"
 #include "core/os/spin_lock.h"
 #include "core/string/ustring.h"
+#include "core/templates/type_name.h"
 #include "core/typedefs.h"
 
 #include <type_traits>
-#include <typeinfo> // IWYU pragma: keep // Used in macro.
 
 template <typename T, bool thread_safe = false, uint32_t DEFAULT_PAGE_SIZE = 4096>
 class PagedAllocator {
@@ -167,7 +167,7 @@ public:
 		bool leaked = allocs_available < pages_allocated * page_size;
 		if (leaked) {
 			if (CoreGlobals::leak_reporting_enabled) {
-				ERR_PRINT(String("Pages in use exist at exit in PagedAllocator: ") + String(typeid(T).name()));
+				ERR_PRINT(String("Pages in use exist at exit in PagedAllocator: ") + String(TypeName::get_type_name<T>()));
 			}
 		} else {
 			_reset(false);
